@@ -1,4 +1,4 @@
-package at.tugraz.ist.sw20.mam3.cook.ui.notifications
+package at.tugraz.ist.sw20.mam3.cook.ui.favourites
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import at.tugraz.ist.sw20.mam3.cook.R
 
-class NotificationsFragment : Fragment() {
+class FavouritesFragment : Fragment() {
 
-    private lateinit var notificationsViewModel: NotificationsViewModel
+    private lateinit var favouritesViewModel: FavouritesViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        notificationsViewModel =
-                ViewModelProviders.of(this).get(NotificationsViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_notifications, container, false)
-        val textView: TextView = root.findViewById(R.id.text_notifications)
-        notificationsViewModel.text.observe(viewLifecycleOwner, Observer {
+        favouritesViewModel =
+                ViewModelProviders.of(this).get(FavouritesViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_favourites, container, false)
+        val textView: TextView = root.findViewById(R.id.text_favourites)
+        favouritesViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root

@@ -1,4 +1,4 @@
-package at.tugraz.ist.sw20.mam3.cook.ui.dashboard
+package at.tugraz.ist.sw20.mam3.cook.ui.recipes
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import at.tugraz.ist.sw20.mam3.cook.R
 
-class DashboardFragment : Fragment() {
+class RecipesFragment : Fragment() {
 
-    private lateinit var dashboardViewModel: DashboardViewModel
+    private lateinit var recipesViewModel: RecipesViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        dashboardViewModel =
-                ViewModelProviders.of(this).get(DashboardViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
-        val textView: TextView = root.findViewById(R.id.text_dashboard)
-        dashboardViewModel.text.observe(viewLifecycleOwner, Observer {
+        recipesViewModel =
+                ViewModelProviders.of(this).get(RecipesViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_recipes, container, false)
+        val textView: TextView = root.findViewById(R.id.text_recipes)
+        recipesViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
         return root
