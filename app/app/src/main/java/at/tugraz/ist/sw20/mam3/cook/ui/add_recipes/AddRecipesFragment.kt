@@ -11,7 +11,7 @@ import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.RecipesViewModel
 
 class AddRecipesFragment : Fragment() {
-    private lateinit var recipesViewModel: RecipesViewModel
+    private lateinit var recipesViewModel: AddRecipesViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -19,7 +19,7 @@ class AddRecipesFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         recipesViewModel =
-                ViewModelProvider(this).get(RecipesViewModel::class.java)
+                ViewModelProvider(this).get(AddRecipesViewModel::class.java)
         // TODO COOK-002A: change fragment layout and remove toast message
         val root = inflater.inflate(R.layout.fragment_favourites, container, false)
         Toast.makeText(activity, "Hello from the other side", Toast.LENGTH_LONG).show()
