@@ -16,9 +16,5 @@
         android:name="at.tugraz.ist.sw20.mam3.cook.ui.favourites.FavouritesFragment"
         android:label="@string/title_favourites"
         tools:layout="@layout/fragment_favourites" />
-
-    <fragment
-        android:id="@+id/navigation_add_recipe"
-        android:name="at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment"
-        tools:layout="@layout/fragment_recipes" /> <!-- TODO: change fragment -->
+    
 </navigation>
