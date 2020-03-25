@@ -2,4 +2,16 @@
     <string name="app_name">Cook</string>
     <string name="title_recipes">Recipes</string>
     <string name="title_favourites">Favourites</string>
+
+    <string name="title_create_edit_recipes">create/edit Recipes</string>
+    <string name="create_edit_recipes_name">Name:</string>
+    <string name="create_edit_recipes_descr">Description:</string>
+    <string name="create_edit_recipes_type">Type:</string>
+    <string name="create_edit_recipes_difficulty">Difficulty:</string>
+    <string name="create_edit_recipes_preptime">Prep Time:</string>
+    <string name="create_edit_recipes_cooktime">Cook Time:</string>
+    <string name="create_edit_recipes_ingredients">Ingredients:</string>
+    <string name="create_edit_recipes_instructions">Instructions:</string>
+    <string name="create_edit_recipes_fotos">Fotos:</string>
+
 </resources>
