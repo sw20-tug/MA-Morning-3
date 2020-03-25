@@ -16,4 +16,5 @@
         android:name="at.tugraz.ist.sw20.mam3.cook.ui.favourites.FavouritesFragment"
         android:label="@string/title_favourites"
         tools:layout="@layout/fragment_favourites" />
+
 </navigation>
