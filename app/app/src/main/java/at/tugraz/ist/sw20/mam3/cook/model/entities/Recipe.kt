@@ -1,5 +1,6 @@
 package at.tugraz.ist.sw20.mam3.cook.model.entities
 
+import androidx.core.content.res.FontResourcesParserCompat
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -12,10 +13,12 @@ data class Recipe (
     val description: String,
     val prepMinutes: Int,
     val cookMinutes: Int,
+    val favorite: Boolean
+    ) {
+    @Ignore
+    var steps: List<Step>? = null
 
     @Ignore
-    val steps: List<Step>,
+    var ingredients: List<Ingredient>? = null
 
-    @Ignore
-    val ingredients: List<Ingredient>
-)
+}
