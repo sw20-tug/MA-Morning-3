@@ -4,28 +4,40 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/recipe_time_img"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_margin="5dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/margin_title"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:src="@drawable/ic_whisk"
-        />
+        android:gravity="center"
+        >
 
-    <TextView
-        android:id="@+id/recipe_time"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/zero"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintStart_toEndOf="@id/recipe_time_img"
-        app:layout_constraintTop_toTopOf="@id/recipe_time_img"
-        app:layout_constraintBottom_toBottomOf="@id/recipe_time_img"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="3:00"
-        />
+        <ImageView
+            android:id="@+id/recipe_time_img"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/ic_whisk"
+            />
+
+        <TextView
+            android:id="@+id/recipe_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toEndOf="@id/recipe_time_img"
+            app:layout_constraintTop_toTopOf="@id/recipe_time_img"
+            app:layout_constraintBottom_toBottomOf="@id/recipe_time_img"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/primaryTextColor"
+            android:gravity="center"
+            android:text="3:00"
+            />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

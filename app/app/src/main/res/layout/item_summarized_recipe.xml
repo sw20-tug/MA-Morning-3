@@ -26,8 +26,8 @@
         />
 
     <include
-        android:id="@+id/recipe_separator"
         layout="@layout/item_separator"
+        android:id="@+id/recipe_separator"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/recipe_image"
@@ -37,35 +37,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:weightSum="3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recipe_separator"
         >
         <include
-            android:id="@+id/recipe_prepare_time"
             layout="@layout/item_icon_with_text"
+            android:id="@+id/recipe_prepare_time"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/zero"
+            android:layout_weight="1"
             app:layout_constraintStart_toStartOf="parent"
             />
 
         <include
-            android:id="@+id/recipe_cook_time"
             layout="@layout/item_icon_with_text"
+            android:id="@+id/recipe_cook_time"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/zero"
+            android:layout_weight="1"
             app:layout_constraintStart_toEndOf="@id/recipe_prepare_time"
             />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/recipe_type"
+            android:layout_height="match_parent"
+            android:layout_width="@dimen/zero"
+            android:layout_weight="1"
+            app:layout_constraintTop_toTopOf="@id/recipe_cook_time"
             app:layout_constraintBottom_toBottomOf="@id/recipe_cook_time"
             app:layout_constraintStart_toEndOf="@id/recipe_cook_time"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="#Meat"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="@color/primaryTextColor"
+            android:gravity="center"
+            android:text="#Meat"
             />
     </LinearLayout>
+
+    <include
+        layout="@layout/item_separator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
