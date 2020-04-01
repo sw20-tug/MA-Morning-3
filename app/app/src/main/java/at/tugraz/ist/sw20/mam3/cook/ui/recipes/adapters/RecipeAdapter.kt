@@ -45,7 +45,7 @@ class RecipeAdapter(val context : Context, val recipes : List<Recipe>) : BaseAda
 
         val recipe = getItem(position) as Recipe
         titleTextView.text = recipe.name
-        typeTextView.text = recipe.description  // TODO: change to type, missing in Recipe
+        typeTextView.text = recipe.kind
         prepTimeTextView.text = recipe.prepMinutes.toString()   // TODO: format correctly
         cookTimeTextView.text = recipe.cookMinutes.toString()   // TODO: format correctly
 

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import at.tugraz.ist.sw20.mam3.cook.R
+import at.tugraz.ist.sw20.mam3.cook.model.database.CookDB
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
@@ -49,10 +50,16 @@ class RecipesFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
-        var recipe : Recipe = Recipe(-1, "Pizza","#Meat", 20, 30, false)
-        recipes = listOf(recipe, recipe, recipe, recipe, recipe, recipe, recipe, recipe)
+        //var recipe : Recipe = Recipe(-1, "Pizza","", "#Meat", 20, 30, false)
+        //recipes = listOf(recipe, recipe, recipe, recipe, recipe, recipe, recipe, recipe)
+        //lvRecipes.adapter = RecipeAdapter(this.context!!, recipes)
 
+        val recipeDAO = CookDB.INSTANCE?.recipeDao()
 
-        lvRecipes.adapter = RecipeAdapter(this.context!!, recipes)
+        if(recipeDAO?.getAllRecipies() != null)
+            lvRecipes.adapter = RecipeAdapter(this.context!!, recipeDAO.getAllRecipies())
+        else
+            lvRecipes.adapter = RecipeAdapter(this.context!!, listOf())
+
     }
 }
