@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Relation
 
 @Entity
-data class Recipe (
+data class Recipe  (
     @PrimaryKey(autoGenerate = true) val recipeID: Long,
     val name: String,
     val description: String,

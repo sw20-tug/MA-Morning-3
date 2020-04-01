@@ -13,18 +13,17 @@ import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 
 class RecipeDetailActivity : AppCompatActivity() {
-
+    val recipe : Recipe? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_detail_recipe)
-
-
+        val recipeID = intent?.getIntExtra("recipeID", -1)
     }
 
     override fun onResume() {
         super.onResume()
         val recipeService = RecipeService(this)
-        
+
 
         recipeService.getAllRecipes(object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {

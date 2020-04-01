@@ -1,18 +1,21 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import at.tugraz.ist.sw20.mam3.cook.R
+import at.tugraz.ist.sw20.mam3.cook.RecipeDetailActivity
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import kotlinx.android.synthetic.main.item_icon_with_text.view.*
 import kotlinx.android.synthetic.main.item_summarized_recipe.view.*
 
-class RecipeAdapter(val context : Context, val recipes : List<Recipe>) : BaseAdapter() {
+class RecipeAdapter(val context : Context, val recipes : List<Recipe>, private val activity: FragmentActivity) : BaseAdapter() {
     private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -55,6 +58,12 @@ class RecipeAdapter(val context : Context, val recipes : List<Recipe>) : BaseAda
 
         // TODO: Load image
         // TODO: Picasso.with(context).load(recipe.imageUrl).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView)
+
+        view.setOnClickListener {
+            val intent = Intent(activity, RecipeDetailActivity::class.java)
+            intent.putExtra("recipeID", recipe.recipeID)
+            context.startActivity(intent)
+        }
 
         return view
     }
