@@ -2,5 +2,4 @@
     <string name="app_name">Cook</string>
     <string name="title_recipes">Recipes</string>
     <string name="title_favourites">Favourites</string>
-    <string name="recipe_ingredient_title">Ingredients:</string>
 </resources>
