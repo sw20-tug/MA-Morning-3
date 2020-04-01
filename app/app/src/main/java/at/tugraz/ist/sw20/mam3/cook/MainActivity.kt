@@ -1,6 +1,8 @@
 package at.tugraz.ist.sw20.mam3.cook
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,8 +29,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_recipes, R.id.navigation_favourites))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
     }
+
+
 
     override fun onResume() {
         super.onResume()
