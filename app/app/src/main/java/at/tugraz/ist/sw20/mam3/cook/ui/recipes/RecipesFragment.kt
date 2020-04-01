@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.ListView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
@@ -20,7 +19,6 @@ import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-//import sun.jvm.hotspot.utilities.IntArray
 
 
 class RecipesFragment : Fragment() {
@@ -29,12 +27,12 @@ class RecipesFragment : Fragment() {
     private lateinit var lvRecipes : ListView
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         recipesViewModel =
-                ViewModelProvider(this).get(RecipesViewModel::class.java)
+            ViewModelProvider(this).get(RecipesViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_recipes, container, false)
         lvRecipes = root.findViewById(R.id.list_recipes)
         registerForContextMenu(lvRecipes);
@@ -50,7 +48,6 @@ class RecipesFragment : Fragment() {
             lvRecipes.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent, view, position, id ->
                 val item = parent.getItemAtPosition(position) as Recipe
                 registerForContextMenu(lv);
-                Toast.makeText(context!!, "Long click detected", Toast.LENGTH_SHORT).show()
                 true
             }
         }
@@ -62,9 +59,7 @@ class RecipesFragment : Fragment() {
 
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-          //      lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
-                lvRecipes.adapter = RecipeAdapter(context!!, listOf(Recipe(1, "testrecipe", "description", "normal", 5, 10, false)))
-
+                lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
             }
 
         }
