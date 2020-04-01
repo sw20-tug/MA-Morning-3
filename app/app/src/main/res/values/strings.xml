@@ -2,4 +2,6 @@
     <string name="app_name">Cook</string>
     <string name="title_recipes">Recipes</string>
     <string name="title_favourites">Favourites</string>
+    <string name="recipe_ingredients_title">Ingredients:</string>
+    <string name="recipe_instructions_title">Instructions:</string>
 </resources>
