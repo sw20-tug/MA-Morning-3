@@ -22,7 +22,6 @@ class RecipesFragment : Fragment() {
     private lateinit var recipesViewModel: RecipesViewModel
 
     private lateinit var lvRecipes : ListView
-    private lateinit var recipes : List<Recipe>
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -49,10 +48,6 @@ class RecipesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
-
-        //var recipe : Recipe = Recipe(-1, "Pizza","", "#Meat", 20, 30, false)
-        //recipes = listOf(recipe, recipe, recipe, recipe, recipe, recipe, recipe, recipe)
-        //lvRecipes.adapter = RecipeAdapter(this.context!!, recipes)
 
         val recipeDAO = CookDB.INSTANCE?.recipeDao()
 
