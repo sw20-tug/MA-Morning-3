@@ -1,11 +1,13 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.recipes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
@@ -22,7 +24,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class RecipesFragment : Fragment() {
 
     private lateinit var recipesViewModel: RecipesViewModel
-
     private lateinit var lvRecipes : ListView
 
     override fun onCreateView(
@@ -51,10 +52,12 @@ class RecipesFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
-        object : DataReadyListener<List<Recipe>> {
+        val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
                 lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
             }
         }
+
+        RecipeService(context!!).getAllRecipes(readyListener)
     }
 }
