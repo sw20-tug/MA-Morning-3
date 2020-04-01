@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.database.CookDB
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
+import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
+import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -49,12 +51,10 @@ class RecipesFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
-        val recipeDAO = CookDB.INSTANCE?.recipeDao()
-
-        if(recipeDAO?.getAllRecipies() != null)
-            lvRecipes.adapter = RecipeAdapter(this.context!!, recipeDAO.getAllRecipies())
-        else
-            lvRecipes.adapter = RecipeAdapter(this.context!!, listOf())
-
+        object : DataReadyListener<List<Recipe>> {
+            override fun onDataReady(data: List<Recipe>?) {
+                lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
+            }
+        }
     }
 }
