@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
 import at.tugraz.ist.sw20.mam3.cook.R
+import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.fragment_add_edit_recipe.view.*
 import kotlinx.android.synthetic.main.item_ingredients_input.*
 
@@ -17,27 +20,26 @@ class AddRecipesFragment : Fragment() {
 
     private lateinit var addRecipesViewModel: AddRecipesViewModel
 
+    private lateinit var root: View
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         addRecipesViewModel = ViewModelProvider(this).get(AddRecipesViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_add_edit_recipe, container, false)
-        setViewLables(root)
-        val textViewPrepMin: TextView = root.text_input_preptime.findViewById(R.id.time_input_minutes)
-        textViewPrepMin.setText(R.string.minutes_text_label)
-        val textViewCookMin: TextView = root.text_input_cooktime.findViewById(R.id.time_input_minutes)
-        textViewCookMin.setText(R.string.minutes_text_label)
+        root = inflater.inflate(R.layout.fragment_add_edit_recipe, container, false)
+
+        setViewLabels()
 
         setupDropdownMenus(root.text_input_type, R.array.types)
         setupDropdownMenus(root.text_input_difficulty, R.array.skillLevel)
-        setupIngredients(root)
+        setupIngredients()
 
         return root
     }
 
-    private fun setViewLables(root: View) {
+    private fun setViewLabels() {
         val textViewName: TextView = root.text_input_name.findViewById(R.id.text_input_description)
         textViewName.setText(R.string.create_edit_recipes_name)
         val textViewDescr: TextView =
@@ -63,19 +65,28 @@ class AddRecipesFragment : Fragment() {
         textViewInstr.setText(R.string.create_edit_recipes_instructions)
         val textViewImage: TextView = root.text_input_images.findViewById(R.id.image_input_description)
         textViewImage.setText(R.string.create_edit_recipes_fotos)
+
+        val textViewPrepMin: TextView = root.text_input_preptime.findViewById(R.id.time_input_minutes)
+        textViewPrepMin.setText(R.string.minutes_text_label)
+        val textViewCookMin: TextView = root.text_input_cooktime.findViewById(R.id.time_input_minutes)
+        textViewCookMin.setText(R.string.minutes_text_label)
+
     }
+
     private fun setupDropdownMenus(root: View, arrayList: Int) {
         val skillLevel = resources.getStringArray(arrayList)
         val spinner: Spinner = root.findViewById(R.id.dropdown_input_inputfield)
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, skillLevel)
         spinner.adapter = adapter
     }
-    private fun setupIngredients(root: View) {
-        val ingredients_input_button: Button = root.findViewById(R.id.ingredient_input_button)
-        ingredients_input_button.setOnClickListener {
-            val textView: TextView = root.text_input_ingredients.findViewById(R.id.ingredient_input_inputfield)
-            // TODO: check for whitespaces only
-            if (textView.text.toString() != "") {
+
+    private fun setupIngredients() {
+        val ingredientsInputButton: Button = root.findViewById(R.id.ingredient_input_button)
+        ingredientsInputButton.setOnClickListener {
+            val textView: TextView = root.text_input_ingredients.findViewById(
+                R.id.ingredient_input_inputfield)
+
+            if (textView.text.toString().isNotBlank()) {
                 val chip = Chip(context!!)
                 chip.text = textView.text
                 chip.isClickable = true
@@ -94,5 +105,30 @@ class AddRecipesFragment : Fragment() {
                 ingredient_input_chipGroup.addView(chip)
             }
         }
+    }
+
+    fun saveRecipe(): Boolean {
+
+        val name = root.text_input_name.findViewById<TextView>(R.id.text_input_inputfield)
+            .text.toString()
+        val descr = root.text_input_descr.findViewById<TextView>(R.id.text_input_inputfield)
+            .text.toString()
+        val type = root.text_input_type.findViewById<Spinner>(R.id.dropdown_input_inputfield)
+            .selectedItem.toString()
+        val difficulty = root.text_input_difficulty.findViewById<Spinner>(R.id.dropdown_input_inputfield)
+            .selectedItem.toString()
+        val prepTime = root.text_input_preptime.findViewById<TextView>(R.id.time_input_inputfield)
+            .text.toString()
+        val cookTime = root.text_input_cooktime.findViewById<TextView>(R.id.time_input_inputfield)
+            .text.toString()
+
+        val ingredients = root.text_input_ingredients.findViewById<ChipGroup>(R.id.ingredient_input_chipGroup)
+            .children.map { chip -> (chip as Chip).text.toString()}.toList()
+
+        val instructions = mutableListOf<String>().apply { add(root.text_input_instructions
+            .findViewById<TextView>(R.id.instruction_input_inputfield).text.toString()) }
+
+
+        return true
     }
 }

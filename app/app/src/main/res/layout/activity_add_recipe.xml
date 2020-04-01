@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/add_edit_recipe_fragment"
         android:name="at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment"
         android:layout_width="match_parent"

@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 
 
 class AddRecipeActivity : AppCompatActivity() {
@@ -31,6 +32,8 @@ class AddRecipeActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_save_recipe -> {
                 Toast.makeText(this, "Saved recipe", Toast.LENGTH_SHORT).show()
+                val addRecipeFragment = supportFragmentManager.fragments[0] as AddRecipesFragment
+                addRecipeFragment.saveRecipe()
                 finish()
             }
             android.R.id.home -> {
