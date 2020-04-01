@@ -9,7 +9,7 @@ import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
 
-@Database(entities = arrayOf(Recipe::class, Ingredient::class, Step::class), version = 1)
+@Database(entities = arrayOf(Recipe::class, Ingredient::class, Step::class), version = 2)
 abstract class CookDB : RoomDatabase() {
 
     abstract fun recipeDao(): RecipeDAO
@@ -20,7 +20,9 @@ abstract class CookDB : RoomDatabase() {
         fun getCookDB(context: Context): CookDB? {
             if (INSTANCE == null){
                 INSTANCE = Room.databaseBuilder(context.applicationContext,
-                    CookDB::class.java, "cookDB").build()
+                    CookDB::class.java, "cookDB")
+                    .fallbackToDestructiveMigration()
+                    .build()
             }
             return INSTANCE
         }

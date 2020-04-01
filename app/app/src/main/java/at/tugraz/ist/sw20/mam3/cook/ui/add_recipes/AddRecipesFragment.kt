@@ -1,6 +1,7 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.add_recipes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
 import at.tugraz.ist.sw20.mam3.cook.R
+import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
+import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
+import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
+import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.fragment_add_edit_recipe.view.*
@@ -123,11 +128,29 @@ class AddRecipesFragment : Fragment() {
             .text.toString()
 
         val ingredients = root.text_input_ingredients.findViewById<ChipGroup>(R.id.ingredient_input_chipGroup)
-            .children.map { chip -> (chip as Chip).text.toString()}.toList()
+            .children.map { chip ->
+                Ingredient(0, 0, (chip as Chip).text.toString())
+            }.toList()
 
-        val instructions = mutableListOf<String>().apply { add(root.text_input_instructions
-            .findViewById<TextView>(R.id.instruction_input_inputfield).text.toString()) }
+        val instructions = mutableListOf<Step>().apply { add(
+            Step(0, 0, root.text_input_instructions
+            .findViewById<TextView>(R.id.instruction_input_inputfield).text.toString()))
+        }
 
+        val recipe = Recipe(0, name, descr, type, difficulty, prepTime.toInt(),
+            cookTime.toInt(), false)
+
+        val service = RecipeService(context!!)
+
+        service.addRecipe(recipe, ingredients, instructions, object: DataReadyListener<Long> {
+            override fun onDataReady(data: Long?) {
+                Log.i("DB", "Successfully inserted Recipe with ID $data")
+                /* TODO reload the recipe list in MainActivity/RecipeFragment
+                 *  Idea: (quite awful) re-open MainActivity
+                 *  Idea: Use some sort of listener in RecipeFragment to reload
+                 */
+            }
+        })
 
         return true
     }
