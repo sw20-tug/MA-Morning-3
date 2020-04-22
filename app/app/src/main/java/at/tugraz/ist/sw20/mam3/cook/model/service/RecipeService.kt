@@ -70,15 +70,18 @@ class RecipeService(private val context: Context) {
     }
 
     fun storeImageTemporary(imageUri : Uri) : Uri {
+        return storeImageTemporary(MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri))
+    }
+
+    fun storeImageTemporary(imageBitmap : Bitmap) : Uri {
         val dir = File(context.filesDir, mainDirName).resolve(tempDirName)
         dir.mkdirs()
 
         val imgName = getImageName(imageNameCounter++)
-        val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
         val outFile = File(dir, imgName)
         outFile.createNewFile()
         val fos = FileOutputStream(outFile)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
         fos.flush()
         fos.close()
 

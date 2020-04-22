@@ -3,6 +3,7 @@ package at.tugraz.ist.sw20.mam3.cook.ui.favourites
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -31,6 +32,7 @@ class FavouritesFragment : Fragment() {
 
     private lateinit var favouritesViewModel: FavouritesViewModel
     private val RESULT_LOAD_IMAGES = 1
+    private val REQUEST_IMAGE_CAPTURE = 2
 
     private val RECIPE_ID = 1   // TODO: temporary
 
@@ -55,11 +57,27 @@ class FavouritesFragment : Fragment() {
             startActivityForResult(intent, RESULT_LOAD_IMAGES)
         }
 
+        val takeBtn = root.findViewById<Button>(R.id.button_take_image)
+        takeBtn?.setOnClickListener {
+            val intent =  Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
+        }
+
         return root
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        // TODO: sample code taking pictures and loading from storage
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val imageBitmap = data!!.extras!!.get("data") as Bitmap
+            val recipeService = RecipeService(context!!)
+            recipeService.storeImageTemporary(imageBitmap)
+            img_preview.setImageBitmap(imageBitmap)
+            Log.d("Photo", "Take Foto: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()?.size.toString())
+        }
 /*
         if(requestCode == RESULT_LOAD_IMAGES && resultCode == RESULT_OK) {
 
@@ -104,4 +122,5 @@ class FavouritesFragment : Fragment() {
          */
 
     }
+
 }
