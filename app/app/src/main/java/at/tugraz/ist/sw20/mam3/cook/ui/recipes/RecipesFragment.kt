@@ -51,6 +51,7 @@ class RecipesFragment : Fragment() {
                 true
             }
         }
+
         return root
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -61,14 +62,12 @@ class RecipesFragment : Fragment() {
             override fun onDataReady(data: List<Recipe>?) {
                 lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
             }
-
         }
 
         RecipeService(context!!).getAllRecipes(readyListener)
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
-
         val lv = v as ListView
         val acmi = menuInfo as AdapterContextMenuInfo
         val obj: Recipe = lv.getItemAtPosition(acmi.position) as Recipe
