@@ -54,9 +54,10 @@ class RecipesFragment : Fragment() {
 
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
+                lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
             }
         }
+        //lvRecipes.adapter = RecipeAdapter(context!!, listOf(Recipe(13, "Bread", "Bread", "Bread", 10, 10, false)), activity!!)
 
         RecipeService(context!!).getAllRecipes(readyListener)
     }

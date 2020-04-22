@@ -17,7 +17,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_detail_recipe)
-        val recipeID = intent?.getIntExtra("recipeID", -1)
+        val recipeID = intent?.getLongExtra("recipeID", -1)
     }
 
     override fun onResume() {
