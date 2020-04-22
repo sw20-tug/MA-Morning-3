@@ -27,12 +27,14 @@ class RecipeDetailFragment : Fragment() {
 
         val recipeService = RecipeService(activity!!)
         val recipeID = activity!!.intent?.getLongExtra("recipeID", -1)
-        Log.println(Log.DEBUG, "Parameter", "" + recipeID);
+        Log.println(Log.INFO, "Parameter", "" + recipeID);
         recipeService.getRecipeById(recipeID!!, object : DataReadyListener<Recipe> {
             @SuppressLint("SetTextI18n")
             override fun onDataReady(data: Recipe?) {
                 val recipe = data!!
-                Log.println(Log.DEBUG, "CookDB", data.toString())
+                Log.println(Log.INFO, "Recipe", data.toString())
+                Log.println(Log.INFO, "Steps", data.steps.toString())
+                Log.println(Log.INFO, "Ingredients", data.ingredients.toString())
                 //TODO as soon as images are supported update this
                 // image_displayed_recipe.setBackgroundResource()
                 recipe_title.text = recipe.name

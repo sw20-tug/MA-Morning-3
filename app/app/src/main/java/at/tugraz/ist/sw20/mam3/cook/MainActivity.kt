@@ -37,6 +37,8 @@ class MainActivity : AppCompatActivity() {
 
 
         //TODO to get test data, comment out this block
+
+        /*
         val r0 = Recipe(0, "Special Burger", "A basic burger recipe", "Meat",15,
             30, true)
 
@@ -49,7 +51,6 @@ class MainActivity : AppCompatActivity() {
                 Log.println(Log.INFO, "CookDB", "Inserted r2 - ID: $data")
             }
         })
-        /*
         val r1 = Recipe(0, "Burger", "A basic burger recipe", "Meat",15,
     30, true)
         val r2 = Recipe(0, "Fries", "A basic fries recipe", "Side", 10,
