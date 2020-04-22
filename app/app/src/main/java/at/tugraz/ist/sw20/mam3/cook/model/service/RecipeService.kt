@@ -51,6 +51,8 @@ class RecipeService(private val context: Context) {
         Thread(Runnable {
             db = CookDB.getCookDB(context)
             val recipe = db!!.recipeDao().getRecipeById(id)
+            recipe.ingredients = db!!.recipeDao().getIngredientsByRecipeID(id)
+            recipe.steps = db!!.recipeDao().getStepsByRecipeID(id)
             callback.onDataReady(recipe)
         }).start()
     }

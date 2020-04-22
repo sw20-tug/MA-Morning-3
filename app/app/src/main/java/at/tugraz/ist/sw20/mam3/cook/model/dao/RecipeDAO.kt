@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
+import at.tugraz.ist.sw20.mam3.cook.model.entities.RecipeWithIngredientsStepsAndPhotos
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
 
 @Dao
@@ -26,4 +27,10 @@ interface RecipeDAO {
 
     @Query ("SELECT * FROM recipe WHERE recipeID = :id")
     fun getRecipeById(id : Long): Recipe
+
+    @Query ("SELECT * FROM step WHERE recipeID = :id")
+    fun getStepsByRecipeID(id : Long): List<Step>
+
+    @Query ("SELECT * FROM ingredient WHERE recipeID = :id")
+    fun getIngredientsByRecipeID(id : Long): List<Ingredient>
 }
