@@ -33,8 +33,9 @@ class AddRecipeActivity : AppCompatActivity() {
             R.id.action_save_recipe -> {
                 Toast.makeText(this, "Saved recipe", Toast.LENGTH_SHORT).show()
                 val addRecipeFragment = supportFragmentManager.fragments[0] as AddRecipesFragment
-                addRecipeFragment.saveRecipe()
-                finish()
+                if (addRecipeFragment.saveRecipe()) {
+                    finish()
+                }
             }
             android.R.id.home -> {
                 finish()

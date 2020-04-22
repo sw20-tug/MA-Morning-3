@@ -20,6 +20,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.fragment_add_edit_recipe.view.*
 import kotlinx.android.synthetic.main.item_ingredients_input.*
+import kotlinx.android.synthetic.main.item_text_input.view.*
 
 class AddRecipesFragment : Fragment() {
 
@@ -115,9 +116,9 @@ class AddRecipesFragment : Fragment() {
     fun saveRecipe(): Boolean {
 
         val name = root.text_input_name.findViewById<TextView>(R.id.text_input_inputfield)
-            .text.toString()
+            .text.toString().trim()
         val descr = root.text_input_descr.findViewById<TextView>(R.id.text_input_inputfield)
-            .text.toString()
+            .text.toString().trim()
         val type = root.text_input_type.findViewById<Spinner>(R.id.dropdown_input_inputfield)
             .selectedItem.toString()
         val difficulty = root.text_input_difficulty.findViewById<Spinner>(R.id.dropdown_input_inputfield)
@@ -129,12 +130,16 @@ class AddRecipesFragment : Fragment() {
 
         val ingredients = root.text_input_ingredients.findViewById<ChipGroup>(R.id.ingredient_input_chipGroup)
             .children.map { chip ->
-                Ingredient(0, 0, (chip as Chip).text.toString())
+                Ingredient(0, 0, (chip as Chip).text.toString().trim())
             }.toList()
 
         val instructions = mutableListOf<Step>().apply { add(
             Step(0, 0, root.text_input_instructions
-            .findViewById<TextView>(R.id.instruction_input_inputfield).text.toString()))
+            .findViewById<TextView>(R.id.instruction_input_inputfield).text.toString().trim()))
+        }
+
+        if (!validateRecipe(name, descr, type, difficulty, prepTime, cookTime, ingredients, instructions)) {
+            return false
         }
 
         val recipe = Recipe(0, name, descr, type, difficulty, prepTime.toInt(),
@@ -154,4 +159,73 @@ class AddRecipesFragment : Fragment() {
 
         return true
     }
+
+    private fun validateRecipe(name: String, descr: String, type: String, difficulty: String,
+                               prepTime: String, cookTime: String, ingredients: List<Ingredient>,
+                               instructions: List<Step>): Boolean {
+        var valid = true
+
+        if (name.isBlank()) {
+            valid = false
+            root.text_input_name.findViewById<TextView>(R.id.text_input_description)
+                .setTextColor(resources.getColor(R.color.red, activity!!.theme))
+        }
+        else {
+            root.text_input_name.findViewById<TextView>(R.id.text_input_description)
+                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+        }
+        if (descr.isBlank()) {
+            valid = false
+            root.text_input_descr.findViewById<TextView>(R.id.text_input_description)
+                .setTextColor(resources.getColor(R.color.red, activity!!.theme))
+        }
+        else {
+            root.text_input_descr.findViewById<TextView>(R.id.text_input_description)
+                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+        }
+
+        if (!prepTime.isBlank() && (prepTime.toInt() >= 0)) {
+            root.text_input_preptime.findViewById<TextView>(R.id.time_input_description)
+                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+        }
+        else {
+            valid = false
+            root.text_input_preptime.findViewById<TextView>(R.id.time_input_description)
+                .setTextColor(resources.getColor(R.color.red, activity!!.theme))
+        }
+
+        if (!cookTime.isBlank() && (cookTime.toInt() >= 0)) {
+            root.text_input_cooktime.findViewById<TextView>(R.id.time_input_description)
+                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+        }
+        else {
+            valid = false
+            root.text_input_cooktime.findViewById<TextView>(R.id.time_input_description)
+                .setTextColor(resources.getColor(R.color.red, activity!!.theme))
+        }
+
+        if (ingredients.isEmpty()) {
+            valid = false
+            root.text_input_ingredients.findViewById<TextView>(R.id.ingredient_input_description)
+                .setTextColor(resources.getColor(R.color.red, activity!!.theme))
+        }
+        else {
+            root.text_input_ingredients.findViewById<TextView>(R.id.ingredient_input_description)
+                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+        }
+
+        if (instructions.isEmpty()) {
+            valid = false
+            root.text_input_instructions.findViewById<TextView>(R.id.instruction_input_description)
+                .setTextColor(resources.getColor(R.color.red, activity!!.theme))
+        }
+        else {
+            root.text_input_instructions.findViewById<TextView>(R.id.instruction_input_description)
+                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+        }
+
+        return valid
+    }
+
 }
+
