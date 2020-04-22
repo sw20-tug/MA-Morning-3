@@ -47,4 +47,12 @@ class RecipeService(private val context: Context) {
         }).start()
     }
 
+    fun getRecipeById(id : Long, callback: DataReadyListener<Recipe>) {
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+            val recipe = db!!.recipeDao().getRecipeById(id)
+            callback.onDataReady(recipe)
+        }).start()
+    }
+
 }

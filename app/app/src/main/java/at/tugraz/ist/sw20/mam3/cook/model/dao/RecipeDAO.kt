@@ -23,4 +23,7 @@ interface RecipeDAO {
 
     @Insert
     fun insertStep(step: Step): Long
+
+    @Query ("SELECT * FROM recipe WHERE recipeID = :id")
+    fun getRecipeById(id : Long): Recipe
 }

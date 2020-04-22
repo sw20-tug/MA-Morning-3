@@ -1,35 +1,30 @@
 package at.tugraz.ist.sw20.mam3.cook
 
 import android.os.Bundle
-import android.util.Log
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
-import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
-import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 
 class RecipeDetailActivity : AppCompatActivity() {
-    val recipe : Recipe? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_detail_recipe)
-        val recipeID = intent?.getLongExtra("recipeID", -1)
-    }
+        setContentView(R.layout.activity_recipe_detail)
 
-    override fun onResume() {
-        super.onResume()
+        /*
         val recipeService = RecipeService(this)
-
-
-        recipeService.getAllRecipes(object : DataReadyListener<List<Recipe>> {
-            override fun onDataReady(data: List<Recipe>?) {
-                Log.println(Log.INFO, "Hi this is the special output asdfjölasdflak",
-                    data!!.size.toString())
+        recipeService.getRecipeById(recipeID!!, object : DataReadyListener<Recipe> {
+            @SuppressLint("SetTextI18n")
+            override fun onDataReady(data: Recipe?) {
+                val recipe = data!!
+                Log.println(Log.DEBUG, "CookDB", data.toString())
+                //TODO as soon as images are supported update this
+                // image_displayed_recipe.setBackgroundResource()
+                recipe_title.text = recipe.name
+                recipe_type.text = "#" + recipe.kind
+                recipe_cook_time.findViewById<TextView>(R.id.recipe_time).text = "" + recipe.cookMinutes
+                recipe_cook_time.findViewById<ImageView>(R.id.recipe_time_img).setImageResource(R.drawable.ic_cooking)
+                recipe_prepare_time.findViewById<TextView>(R.id.recipe_time).text = "" + recipe.prepMinutes
+                root.findViewById(R.id.list_recipes).adapter = InstructionAdapter(context!!, data ?: listOf(), activity!!)
             }
-        })
+        })*/
+
     }
 }

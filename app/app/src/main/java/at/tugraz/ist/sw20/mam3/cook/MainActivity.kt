@@ -8,7 +8,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
+import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 
@@ -35,6 +37,18 @@ class MainActivity : AppCompatActivity() {
 
 
         //TODO to get test data, comment out this block
+        val r0 = Recipe(0, "Special Burger", "A basic burger recipe", "Meat",15,
+            30, true)
+
+        recipeService.addRecipe(r0,
+            listOf(Ingredient(0, 0,"Meat"),
+                Ingredient(0, 0,"Buns")),
+            listOf(Step(0, 0,"Do it right"),
+                Step(0, 0,"Done")), object : DataReadyListener<Long> {
+            override fun onDataReady(data: Long?) {
+                Log.println(Log.INFO, "CookDB", "Inserted r2 - ID: $data")
+            }
+        })
         /*
         val r1 = Recipe(0, "Burger", "A basic burger recipe", "Meat",15,
     30, true)

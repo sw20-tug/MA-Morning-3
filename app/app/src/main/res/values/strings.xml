@@ -4,4 +4,6 @@
     <string name="title_favourites">Favourites</string>
     <string name="recipe_ingredients_title">Ingredients:</string>
     <string name="recipe_instructions_title">Instructions:</string>
+    <string name="recipe_step">Step %1$d:</string>
+    <string name="placeholder_long">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</string>
 </resources>
