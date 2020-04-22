@@ -15,8 +15,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.net.toUri
+import android.widget.ListView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
@@ -27,10 +27,15 @@ import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 import kotlinx.android.synthetic.main.fragment_favourites.*
 import java.io.File
 import java.io.FileOutputStream
+import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
+import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
+import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 
 class FavouritesFragment : Fragment() {
 
     private lateinit var favouritesViewModel: FavouritesViewModel
+    private lateinit var lvFavorites: ListView
+  
     private val RESULT_LOAD_IMAGES = 1
     private val REQUEST_IMAGE_CAPTURE = 2
 
@@ -44,6 +49,8 @@ class FavouritesFragment : Fragment() {
         favouritesViewModel =
                 ViewModelProvider(this).get(FavouritesViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_favourites, container, false)
+
+      /*
         val textView: TextView = root.findViewById(R.id.text_favourites)
         favouritesViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
@@ -62,14 +69,17 @@ class FavouritesFragment : Fragment() {
             val intent =  Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
         }
+        */
+        lvFavorites = root.findViewById(R.id.list_favorites)
 
         return root
     }
-
+//  TODO: sample code taking pictures and loading from storage
+/*
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // TODO: sample code taking pictures and loading from storage
+        
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data!!.extras!!.get("data") as Bitmap
@@ -78,7 +88,7 @@ class FavouritesFragment : Fragment() {
             img_preview.setImageBitmap(imageBitmap)
             Log.d("Photo", "Take Foto: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()?.size.toString())
         }
-/*
+
         if(requestCode == RESULT_LOAD_IMAGES && resultCode == RESULT_OK) {
 
             val recipeService = RecipeService(context!!)
@@ -123,4 +133,16 @@ class FavouritesFragment : Fragment() {
 
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        favouritesViewModel = ViewModelProvider(this).get(FavouritesViewModel::class.java)
+
+        val readyListener = object : DataReadyListener<List<Recipe>> {
+            override fun onDataReady(data: List<Recipe>?) {
+                lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf())
+            }
+        }
+
+        RecipeService(context!!).getFavoriteRecipes(readyListener)
+    }
 }

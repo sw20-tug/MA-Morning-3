@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.favourites.FavouritesFragment">
 
+<!--
     <ImageView
         android:id="@+id/img_preview"
         android:layout_width="match_parent"
@@ -47,6 +48,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Take Photo"
         />
+-->
 
-
+    <ListView
+        android:id="@+id/list_favorites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
