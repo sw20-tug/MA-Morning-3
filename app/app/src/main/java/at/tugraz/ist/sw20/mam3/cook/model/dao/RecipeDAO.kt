@@ -1,6 +1,7 @@
 package at.tugraz.ist.sw20.mam3.cook.model.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
@@ -14,6 +15,9 @@ interface RecipeDAO {
 
     @Query ("SELECT * FROM recipe WHERE favorite = 1")
     fun getFavorites(): List<Recipe>
+
+    @Delete
+    fun deleteRecipe(recipe: Recipe)
 
     @Insert
     fun insertRecipe(recipe: Recipe): Long

@@ -47,4 +47,13 @@ class RecipeService(private val context: Context) {
         }).start()
     }
 
+    // Callback function call when finished
+    fun deleteRecipe(recipe: Recipe) {
+        // Get db instance here
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+            val allRecipies = db!!.recipeDao().deleteRecipe(recipe)
+//            callback.onDataReady(allRecipies)
+        }).start()
+    }
 }
