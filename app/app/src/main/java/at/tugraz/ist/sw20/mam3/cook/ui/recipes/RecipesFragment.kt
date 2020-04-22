@@ -45,13 +45,15 @@ class RecipesFragment : Fragment() {
         return root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onResume() {
+        super.onResume()
         recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
+                activity!!.runOnUiThread {
+                    lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
+                }
             }
         }
 

@@ -31,11 +31,8 @@ class AddRecipeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_save_recipe -> {
-                Toast.makeText(this, "Saved recipe", Toast.LENGTH_SHORT).show()
                 val addRecipeFragment = supportFragmentManager.fragments[0] as AddRecipesFragment
-                if (addRecipeFragment.saveRecipe()) {
-                    finish()
-                }
+                addRecipeFragment.saveRecipe()
             }
             android.R.id.home -> {
                 finish()

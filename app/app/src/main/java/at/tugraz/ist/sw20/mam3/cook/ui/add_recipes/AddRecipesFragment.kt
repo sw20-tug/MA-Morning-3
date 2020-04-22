@@ -150,10 +150,8 @@ class AddRecipesFragment : Fragment() {
         service.addRecipe(recipe, ingredients, instructions, object: DataReadyListener<Long> {
             override fun onDataReady(data: Long?) {
                 Log.i("DB", "Successfully inserted Recipe with ID $data")
-                /* TODO reload the recipe list in MainActivity/RecipeFragment
-                 *  Idea: (quite awful) re-open MainActivity
-                 *  Idea: Use some sort of listener in RecipeFragment to reload
-                 */
+                Toast.makeText(context!!, "Saved recipe", Toast.LENGTH_SHORT).show()
+                activity!!.finish();
             }
         })
 

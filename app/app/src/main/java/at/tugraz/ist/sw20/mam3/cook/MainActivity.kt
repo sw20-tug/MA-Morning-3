@@ -13,7 +13,6 @@ import androidx.navigation.ui.setupWithNavController
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,8 +22,6 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(setOf(
                 R.id.navigation_recipes, R.id.navigation_favourites))
         setupActionBarWithNavController(navController, appBarConfiguration)
