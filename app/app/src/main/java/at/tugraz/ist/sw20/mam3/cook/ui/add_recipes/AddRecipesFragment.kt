@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import at.tugraz.ist.sw20.mam3.cook.R
-import at.tugraz.ist.sw20.mam3.cook.ui.recipes.RecipesViewModel
 
 class AddRecipesFragment : Fragment() {
     private lateinit var recipesViewModel: AddRecipesViewModel
