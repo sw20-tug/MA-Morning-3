@@ -16,8 +16,12 @@ import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
+import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.adapters.InstructionAdapter
+import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.fragment_add_edit_recipe.view.*
 import kotlinx.android.synthetic.main.item_ingredients_input.*
 import kotlinx.android.synthetic.main.item_text_input.view.*
@@ -41,6 +45,7 @@ class AddRecipesFragment : Fragment() {
         setupDropdownMenus(root.text_input_type, R.array.types)
         setupDropdownMenus(root.text_input_difficulty, R.array.skillLevel)
         setupIngredients()
+        setupInstructions()
 
         return root
     }
@@ -113,6 +118,31 @@ class AddRecipesFragment : Fragment() {
         }
     }
 
+    fun setupInstructions() {
+        //TODO for edit recipe: put steps into this list
+        val instructionList = mutableListOf<Step>()
+
+        val lvInstructions = root.text_input_instructions
+            .findViewById<ListView>(R.id.instruction_input_listView)
+
+        val btnAdd = root.text_input_instructions
+            .findViewById<MaterialButton>(R.id.instruction_input_button)
+
+        lvInstructions.adapter = InstructionAdapter(context!!, instructionList)
+
+        btnAdd.setOnClickListener {
+            val text = root.text_input_instructions
+                .findViewById<TextInputEditText>(R.id.instruction_input_inputfield).text.toString()
+
+            if (text.isNotBlank()) {
+                val step = Step(0, 0, text)
+                instructionList.add(step)
+                lvInstructions.adapter = InstructionAdapter(context!!, instructionList)
+            }
+        }
+
+    }
+
     fun saveRecipe(): Boolean {
 
         val name = root.text_input_name.findViewById<TextView>(R.id.text_input_inputfield)
@@ -133,6 +163,7 @@ class AddRecipesFragment : Fragment() {
                 Ingredient(0, 0, (chip as Chip).text.toString().trim())
             }.toList()
 
+        //TODO change this after instruction list is live
         val instructions = mutableListOf<Step>().apply { add(
             Step(0, 0, root.text_input_instructions
             .findViewById<TextView>(R.id.instruction_input_inputfield).text.toString().trim()))
