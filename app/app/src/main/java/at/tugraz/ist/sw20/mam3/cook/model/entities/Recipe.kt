@@ -5,7 +5,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity
-data class Recipe (
+data class Recipe  (
     @PrimaryKey(autoGenerate = true) val recipeID: Long,
     val name: String,
     val description: String,

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.recipes.RecipesFragment">
 
-
     <ListView
         android:id="@+id/list_recipes"
         android:layout_width="match_parent"
@@ -18,4 +17,5 @@
         layout="@layout/item_floating_add_button"
         android:id="@+id/button_add_recipes"
         />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
