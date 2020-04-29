@@ -1,5 +1,6 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.recipes
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.ContextMenu.ContextMenuInfo
@@ -7,8 +8,10 @@ import android.widget.*
 import android.widget.AdapterView.AdapterContextMenuInfo
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
+import at.tugraz.ist.sw20.mam3.cook.AddRecipeActivity
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
@@ -29,20 +32,15 @@ class RecipesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        recipesViewModel =
-            ViewModelProvider(this).get(RecipesViewModel::class.java)
+        recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_recipes, container, false)
 
         lvRecipes = root.findViewById(R.id.list_recipes)
         registerForContextMenu(lvRecipes);
         val floatingButton: FloatingActionButton = root.findViewById(R.id.item_add_button)
         floatingButton.setOnClickListener {
-            // val intent = Intent(this, )
-            val fragment = AddRecipesFragment()
-            val fragmentTransaction: FragmentTransaction = activity!!.supportFragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
-            fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.commit()
+            val intent = Intent(activity, AddRecipeActivity::class.java)
+            startActivity(intent)
             val lv = lvRecipes;
             lvRecipes.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent, view, position, id ->
                 val item = parent.getItemAtPosition(position) as Recipe
@@ -61,14 +59,23 @@ class RecipesFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
+    }
+    override fun onResume() {
+        super.onResume()
+
+      recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
+
+              lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
                 if (data != null) {
                     listv = data
-                }
+
+                  activity!!.runOnUiThread {
+                    lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
+
+                  }
             }
         }
 

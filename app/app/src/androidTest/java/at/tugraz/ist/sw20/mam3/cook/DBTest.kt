@@ -37,7 +37,7 @@ class SimpleEntityReadWriteTest {
     @Throws(Exception::class)
     fun testInsertRecipe() {
         val recipe = Recipe(0, "Burger", "...", "...",
-            1, 1, true)
+            "easy", 1, 1, true)
 
         val rID = recipeDao.insertRecipe(recipe)
 
