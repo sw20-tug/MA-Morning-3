@@ -132,11 +132,11 @@ class RecipesFragment : Fragment() {
                         var tmp : MutableList<Recipe> = mutableListOf()
                         var list : ListView = lvRecipes
 
-                        val cheCked =
+                        val checked =
                             (dialog as AlertDialog).listView
                                 .checkedItemPositions
-                        if ((!cheCked[0] and cheCked[1]) or (cheCked[0] and !cheCked[1])) {
-                            if(cheCked[0]) {
+                        if ((!checked[0] and checked[1]) or (checked[0] and !checked[1])) {
+                            if(checked[0]) {
                                 for (item in listv) {
                                     if (item.kind.equals("Meat")) {
                                         tmp.add(item)
@@ -150,19 +150,19 @@ class RecipesFragment : Fragment() {
                                     }
                                 }
                             }
-                            if (cheCked[2] and !cheCked[3]) tmp = filterByCookMinutes(tmp, true)
-                            if (!cheCked[2] and cheCked[3]) tmp = filterByCookMinutes(tmp, false)
-                            if (cheCked[4] and !cheCked[5]) tmp = filterByPrepMinutes(tmp, true)
-                            if (!cheCked[4] and cheCked[5]) tmp = filterByPrepMinutes(tmp, false)
+                            if (checked[2] and !checked[3]) tmp = filterByCookMinutes(tmp, true)
+                            if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
+                            if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
+                            if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
                             list!!.adapter = RecipeAdapter(context!!, tmp)
                         }
 
                         else {
                             var tmp : MutableList<Recipe> = listv as MutableList<Recipe>
-                            if (cheCked[2] and !cheCked[3]) tmp = filterByCookMinutes(tmp, true)
-                            if (!cheCked[2] and cheCked[3]) tmp  = filterByCookMinutes(tmp, false)
-                            if (cheCked[4] and !cheCked[5]) tmp = filterByPrepMinutes(tmp, true)
-                            if (!cheCked[4] and cheCked[5]) tmp = filterByPrepMinutes(tmp, false)
+                            if (checked[2] and !checked[3]) tmp = filterByCookMinutes(tmp, true)
+                            if (!checked[2] and checked[3]) tmp  = filterByCookMinutes(tmp, false)
+                            if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
+                            if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
                             list!!.adapter = RecipeAdapter(context!!, tmp)
                         }
                     }
