@@ -42,18 +42,11 @@ class RecipesFragment : Fragment() {
         registerForContextMenu(lvRecipes);
         val floatingButton: FloatingActionButton = root.findViewById(R.id.item_add_button)
         floatingButton.setOnClickListener {
-            // val intent = Intent(this, )
             val fragment = AddRecipesFragment()
             val fragmentTransaction: FragmentTransaction = activity!!.supportFragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
-            val lv = lvRecipes;
-            lvRecipes.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent, view, position, id ->
-                val item = parent.getItemAtPosition(position) as Recipe
-                registerForContextMenu(lv);
-                true
-            }
         }
 
         return root
@@ -67,9 +60,6 @@ class RecipesFragment : Fragment() {
                 lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
             }
         }
-//        lvRecipes.adapter = RecipeAdapter(context!!, listOf(
-//            Recipe(1, "testrecipe", "testdescription", "meat", 5, 10, false),
-//            Recipe(2, "testrecipe", "testdescription", "meat", 5, 10, false)))
         RecipeService(context!!).getAllRecipes(readyListener)
     }
 
@@ -85,11 +75,10 @@ class RecipesFragment : Fragment() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         if (item.toString().equals("Delete")) {
             val dialogBuilder = AlertDialog.Builder(activity!!)
-//                        dialogBuilder.setCancelable(false)
                         dialogBuilder.setPositiveButton("Delete", DialogInterface.OnClickListener{
                             dialog, id ->
-//                            Toast.makeText(context!!, "deleted" ,Toast.LENGTH_LONG).show()
                             RecipeService(context!!).deleteRecipe(clickedRecipe)
+                            Toast.makeText(context!!, "deleted" ,Toast.LENGTH_LONG).show()
                             dialog.dismiss()
                         })
                         .setNegativeButton("Cancel", DialogInterface.OnClickListener {
