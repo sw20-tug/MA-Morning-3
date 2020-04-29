@@ -193,7 +193,9 @@ class AddRecipesFragment : Fragment() {
         service.addRecipe(recipe, ingredients, steps, object: DataReadyListener<Long> {
             override fun onDataReady(data: Long?) {
                 Log.i("DB", "Successfully inserted Recipe with ID $data")
-                Toast.makeText(context!!, "Saved recipe", Toast.LENGTH_SHORT).show()
+                activity!!.runOnUiThread {
+                    Toast.makeText(context!!, "Saved recipe", Toast.LENGTH_SHORT).show()
+                }
                 activity!!.finish();
             }
         })
