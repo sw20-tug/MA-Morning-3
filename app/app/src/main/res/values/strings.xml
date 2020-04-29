@@ -6,4 +6,38 @@
     <string name="recipe_instructions_title">Instructions:</string>
     <string name="recipe_step">Step %1$d:</string>
     <string name="placeholder_long">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</string>
+    <string name="action_search">Search</string>
+    <string name="action_filter">Filters</string>
+    <string name="settings">Settings</string>
+    <string-array name="s_item">
+        <item>Meat</item>
+        <item>Side</item>
+    </string-array>
+
+    <string name="title_add_recipes">Add Recipe</string>
+    <string name="title_edit_recipe">Edit Recipe</string>
+    <string name="create_edit_recipes_name">Name:</string>
+    <string name="create_edit_recipes_descr">Description:</string>
+    <string name="create_edit_recipes_type">Type:</string>
+    <string name="create_edit_recipes_difficulty">Difficulty:</string>
+    <string name="create_edit_recipes_preptime">Prep Time:</string>
+    <string name="create_edit_recipes_cooktime">Cook Time:</string>
+    <string name="create_edit_recipes_ingredients">Ingredients:</string>
+    <string name="create_edit_recipes_instructions">Instructions:</string>
+    <string name="create_edit_recipes_fotos">Fotos:</string>
+
+    <string name="minutes_text_label">Minutes</string>
+    
+    <string-array name="skillLevel">
+        <item>Beginner</item>
+        <item>Intermediate</item>
+        <item>Professional</item>
+    </string-array>
+
+    <string-array name="types">
+        <item>Meat</item>
+        <item>Veggie</item>
+        <item>Vegan</item>
+        <item>Sweet</item>
+    </string-array>
 </resources>
