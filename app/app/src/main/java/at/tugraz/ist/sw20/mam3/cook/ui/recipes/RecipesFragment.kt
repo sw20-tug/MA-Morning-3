@@ -70,7 +70,6 @@ class RecipesFragment : Fragment() {
                 }
             }
         }
-        registerForContextMenu(lvRecipes);
         RecipeService(context!!).getAllRecipes(readyListener)
     }
 
@@ -93,7 +92,7 @@ class RecipesFragment : Fragment() {
                             val readyListener = object : DataReadyListener<List<Recipe>> {
                                 override fun onDataReady(data: List<Recipe>?) {
                                     activity!!.runOnUiThread {
-                                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
+                                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
                                     }
                                 }
                             }

@@ -171,7 +171,7 @@ class FavouritesFragment : Fragment() {
                 val readyListener = object : DataReadyListener<List<Recipe>> {
                     override fun onDataReady(data: List<Recipe>?) {
                         activity!!.runOnUiThread {
-                            lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf())
+                            lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
                         }
                     }
                 }
