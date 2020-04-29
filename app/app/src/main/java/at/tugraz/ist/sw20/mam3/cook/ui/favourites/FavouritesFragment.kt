@@ -161,7 +161,14 @@ class FavouritesFragment : Fragment() {
                     dialog, id ->
                 RecipeService(context!!).deleteRecipe(clickedRecipe)
                 Toast.makeText(context!!, "deleted" , Toast.LENGTH_LONG).show()
-                dialog.dismiss()
+                val readyListener = object : DataReadyListener<List<Recipe>> {
+                    override fun onDataReady(data: List<Recipe>?) {
+                        activity!!.runOnUiThread {
+                            lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf())
+                        }
+                    }
+                }
+                RecipeService(context!!).getAllRecipes(readyListener)
             })
                 .setNegativeButton("Cancel", DialogInterface.OnClickListener {
                         dialog, id ->

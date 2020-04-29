@@ -4,25 +4,18 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.ContextMenu.ContextMenuInfo
-import android.widget.AdapterView
 import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import at.tugraz.ist.sw20.mam3.cook.AddRecipeActivity
 import at.tugraz.ist.sw20.mam3.cook.R
-import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
-import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
-import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -46,12 +39,6 @@ class RecipesFragment : Fragment() {
         floatingButton.setOnClickListener {
             val intent = Intent(activity, AddRecipeActivity::class.java)
             startActivity(intent)
-            val lv = lvRecipes;
-            lvRecipes.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent, view, position, id ->
-                val item = parent.getItemAtPosition(position) as Recipe
-                registerForContextMenu(lv);
-                true
-            }
         }
 
         return root
@@ -68,6 +55,7 @@ class RecipesFragment : Fragment() {
                 }
             }
         }
+        registerForContextMenu(lvRecipes);
         RecipeService(context!!).getAllRecipes(readyListener)
     }
 
@@ -87,7 +75,14 @@ class RecipesFragment : Fragment() {
                             dialog, id ->
                             RecipeService(context!!).deleteRecipe(clickedRecipe)
                             Toast.makeText(context!!, "deleted" ,Toast.LENGTH_LONG).show()
-                            dialog.dismiss()
+                            val readyListener = object : DataReadyListener<List<Recipe>> {
+                                override fun onDataReady(data: List<Recipe>?) {
+                                    activity!!.runOnUiThread {
+                                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
+                                    }
+                                }
+                            }
+                            RecipeService(context!!).getAllRecipes(readyListener)
                         })
                         .setNegativeButton("Cancel", DialogInterface.OnClickListener {
                                 dialog, id ->
