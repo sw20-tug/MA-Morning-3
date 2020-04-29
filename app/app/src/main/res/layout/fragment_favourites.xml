@@ -14,6 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_favourites"
         />
+-->
 
     <TextView
         android:id="@+id/text_favourites"
@@ -27,8 +28,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_preview" />
+        app:layout_constraintTop_toBottomOf="parent" />
 
+<!--
     <Button
         android:id="@+id/button_import_image"
         android:layout_width="wrap_content"
