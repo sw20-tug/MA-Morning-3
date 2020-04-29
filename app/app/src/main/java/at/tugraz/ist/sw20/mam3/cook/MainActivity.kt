@@ -77,9 +77,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_search_filter, menu)
 
-     //   val si = menu?.findItem(R.id.filter) as MenuItem
-    //    val more = si.getActionView() as Button
-
             return true
     }
 
