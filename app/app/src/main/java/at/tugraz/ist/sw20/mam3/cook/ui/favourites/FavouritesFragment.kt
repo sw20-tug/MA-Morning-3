@@ -17,16 +17,10 @@ import android.widget.TextView
 import androidx.core.net.toUri
 import android.widget.ListView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
-import at.tugraz.ist.sw20.mam3.cook.model.entities.RecipePhoto
-import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
-import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
-import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
-import kotlinx.android.synthetic.main.fragment_favourites.*
-import java.io.File
-import java.io.FileOutputStream
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
@@ -49,14 +43,13 @@ class FavouritesFragment : Fragment() {
         favouritesViewModel =
                 ViewModelProvider(this).get(FavouritesViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_favourites, container, false)
-
-      /*
         val textView: TextView = root.findViewById(R.id.text_favourites)
         favouritesViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
 
         // TODO: not in favourites fragment
+        /*
         val importBtn = root.findViewById<Button>(R.id.button_import_image)
         importBtn?.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -70,17 +63,18 @@ class FavouritesFragment : Fragment() {
             startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
         }
         */
+        */
+
         lvFavorites = root.findViewById(R.id.list_favorites)
 
         return root
     }
-//  TODO: sample code taking pictures and loading from storage
-/*
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        
-
+        //  TODO: sample code taking pictures and loading from storage
+        /*
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data!!.extras!!.get("data") as Bitmap
             val recipeService = RecipeService(context!!)
