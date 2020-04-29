@@ -24,8 +24,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class RecipesFragment : Fragment() {
 
     private lateinit var recipesViewModel: RecipesViewModel
-    private lateinit var lvRecipes : ListView
-    private var listv : List<Recipe> = emptyList()
+    private lateinit var lvRecipes: ListView
+    private var listv: List<Recipe> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,11 +42,12 @@ class RecipesFragment : Fragment() {
             val intent = Intent(activity, AddRecipeActivity::class.java)
             startActivity(intent)
             val lv = lvRecipes;
-            lvRecipes.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent, view, position, id ->
-                val item = parent.getItemAtPosition(position) as Recipe
-                registerForContextMenu(lv);
-                true
-            }
+            lvRecipes.onItemLongClickListener =
+                AdapterView.OnItemLongClickListener { parent, view, position, id ->
+                    val item = parent.getItemAtPosition(position) as Recipe
+                    registerForContextMenu(lv);
+                    true
+                }
         }
 
         return root
@@ -60,25 +61,25 @@ class RecipesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
     }
+
     override fun onResume() {
         super.onResume()
 
-      recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
+        recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
 
-              lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
                 if (data != null) {
                     listv = data
 
-                  activity!!.runOnUiThread {
-                    lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf())
+                    activity!!.runOnUiThread {
+                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
 
-                  }
+                    }
+                }
             }
         }
-
         RecipeService(context!!).getAllRecipes(readyListener)
     }
 
@@ -103,54 +104,59 @@ class RecipesFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                var tmp : MutableList<Recipe> = mutableListOf<Recipe>()
+                var tmp: MutableList<Recipe> = mutableListOf<Recipe>()
                 val list = lvRecipes
 
-                if(newText!!.isNotEmpty()) {
+                if (newText!!.isNotEmpty()) {
                     for (item in listv) {
                         if (item.name.toLowerCase().contains(newText!!.toLowerCase())) {
                             tmp.add(item)
                         }
-                        list!!.adapter = RecipeAdapter(context!!, tmp)
+                        list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
                     }
-                }
-                else {
-                    list!!.adapter = RecipeAdapter(context!!, listv)
+                } else {
+                    list!!.adapter = RecipeAdapter(context!!, listv, activity!!)
                 }
                 return true
             }
         })
 
         Thread(Runnable {
-        val more = ti.getActionView() as ImageButton
+            val more = ti.getActionView() as ImageButton
             this.activity?.runOnUiThread(java.lang.Runnable {
                 more.setOnClickListener {
 
                     val builder = AlertDialog.Builder(context!!)
                     builder.setTitle("Choose filters")
 
-                    val filters = arrayOf("Meat", "Side", "Cooking < 30 minutes", "Cooking >= 30 minutes", "Preparation < 15 minutes", "Preparation >= 15 minutes")
+                    val filters = arrayOf(
+                        "Meat",
+                        "Side",
+                        "Cooking < 30 minutes",
+                        "Cooking >= 30 minutes",
+                        "Preparation < 15 minutes",
+                        "Preparation >= 15 minutes"
+                    )
                     val checkedItems = booleanArrayOf(false, false, false, false, false, false)
                     builder.setMultiChoiceItems(filters, checkedItems) { dialog, which, isChecked ->
 
                     }
 
                     builder.setPositiveButton("OK") { dialog, which ->
-                        var tmp : MutableList<Recipe> = mutableListOf()
-                        var list : ListView = lvRecipes
+                        var tmp: MutableList<Recipe> = mutableListOf()
+                        var list: ListView = lvRecipes
 
                         val checked =
                             (dialog as AlertDialog).listView
                                 .checkedItemPositions
                         if ((!checked[0] and checked[1]) or (checked[0] and !checked[1])) {
-                            if(checked[0]) {
+                            if (checked[0]) {
                                 for (item in listv) {
                                     if (item.kind.equals("Meat")) {
                                         tmp.add(item)
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 for (item in listv) {
                                     if (item.kind.equals("Side")) {
                                         tmp.add(item)
@@ -161,16 +167,14 @@ class RecipesFragment : Fragment() {
                             if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
                             if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
                             if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp)
-                        }
-
-                        else {
-                            var tmp : MutableList<Recipe> = listv as MutableList<Recipe>
+                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                        } else {
+                            var tmp: MutableList<Recipe> = listv as MutableList<Recipe>
                             if (checked[2] and !checked[3]) tmp = filterByCookMinutes(tmp, true)
-                            if (!checked[2] and checked[3]) tmp  = filterByCookMinutes(tmp, false)
+                            if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
                             if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
                             if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp)
+                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
                         }
                     }
                     builder.setNegativeButton("Cancel", null)
@@ -182,16 +186,15 @@ class RecipesFragment : Fragment() {
         }).start()
     }
 
-    private fun filterByCookMinutes (list: MutableList<Recipe>, less: Boolean): MutableList<Recipe> {
-        var tmp : MutableList<Recipe> = mutableListOf()
+    private fun filterByCookMinutes(list: MutableList<Recipe>, less: Boolean): MutableList<Recipe> {
+        var tmp: MutableList<Recipe> = mutableListOf()
         if (less) {
             for (item in list) {
                 if (item.cookMinutes < 30) {
                     tmp.add(item)
                 }
             }
-        }
-        else {
+        } else {
             for (item in list) {
                 if (item.cookMinutes >= 30) {
                     tmp.add(item)
@@ -200,20 +203,21 @@ class RecipesFragment : Fragment() {
         }
         return tmp
     }
-    private fun filterByPrepMinutes (list: MutableList<Recipe>, less: Boolean)  : MutableList<Recipe> {
-        var tmp : MutableList<Recipe> = mutableListOf()
+
+    private fun filterByPrepMinutes(list: MutableList<Recipe>, less: Boolean): MutableList<Recipe> {
+        var tmp: MutableList<Recipe> = mutableListOf()
         if (less) {
             for (item in list) {
                 if (item.prepMinutes < 15) {
                     tmp.add(item)
                 }
             }
-        }
-        else {    for (item in list) {
-            if (item.prepMinutes >= 15) {
-                tmp.add(item)
+        } else {
+            for (item in list) {
+                if (item.prepMinutes >= 15) {
+                    tmp.add(item)
+                }
             }
-        }
         }
         return tmp
     }

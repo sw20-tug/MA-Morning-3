@@ -1,11 +1,6 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.favourites
 
-import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageButton
@@ -14,10 +9,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import androidx.core.net.toUri
 import android.widget.ListView
+import android.widget.TextView
 import android.widget.SearchView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -34,7 +27,6 @@ class FavouritesFragment : Fragment() {
     private lateinit var favouritesViewModel: FavouritesViewModel
     private lateinit var lvFavorites: ListView
     private var lv : List<Recipe> = emptyList()
-  
     private val RESULT_LOAD_IMAGES = 1
     private val REQUEST_IMAGE_CAPTURE = 2
 
@@ -142,7 +134,7 @@ class FavouritesFragment : Fragment() {
      
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf())
+                lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
                 if (data != null) {
                     lv = data
                 }
@@ -172,11 +164,11 @@ class FavouritesFragment : Fragment() {
                         if (item.name.toLowerCase().contains(newText!!.toLowerCase())) {
                             tmp.add(item)
                         }
-                        list!!.adapter = RecipeAdapter(context!!, tmp)
+                        list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
                     }
                 }
                 else {
-                    list!!.adapter = RecipeAdapter(context!!, lv)
+                    list!!.adapter = RecipeAdapter(context!!, lv, activity!!)
                 }
                 return true
             }
@@ -222,7 +214,7 @@ class FavouritesFragment : Fragment() {
                             if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
                             if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
                             if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp)
+                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
                         }
 
                         else {
@@ -231,7 +223,7 @@ class FavouritesFragment : Fragment() {
                             if (!checked[2] and checked[3]) tmp  = filterByCookMinutes(tmp, false)
                             if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
                             if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp)
+                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
                         }
                     }
                     builder.setNegativeButton("Cancel", null)
