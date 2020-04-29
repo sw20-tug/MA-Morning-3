@@ -14,6 +14,7 @@ import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
+import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.adapters.IngredientAdapter
 import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.adapters.InstructionAdapter
 import kotlinx.android.synthetic.main.fragment_recipe_detail.*
 
@@ -42,7 +43,9 @@ class RecipeDetailFragment : Fragment() {
                 recipe_cook_time.findViewById<TextView>(R.id.recipe_time).text = "" + recipe.cookMinutes
                 recipe_cook_time.findViewById<ImageView>(R.id.recipe_time_img).setImageResource(R.drawable.ic_cooking)
                 recipe_prepare_time.findViewById<TextView>(R.id.recipe_time).text = "" + recipe.prepMinutes
+
                 root.findViewById<ListView>(R.id.recipe_instructions).adapter = InstructionAdapter(context!!, recipe.steps ?: listOf(), activity!!)
+                root.findViewById<ListView>(R.id.recipe_ingredients).adapter = IngredientAdapter(context!!, recipe.ingredients ?: listOf(), activity!!)
             }
         })
         return root

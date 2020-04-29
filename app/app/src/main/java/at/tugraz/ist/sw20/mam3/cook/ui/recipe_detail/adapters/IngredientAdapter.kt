@@ -18,7 +18,7 @@ class IngredientAdapter(val context : Context, val ingredients : List<Ingredient
         val viewHolder : ViewHolder
 
         if(convertView == null) {
-            view = inflater.inflate(R.layout.item_instruction, parent, false)
+            view = inflater.inflate(R.layout.item_ingredient, parent, false)
 
             viewHolder = ViewHolder()
             viewHolder.ingredient = view.findViewById(R.id.recipe_ingredient) as TextView
