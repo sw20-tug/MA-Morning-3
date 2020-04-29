@@ -1,6 +1,7 @@
 package at.tugraz.ist.sw20.mam3.cook.model.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -17,6 +18,9 @@ interface RecipeDAO {
 
     @Query ("SELECT * FROM recipe WHERE favorite = 1")
     fun getFavorites(): List<Recipe>
+
+    @Delete
+    fun deleteRecipe(recipe: Recipe)
 
     @Insert
     fun insertRecipe(recipe: Recipe): Long
@@ -35,6 +39,9 @@ interface RecipeDAO {
 
     @Update
     fun updateRecipePhoto(recipePhoto: RecipePhoto)
+
+    @Delete
+    fun deleteRecipePhoto(recipePhoto: RecipePhoto)
 
     @Query ("SELECT * FROM recipe WHERE recipeID = :id")
     fun getRecipeById(id : Long): Recipe

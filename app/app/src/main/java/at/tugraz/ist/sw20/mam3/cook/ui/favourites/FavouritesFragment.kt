@@ -1,9 +1,15 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.favourites
 
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageButton
+import android.view.*
+import android.widget.AdapterView
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +18,7 @@ import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.SearchView
-import androidx.appcompat.app.AlertDialog
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +33,8 @@ class FavouritesFragment : Fragment() {
     private lateinit var favouritesViewModel: FavouritesViewModel
     private lateinit var lvFavorites: ListView
     private var lv : List<Recipe> = emptyList()
+    private lateinit var clickedRecipe: Recipe
+
     private val RESULT_LOAD_IMAGES = 1
     private val REQUEST_IMAGE_CAPTURE = 2
 
@@ -63,7 +71,7 @@ class FavouritesFragment : Fragment() {
         */
 
         lvFavorites = root.findViewById(R.id.list_favorites)
-
+        registerForContextMenu(lvFavorites);
         return root
     }
 
@@ -71,6 +79,7 @@ class FavouritesFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
       }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -131,7 +140,7 @@ class FavouritesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         favouritesViewModel = ViewModelProvider(this).get(FavouritesViewModel::class.java)
-     
+
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
                 lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
@@ -140,8 +149,43 @@ class FavouritesFragment : Fragment() {
                 }
             }
         }
-
         RecipeService(context!!).getFavoriteRecipes(readyListener)
+    }
+
+    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+        val lv = v as ListView
+        val acmi = menuInfo as AdapterView.AdapterContextMenuInfo
+        clickedRecipe = lv.getItemAtPosition(acmi.position) as Recipe
+        menu.add("Rename")
+        menu.add("Edit")
+        menu.add("Delete")
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        if (item.toString().equals("Delete")) {
+            val dialogBuilder = AlertDialog.Builder(activity!!)
+            dialogBuilder.setPositiveButton("Delete", DialogInterface.OnClickListener{
+                    dialog, id ->
+                RecipeService(context!!).deleteRecipe(clickedRecipe)
+                Toast.makeText(context!!, "deleted" , Toast.LENGTH_LONG).show()
+                val readyListener = object : DataReadyListener<List<Recipe>> {
+                    override fun onDataReady(data: List<Recipe>?) {
+                        activity!!.runOnUiThread {
+                            lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
+                        }
+                    }
+                }
+                RecipeService(context!!).getAllRecipes(readyListener)
+            })
+                .setNegativeButton("Cancel", DialogInterface.OnClickListener {
+                        dialog, id ->
+                    dialog.dismiss()
+                })
+            val alert = dialogBuilder.create()
+            alert.setTitle("Are you sure you want to delete the recipe?")
+            alert.show()
+        }
+        return super.onContextItemSelected(item)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -270,5 +314,4 @@ class FavouritesFragment : Fragment() {
         }
         return tmp
     }
-
 }

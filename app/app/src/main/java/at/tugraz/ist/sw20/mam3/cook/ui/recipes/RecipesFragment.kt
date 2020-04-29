@@ -1,22 +1,22 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.recipes
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.ContextMenu.ContextMenuInfo
 import android.widget.*
 import android.widget.AdapterView.AdapterContextMenuInfo
-import androidx.appcompat.app.AlertDialog
+import android.widget.ListView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import at.tugraz.ist.sw20.mam3.cook.AddRecipeActivity
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
-import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -24,7 +24,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class RecipesFragment : Fragment() {
 
     private lateinit var recipesViewModel: RecipesViewModel
-    private lateinit var lvRecipes: ListView
+    private lateinit var lvRecipes : ListView
+    private lateinit var clickedRecipe: Recipe
     private var listv: List<Recipe> = emptyList()
 
     override fun onCreateView(
@@ -41,13 +42,6 @@ class RecipesFragment : Fragment() {
         floatingButton.setOnClickListener {
             val intent = Intent(activity, AddRecipeActivity::class.java)
             startActivity(intent)
-            val lv = lvRecipes;
-            lvRecipes.onItemLongClickListener =
-                AdapterView.OnItemLongClickListener { parent, view, position, id ->
-                    val item = parent.getItemAtPosition(position) as Recipe
-                    registerForContextMenu(lv);
-                    true
-                }
         }
 
         return root
@@ -64,18 +58,14 @@ class RecipesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-
                 if (data != null) {
                     listv = data
-
                     activity!!.runOnUiThread {
                         lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
-
                     }
                 }
             }
@@ -84,13 +74,39 @@ class RecipesFragment : Fragment() {
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
-        val liv = v as ListView
+        val lv = v as ListView
         val acmi = menuInfo as AdapterContextMenuInfo
-        val obj: Recipe = liv.getItemAtPosition(acmi.position) as Recipe
+        clickedRecipe = lv.getItemAtPosition(acmi.position) as Recipe
         menu.add("Rename")
         menu.add("Edit")
         menu.add("Delete")
+    }
 
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        if (item.toString().equals("Delete")) {
+            val dialogBuilder = AlertDialog.Builder(activity!!)
+                        dialogBuilder.setPositiveButton("Delete", DialogInterface.OnClickListener{
+                            dialog, id ->
+                            RecipeService(context!!).deleteRecipe(clickedRecipe)
+                            Toast.makeText(context!!, "deleted" ,Toast.LENGTH_LONG).show()
+                            val readyListener = object : DataReadyListener<List<Recipe>> {
+                                override fun onDataReady(data: List<Recipe>?) {
+                                    activity!!.runOnUiThread {
+                                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
+                                    }
+                                }
+                            }
+                            RecipeService(context!!).getAllRecipes(readyListener)
+                        })
+                        .setNegativeButton("Cancel", DialogInterface.OnClickListener {
+                                dialog, id ->
+                            dialog.dismiss()
+                        })
+            val alert = dialogBuilder.create()
+            alert.setTitle("Are you sure you want to delete the recipe?")
+            alert.show()
+        }
+        return super.onContextItemSelected(item)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
