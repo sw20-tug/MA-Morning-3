@@ -1,10 +1,8 @@
 package at.tugraz.ist.sw20.mam3.cook.model.entities
 
-import androidx.core.content.res.FontResourcesParserCompat
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import androidx.room.Relation
 
 @Entity
 data class Recipe  (
@@ -21,5 +19,8 @@ data class Recipe  (
 
     @Ignore
     var ingredients: List<Ingredient>? = null
+
+    @Ignore
+    var photos: List<RecipePhoto>? = null
 
 }

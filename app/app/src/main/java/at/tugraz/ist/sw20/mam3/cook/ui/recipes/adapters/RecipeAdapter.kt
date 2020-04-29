@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentActivity
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.RecipeDetailActivity
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
-import kotlinx.android.synthetic.main.item_icon_with_text.view.*
 import kotlinx.android.synthetic.main.item_summarized_recipe.view.*
 
 class RecipeAdapter(val context : Context, val recipes : List<Recipe>, private val activity: FragmentActivity) : BaseAdapter() {
