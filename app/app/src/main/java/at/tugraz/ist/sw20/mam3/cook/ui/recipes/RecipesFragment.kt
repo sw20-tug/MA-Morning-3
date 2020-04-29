@@ -70,7 +70,6 @@ class RecipesFragment : Fragment() {
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
 
-                lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
                 if (data != null) {
                     listv = data
 
