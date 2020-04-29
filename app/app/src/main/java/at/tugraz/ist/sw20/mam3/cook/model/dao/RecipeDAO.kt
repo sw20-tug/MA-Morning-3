@@ -39,4 +39,7 @@ interface RecipeDAO {
 
     @Update
     fun updateRecipePhoto(recipePhoto: RecipePhoto)
+
+    @Delete
+    fun deleteRecipePhoto(recipePhoto: RecipePhoto)
 }

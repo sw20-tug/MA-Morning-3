@@ -65,10 +65,19 @@ class RecipeService(private val context: Context) {
         // Get db instance here
         Thread(Runnable {
             db = CookDB.getCookDB(context)
-            val allRecipies = db!!.recipeDao().deleteRecipe(recipe)
-//            callback.onDataReady(allRecipies)
+            val readyListener = object : DataReadyListener<List<RecipePhoto>> {
+                override fun onDataReady(data: List<RecipePhoto>?) {
+                    for (image in data!!) {
+                        deleteImage(image);
+                        db!!.recipeDao().deleteRecipePhoto(image);
+                    }
+                    db!!.recipeDao().deleteRecipe(recipe)
+                }
+            }
+            getAllPhotosFromRecipe(recipe, readyListener)
         }).start()
     }
+
     fun getAllPhotosFromRecipe(recipe: Recipe, callback: DataReadyListener<List<RecipePhoto>>) {
         // Get db instance here
         Thread(Runnable {
