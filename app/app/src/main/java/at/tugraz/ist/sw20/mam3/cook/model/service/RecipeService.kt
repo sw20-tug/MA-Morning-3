@@ -1,6 +1,7 @@
 package at.tugraz.ist.sw20.mam3.cook.model.service
 
 import android.content.Context
+import android.util.Log
 import at.tugraz.ist.sw20.mam3.cook.model.database.CookDB
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
@@ -40,6 +41,7 @@ class RecipeService(private val context: Context) {
             }
 
             for (step in steps) {
+                step.recipeID = rID
                 db!!.recipeDao().insertStep(step)
             }
 
@@ -51,6 +53,10 @@ class RecipeService(private val context: Context) {
         Thread(Runnable {
             db = CookDB.getCookDB(context)
             val recipe = db!!.recipeDao().getRecipeById(id)
+            recipe.ingredients = db!!.recipeDao().getIngredientsByRecipeID(id)
+            Log.i("INGREDIENTS DATABASE SERVICE", recipe.ingredients.toString())
+            recipe.steps = db!!.recipeDao().getStepsByRecipeID(id)
+            Log.i("STEPS DATABASE SERVICE", recipe.steps.toString())
             callback.onDataReady(recipe)
         }).start()
     }
