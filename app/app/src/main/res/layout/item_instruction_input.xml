@@ -18,11 +18,12 @@
     <ListView
         android:id="@+id/instruction_input_listView"
         android:layout_width="match_parent"
-        android:layout_height="200px"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/instruction_input_description"
         app:layout_constraintBottom_toTopOf="@id/instruction_input_inputfield"
-        app:layout_constraintStart_toStartOf="parent">
-    </ListView>
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/item_left_margin_big"
+        android:layout_marginEnd="@dimen/item_left_margin_big"/>
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/instruction_input_inputfield"

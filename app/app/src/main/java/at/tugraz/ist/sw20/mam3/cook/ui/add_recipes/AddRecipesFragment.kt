@@ -17,20 +17,20 @@ import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.adapters.InstructionAdapter
-import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.fragment_add_edit_recipe.view.*
 import kotlinx.android.synthetic.main.item_ingredients_input.*
-import kotlinx.android.synthetic.main.item_text_input.view.*
 
 class AddRecipesFragment : Fragment() {
 
     private lateinit var addRecipesViewModel: AddRecipesViewModel
 
     private lateinit var root: View
+
+    private val steps: MutableList<Step> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,7 +94,7 @@ class AddRecipesFragment : Fragment() {
     private fun setupIngredients() {
         val ingredientsInputButton: Button = root.findViewById(R.id.ingredient_input_button)
         ingredientsInputButton.setOnClickListener {
-            val textView: TextView = root.text_input_ingredients.findViewById(
+            val textView: TextInputEditText = root.text_input_ingredients.findViewById(
                 R.id.ingredient_input_inputfield)
 
             if (textView.text.toString().isNotBlank()) {
@@ -114,13 +114,13 @@ class AddRecipesFragment : Fragment() {
                 }
 
                 ingredient_input_chipGroup.addView(chip)
+
+                textView.text?.clear()
             }
         }
     }
 
     fun setupInstructions() {
-        //TODO for edit recipe: put steps into this list
-        val instructionList = mutableListOf<Step>()
 
         val lvInstructions = root.text_input_instructions
             .findViewById<ListView>(R.id.instruction_input_listView)
@@ -128,19 +128,37 @@ class AddRecipesFragment : Fragment() {
         val btnAdd = root.text_input_instructions
             .findViewById<MaterialButton>(R.id.instruction_input_button)
 
-        lvInstructions.adapter = InstructionAdapter(context!!, instructionList)
+        lvInstructions.adapter = InstructionAdapter(context!!, steps)
 
         btnAdd.setOnClickListener {
             val text = root.text_input_instructions
-                .findViewById<TextInputEditText>(R.id.instruction_input_inputfield).text.toString()
+                .findViewById<TextInputEditText>(R.id.instruction_input_inputfield)
+            val stepText = text.text.toString()
 
-            if (text.isNotBlank()) {
-                val step = Step(0, 0, text)
-                instructionList.add(step)
-                lvInstructions.adapter = InstructionAdapter(context!!, instructionList)
+            if (stepText.isNotBlank()) {
+                val step = Step(0, 0, stepText)
+                steps.add(step)
+                lvInstructions.adapter = InstructionAdapter(context!!, steps)
+                setListViewHeightBasedOnChildren(lvInstructions)
+                text.text?.clear()
             }
         }
+    }
 
+    private fun setListViewHeightBasedOnChildren(listView: ListView) {
+        Log.e("Listview Size ", "" + listView.count)
+        val listAdapter = listView.adapter ?: return
+        var totalHeight = 0
+        for (i in 0 until listAdapter.count) {
+            val listItem = listAdapter.getView(i, null, listView)
+            listItem.measure(0, 0)
+            totalHeight += listItem.measuredHeight
+        }
+        val params = listView.layoutParams
+        params.height = (totalHeight
+                + listView.dividerHeight * (listAdapter.count - 1))
+        listView.layoutParams = params
+        listView.requestLayout()
     }
 
     fun saveRecipe(): Boolean {
@@ -163,13 +181,7 @@ class AddRecipesFragment : Fragment() {
                 Ingredient(0, 0, (chip as Chip).text.toString().trim())
             }.toList()
 
-        //TODO change this after instruction list is live
-        val instructions = mutableListOf<Step>().apply { add(
-            Step(0, 0, root.text_input_instructions
-            .findViewById<TextView>(R.id.instruction_input_inputfield).text.toString().trim()))
-        }
-
-        if (!validateRecipe(name, descr, type, difficulty, prepTime, cookTime, ingredients, instructions)) {
+        if (!validateRecipe(name, descr, prepTime, cookTime, ingredients)) {
             return false
         }
 
@@ -178,7 +190,7 @@ class AddRecipesFragment : Fragment() {
 
         val service = RecipeService(context!!)
 
-        service.addRecipe(recipe, ingredients, instructions, object: DataReadyListener<Long> {
+        service.addRecipe(recipe, ingredients, steps, object: DataReadyListener<Long> {
             override fun onDataReady(data: Long?) {
                 Log.i("DB", "Successfully inserted Recipe with ID $data")
                 Toast.makeText(context!!, "Saved recipe", Toast.LENGTH_SHORT).show()
@@ -189,9 +201,8 @@ class AddRecipesFragment : Fragment() {
         return true
     }
 
-    private fun validateRecipe(name: String, descr: String, type: String, difficulty: String,
-                               prepTime: String, cookTime: String, ingredients: List<Ingredient>,
-                               instructions: List<Step>): Boolean {
+    private fun validateRecipe(name: String, descr: String, prepTime: String, cookTime: String,
+                               ingredients: List<Ingredient>): Boolean {
         var valid = true
 
         if (name.isBlank()) {
@@ -243,7 +254,7 @@ class AddRecipesFragment : Fragment() {
                 .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
         }
 
-        if (instructions.isEmpty()) {
+        if (steps.isEmpty()) {
             valid = false
             root.text_input_instructions.findViewById<TextView>(R.id.instruction_input_description)
                 .setTextColor(resources.getColor(R.color.red, activity!!.theme))

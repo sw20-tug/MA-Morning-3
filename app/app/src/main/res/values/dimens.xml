@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="item_descr_width">120dp</dimen>
     <dimen name="item_left_margin">7dp</dimen>
+    <dimen name="item_left_margin_big">14dp</dimen>
     <dimen name="item_top_margin">12dp</dimen>
     <dimen name="margin_floating_button">16dp</dimen>
     <dimen name="size_floating_button">70dp</dimen>
