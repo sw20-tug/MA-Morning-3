@@ -7,50 +7,32 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
 import at.tugraz.ist.sw20.mam3.cook.R
+import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
+import kotlinx.android.synthetic.main.item_ingredient.view.*
+import kotlinx.android.synthetic.main.item_instruction.view.*
 
-class InstructionAdapter(val context : Context, val steps : List<Step>, private val activity: FragmentActivity) : BaseAdapter() {
-    private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+class InstructionAdapter(val context : Context, val instructions : List<Step>, private val activity: FragmentActivity) :
+        RecyclerView.Adapter<InstructionAdapter.ViewHolder>() {
+    // private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view : View
-        val viewHolder : ViewHolder
-
-        if(convertView == null) {
-            view = inflater.inflate(R.layout.item_instruction, parent, false)
-
-            viewHolder = ViewHolder()
-            viewHolder.step = view.findViewById(R.id.step_text) as TextView
-            viewHolder.stepDescription = view.findViewById(R.id.step_desc) as TextView
-
-            view.tag = viewHolder
-        } else {
-            view = convertView
-            viewHolder = convertView.tag as ViewHolder
-        }
-
-        val step = getItem(position) as Step
-        viewHolder.step.text = context.getString(R.string.recipe_step, position+1)
-        viewHolder.stepDescription.text = step.name
-
-        return view
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val step = view.step_text
+        val discription = view.step_desc
     }
 
-    override fun getItem(position: Int): Any {
-        return steps[position]
+    override fun getItemCount(): Int {
+        return instructions.size
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_instruction, parent, false))
     }
 
-    override fun getCount(): Int {
-        return steps.size
-    }
-
-    private class ViewHolder {
-        lateinit var step : TextView
-        lateinit var stepDescription : TextView
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.step.text = context.getString(R.string.recipe_step, position + 1)
+        holder.discription.text = instructions[position].name
     }
 }

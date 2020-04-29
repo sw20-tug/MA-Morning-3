@@ -70,6 +70,7 @@ class RecipeService(private val context: Context) {
             Log.i("INGREDIENTS DATABASE SERVICE", recipe.ingredients.toString())
             recipe.steps = db!!.recipeDao().getStepsByRecipeID(id)
             Log.i("STEPS DATABASE SERVICE", recipe.steps.toString())
+            recipe.photos = db!!.recipeDao().getAllPhotosFromRecipe(recipe.recipeID)
             callback.onDataReady(recipe)
         }).start()
     }
