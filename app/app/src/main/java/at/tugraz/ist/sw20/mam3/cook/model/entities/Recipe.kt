@@ -20,4 +20,7 @@ data class Recipe (
     @Ignore
     var ingredients: List<Ingredient>? = null
 
+    @Ignore
+    var photos: List<RecipePhoto>? = null
+
 }
