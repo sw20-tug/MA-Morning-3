@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="116dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@mipmap/sample_pizza_foreground"
+        android:src="@mipmap/sample_food_tacos_foreground"
         android:scaleType="centerCrop"
         />
 

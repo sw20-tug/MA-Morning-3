@@ -49,7 +49,7 @@ class RecipeAdapter(val context : Context, val recipes : List<Recipe>) : BaseAda
         prepTimeTextView.text = recipe.prepMinutes.toString()   // TODO: format correctly
         cookTimeTextView.text = recipe.cookMinutes.toString()   // TODO: format correctly
 
-        titleImageView.setImageResource(R.mipmap.sample_pizza_foreground)     // TODO: get correct image id from recipe
+        titleImageView.setImageResource(R.mipmap.sample_food_tacos_foreground)     // TODO: get correct image id from recipe
         prepTimeIcon.setImageResource(R.drawable.ic_whisk)
         cookTimeIcon.setImageResource(R.drawable.ic_cooking)
 
