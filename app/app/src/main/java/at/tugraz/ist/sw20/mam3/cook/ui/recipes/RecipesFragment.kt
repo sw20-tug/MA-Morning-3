@@ -17,6 +17,7 @@ import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
+import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -27,10 +28,6 @@ class RecipesFragment : Fragment() {
     private lateinit var lvRecipes : ListView
     private lateinit var clickedRecipe: Recipe
     private var listv: List<Recipe> = emptyList()
-
-    companion object {
-        const val INTENT_EXTRA_RECIPE_ID = "recipeID"
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -128,7 +125,7 @@ class RecipesFragment : Fragment() {
 
     private fun startEditRecipe() {
         val intent = Intent(activity, AddRecipeActivity::class.java)
-        intent.putExtra(INTENT_EXTRA_RECIPE_ID, clickedRecipe.recipeID)
+        intent.putExtra(AddRecipesFragment.INTENT_EXTRA_RECIPE_ID, clickedRecipe.recipeID)
         context!!.startActivity(intent)
     }
 

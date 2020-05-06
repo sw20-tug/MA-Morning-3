@@ -28,6 +28,10 @@ import kotlinx.android.synthetic.main.item_ingredients_input.*
 
 class AddRecipesFragment : Fragment() {
 
+    companion object {
+        const val INTENT_EXTRA_RECIPE_ID = "recipeID"
+    }
+
     private lateinit var addRecipesViewModel: AddRecipesViewModel
 
     private lateinit var root: View
@@ -55,7 +59,7 @@ class AddRecipesFragment : Fragment() {
         setupIngredients()
         setupInstructions()
 
-        val recipeID = activity!!.intent?.getLongExtra(RecipesFragment.INTENT_EXTRA_RECIPE_ID,
+        val recipeID = activity!!.intent?.getLongExtra(INTENT_EXTRA_RECIPE_ID,
             -1)
 
         if (recipeID!! > -1) {
