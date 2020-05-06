@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.ContextMenu.ContextMenuInfo
 import android.widget.*
@@ -39,6 +40,7 @@ class RecipesFragment : Fragment() {
         lvRecipes = root.findViewById(R.id.list_recipes)
         registerForContextMenu(lvRecipes);
         val floatingButton: FloatingActionButton = root.findViewById(R.id.item_add_button)
+        Log.d("UI-Testing", "item_add_button is clickable: " + floatingButton.isClickable)
         floatingButton.setOnClickListener {
             val intent = Intent(activity, AddRecipeActivity::class.java)
             startActivity(intent)
