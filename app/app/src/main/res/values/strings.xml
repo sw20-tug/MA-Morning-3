@@ -40,4 +40,9 @@
         <item>Vegan</item>
         <item>Sweet</item>
     </string-array>
+
+    <string name="recipe_option_edit">Edit</string>
+    <string name="recipe_option_delete">Delete</string>
+    <string name="delete_button_text">Delete</string>
+    <string name="cancel_button_text">Delete</string>
 </resources>

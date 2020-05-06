@@ -77,15 +77,14 @@ class RecipesFragment : Fragment() {
         val lv = v as ListView
         val acmi = menuInfo as AdapterContextMenuInfo
         clickedRecipe = lv.getItemAtPosition(acmi.position) as Recipe
-        menu.add("Rename")
-        menu.add("Edit")
-        menu.add("Delete")
+        menu.add(R.string.recipe_option_edit)
+        menu.add(R.string.recipe_option_delete)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        if (item.toString().equals("Delete")) {
+        if (item.toString().equals(R.string.recipe_option_delete)) {
             val dialogBuilder = AlertDialog.Builder(activity!!)
-                        dialogBuilder.setPositiveButton("Delete", DialogInterface.OnClickListener{
+                        dialogBuilder.setPositiveButton(R.string.delete_button_text, DialogInterface.OnClickListener{
                             dialog, id ->
                             RecipeService(context!!).deleteRecipe(clickedRecipe)
                             Toast.makeText(context!!, "deleted" ,Toast.LENGTH_LONG).show()
@@ -98,7 +97,7 @@ class RecipesFragment : Fragment() {
                             }
                             RecipeService(context!!).getAllRecipes(readyListener)
                         })
-                        .setNegativeButton("Cancel", DialogInterface.OnClickListener {
+                        .setNegativeButton(R.string.cancel_button_text, DialogInterface.OnClickListener {
                                 dialog, id ->
                             dialog.dismiss()
                         })
