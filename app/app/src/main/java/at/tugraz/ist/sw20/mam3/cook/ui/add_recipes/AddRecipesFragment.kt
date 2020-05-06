@@ -1,6 +1,11 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.add_recipes
 
+import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +27,9 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.fragment_add_edit_recipe.view.*
+import kotlinx.android.synthetic.main.item_image_input.view.*
 import kotlinx.android.synthetic.main.item_ingredients_input.*
+import java.io.File
 
 class AddRecipesFragment : Fragment() {
 
@@ -31,6 +38,9 @@ class AddRecipesFragment : Fragment() {
     private lateinit var root: View
 
     private val steps: MutableList<Step> = mutableListOf()
+
+    private val RESULT_LOAD_IMAGES = 1
+    private val REQUEST_IMAGE_CAPTURE = 2
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +56,7 @@ class AddRecipesFragment : Fragment() {
         setupDropdownMenus(root.text_input_difficulty, R.array.skillLevel)
         setupIngredients()
         setupInstructions()
+        setupImages()
 
         return root
     }
@@ -81,7 +92,6 @@ class AddRecipesFragment : Fragment() {
         textViewPrepMin.setText(R.string.minutes_text_label)
         val textViewCookMin: TextView = root.text_input_cooktime.findViewById(R.id.time_input_minutes)
         textViewCookMin.setText(R.string.minutes_text_label)
-
     }
 
     private fun setupDropdownMenus(root: View, arrayList: Int) {
@@ -143,6 +153,57 @@ class AddRecipesFragment : Fragment() {
                 text.text?.clear()
             }
         }
+    }
+    fun setupImages() {
+
+        val imageAddBtn = root.image_add_image_button
+        .findViewById<ImageView>(R.id.image_add_image_button)
+
+        imageAddBtn.setOnClickListener {
+            Toast.makeText(context!!, "Clicked add image button", Toast.LENGTH_LONG).show()
+            val dialog = AlertDialog.Builder(context)
+            val cv = layoutInflater.inflate(R.layout.dialog_add_photo, null) as View
+            dialog.setView(cv)
+            cv.findViewById<Button>(R.id.dialog_take_picture_button).setOnClickListener {
+                Toast.makeText(context!!, "Open Camera" ,Toast.LENGTH_LONG).show()
+                val intent =  Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
+            }
+            cv.findViewById<Button>(R.id.dialog_gallery_button).setOnClickListener {
+                Toast.makeText(context!!, "Open Gallery" ,Toast.LENGTH_LONG).show()
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                intent.type = "image/*"
+                startActivityForResult(intent, RESULT_LOAD_IMAGES)
+            }
+
+            dialog.show()
+
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        //  TODO: sample code taking pictures and loading from storage
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            val imageBitmap = data!!.extras!!.get("data") as Bitmap
+            val recipeService = RecipeService(context!!)
+            // TODO: handle edit recipe
+            recipeService.storeImageTemporary(imageBitmap)
+            // TODO: update gallery
+
+            Log.d("Photo", "Take Foto: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()?.size.toString())
+        }
+
+        if(requestCode == RESULT_LOAD_IMAGES && resultCode == RESULT_OK) {
+
+            val recipeService = RecipeService(context!!)
+
+            val tempImage = recipeService.storeImageTemporary(data!!.data!!)
+            Log.d("Photo", "After add: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()!!.size.toString())
+        }
+
     }
 
     private fun setListViewHeightBasedOnChildren(listView: ListView) {

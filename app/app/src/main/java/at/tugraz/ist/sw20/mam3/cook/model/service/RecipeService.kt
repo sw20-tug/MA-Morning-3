@@ -109,7 +109,7 @@ class RecipeService(private val context: Context) {
     fun storeImageTemporary(imageBitmap : Bitmap) : Uri {
         val dir = File(context.filesDir, mainDirName).resolve(tempDirName)
         dir.mkdirs()
-
+        // TODO: automatically detect cunter
         val imgName = getImageName(imageNameCounter++)
         val outFile = File(dir, imgName)
         outFile.createNewFile()
