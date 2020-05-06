@@ -65,6 +65,7 @@ class RecipeAdapter(val context : Context, val recipes : List<Recipe>, private v
             context.startActivity(intent)
         }
 
+        activity.registerForContextMenu(view)
         return view
     }
 

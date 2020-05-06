@@ -19,75 +19,43 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
-    private var listv : MutableList<Recipe> = mutableListOf()
+    private var listv: MutableList<Recipe> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
-
         val navController = findNavController(R.id.nav_host_fragment)
-        val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_recipes, R.id.navigation_favourites))
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_recipes, R.id.navigation_favourites
+            )
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
-
-
 
     override fun onResume() {
         super.onResume()
         val recipeService = RecipeService(this)
 
-
-        //TODO to get test data, comment out this block
-
-        /*
-        val r0 = Recipe(0, "Special Burger reworked", "A basic burger recipe", "Meat",15,
-            30, true)
-
-        recipeService.addRecipe(r0,
-            listOf(Ingredient(0, 0,"Meat"),
-                Ingredient(0, 0,"Buns")),
-            listOf(Step(0, 0,"Do it right"),
-                Step(0, 0,"Done")), object : DataReadyListener<Long> {
-            override fun onDataReady(data: Long?) {
-                Log.println(Log.INFO, "CookDB", "Inserted r2 - ID: $data")
-            }
-        })
-
-        val r1 = Recipe(0, "Burger", "A basic burger recipe", "Meat",15,
-    30, true)
-        val r2 = Recipe(0, "Fries", "A basic fries recipe", "Side", 10,
-            20, false)
-
-        recipeService.addRecipe(r1, ArrayList(), ArrayList(), object : DataReadyListener<Long> {
-            override fun onDataReady(data: Long?) {
-                Log.println(Log.INFO, "CookDB", "Inserted r1 - ID: $data")
-            }
-        })
-
-        recipeService.addRecipe(r2, ArrayList(), ArrayList(), object : DataReadyListener<Long> {
-            override fun onDataReady(data: Long?) {
-                Log.println(Log.INFO, "CookDB", "Inserted r2 - ID: $data")
-            }
-        })
-        */
-
         recipeService.getAllRecipes(object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                Log.println(Log.INFO, "Hi this is the special output asdfjölasdflak",
-                    data!!.size.toString())
-                    listv = data as MutableList<Recipe>
+                Log.println(
+                    Log.INFO, "Hi this is the special output asdfjölasdflak",
+                    data!!.size.toString()
+                )
+                listv = data as MutableList<Recipe>
             }
         })
         recipeService.getFavoriteRecipes(object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                Log.println(Log.INFO, "Hi this is the special output asdfjölasdflak",
-                    data!!.size.toString())
-                Log.println(Log.INFO, "DB","Number of Recipes: ${data!!.size}")
+                Log.println(
+                    Log.INFO, "Hi this is the special output asdfjölasdflak",
+                    data!!.size.toString()
+                )
+                Log.println(Log.INFO, "DB", "Number of Recipes: ${data!!.size}")
             }
         })
     }
@@ -95,8 +63,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.toolbar_search_filter, menu)
 
-            return true
+        return true
     }
-
 }
-
