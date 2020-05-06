@@ -28,6 +28,10 @@ class RecipesFragment : Fragment() {
     private lateinit var clickedRecipe: Recipe
     private var listv: List<Recipe> = emptyList()
 
+    companion object {
+        const val INTENT_EXTRA_RECIPE_ID = "recipeID"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -77,35 +81,55 @@ class RecipesFragment : Fragment() {
         val lv = v as ListView
         val acmi = menuInfo as AdapterContextMenuInfo
         clickedRecipe = lv.getItemAtPosition(acmi.position) as Recipe
-        menu.add(R.string.recipe_option_edit)
-        menu.add(R.string.recipe_option_delete)
+
+        menu.add(activity!!.getString(R.string.recipe_option_edit))
+        menu.add(activity!!.getString(R.string.recipe_option_delete))
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        if (item.toString().equals(R.string.recipe_option_delete)) {
-            val dialogBuilder = AlertDialog.Builder(activity!!)
-                        dialogBuilder.setPositiveButton(R.string.delete_button_text, DialogInterface.OnClickListener{
-                            dialog, id ->
-                            RecipeService(context!!).deleteRecipe(clickedRecipe)
-                            Toast.makeText(context!!, "deleted" ,Toast.LENGTH_LONG).show()
-                            val readyListener = object : DataReadyListener<List<Recipe>> {
-                                override fun onDataReady(data: List<Recipe>?) {
-                                    activity!!.runOnUiThread {
-                                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
-                                    }
-                                }
-                            }
-                            RecipeService(context!!).getAllRecipes(readyListener)
-                        })
-                        .setNegativeButton(R.string.cancel_button_text, DialogInterface.OnClickListener {
-                                dialog, id ->
-                            dialog.dismiss()
-                        })
-            val alert = dialogBuilder.create()
-            alert.setTitle("Are you sure you want to delete the recipe?")
-            alert.show()
+        if (item.toString() == activity!!.getString(R.string.recipe_option_delete)) {
+            startDeleteRecipe()
+        }
+        else if (item.toString() == activity!!.getString(R.string.recipe_option_edit)) {
+            startEditRecipe()
         }
         return super.onContextItemSelected(item)
+    }
+
+    private fun startDeleteRecipe() {
+        val dialogBuilder = AlertDialog.Builder(activity!!)
+        dialogBuilder.setPositiveButton(activity!!.getString(
+            R.string
+                .delete_button_text
+        ), DialogInterface.OnClickListener {
+
+                dialog, id ->
+            RecipeService(context!!).deleteRecipe(clickedRecipe)
+            Toast.makeText(context!!, "deleted", Toast.LENGTH_LONG).show()
+            val readyListener = object : DataReadyListener<List<Recipe>> {
+                override fun onDataReady(data: List<Recipe>?) {
+                    activity!!.runOnUiThread {
+                        lvRecipes.adapter = RecipeAdapter(
+                            context!!, data ?: listOf(), activity!!
+                        )
+                    }
+                }
+            }
+            RecipeService(context!!).getAllRecipes(readyListener)
+        })
+            .setNegativeButton(activity!!.getString(R.string.cancel_button_text),
+                DialogInterface.OnClickListener { dialog, id ->
+                    dialog.dismiss()
+                })
+        val alert = dialogBuilder.create()
+        alert.setTitle("Are you sure you want to delete the recipe?")
+        alert.show()
+    }
+
+    private fun startEditRecipe() {
+        val intent = Intent(activity, AddRecipeActivity::class.java)
+        intent.putExtra(INTENT_EXTRA_RECIPE_ID, clickedRecipe.recipeID)
+        context!!.startActivity(intent)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {

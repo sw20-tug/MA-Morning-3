@@ -3,9 +3,10 @@ package at.tugraz.ist.sw20.mam3.cook.model.entities
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity
-data class Recipe  (
+data class Recipe (
     @PrimaryKey(autoGenerate = true) val recipeID: Long,
     val name: String,
     val description: String,
@@ -14,7 +15,8 @@ data class Recipe  (
     val prepMinutes: Int,
     val cookMinutes: Int,
     val favorite: Boolean
-    ) {
+    ) : Serializable {
+
     @Ignore
     var steps: List<Step>? = null
 

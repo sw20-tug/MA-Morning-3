@@ -41,12 +41,29 @@ class RecipeService(private val context: Context) {
         }).start()
     }
 
-    fun addRecipe(recipe: Recipe, ingredients: List<Ingredient>, steps: List<Step>,
-                  callback: DataReadyListener<Long>) {
+    fun addOrUpdateRecipe(recipe: Recipe, ingredients: List<Ingredient>, steps: List<Step>,
+                          photos: List<RecipePhoto>, callback: DataReadyListener<Long>) {
 
         Thread(Runnable {
             db = CookDB.getCookDB(context)
-            val rID = db!!.recipeDao().insertRecipe(recipe)
+
+            val rID: Long
+
+            if (recipe.recipeID == 0L) {
+                rID = db!!.recipeDao().insertRecipe(recipe)
+
+            }
+            else {
+                db!!.recipeDao().updateRecipe(recipe)
+                rID = recipe.recipeID
+
+                recipe.ingredients?.forEach { db!!.recipeDao().deleteIngredient(it) }
+                recipe.steps?.forEach { db!!.recipeDao().deleteStep(it) }
+                recipe.photos?.forEach {
+                    deleteImage(it)
+                    db!!.recipeDao().deleteRecipePhoto(it)
+                }
+            }
 
             for (ingredient in ingredients) {
                 ingredient.recipeID = rID
@@ -58,11 +75,14 @@ class RecipeService(private val context: Context) {
                 db!!.recipeDao().insertStep(step)
             }
 
+            //TODO test if this works once photos are a thing
+            storeImages(rID, null)
+
             callback.onDataReady(rID)
         }).start()
     }
 
-    fun getRecipeById(id : Long, callback: DataReadyListener<Recipe>) {
+    fun getRecipeById(id: Long, callback: DataReadyListener<Recipe>) {
         Thread(Runnable {
             db = CookDB.getCookDB(context)
             val recipe = db!!.recipeDao().getRecipeById(id)
@@ -103,7 +123,8 @@ class RecipeService(private val context: Context) {
     }
 
     fun storeImageTemporary(imageUri : Uri) : Uri {
-        return storeImageTemporary(MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri))
+        return storeImageTemporary(MediaStore.Images.Media.getBitmap(context.contentResolver,
+            imageUri))
     }
 
     fun storeImageTemporary(imageBitmap : Bitmap) : Uri {
@@ -121,12 +142,13 @@ class RecipeService(private val context: Context) {
         return outFile.toUri()
     }
 
-    fun storeImages(recipeID: Long, callback: DataReadyListener<Unit>) {
+    fun storeImages(recipeID: Long, callback: DataReadyListener<Unit>?) {
         val srcDir = File(context.filesDir, mainDirName).resolve(tempDirName)
         val destDir = File(context.filesDir, mainDirName).resolve(recipeID.toString())
 
         if (!srcDir.exists()) {
-            throw FileNotFoundException(tempDirName + " dir does not exist. Why do we want to store anything that does not exist?")
+            throw FileNotFoundException(tempDirName + " dir does not exist. Why do we want to " +
+                "store anything that does not exist?")
         }
 
         destDir.mkdirs()
@@ -134,12 +156,13 @@ class RecipeService(private val context: Context) {
             db = CookDB.getCookDB(context)
 
             for (image in srcDir.listFiles()!!) {
-                val recipePhotoId = db!!.recipeDao().insertRecipePhoto(RecipePhoto(0, recipeID))
+                val recipePhotoId = db!!.recipeDao().insertRecipePhoto(RecipePhoto(0,
+                    recipeID))
                 val imgName = getImageName(recipePhotoId)
                 image.copyTo(File(destDir, imgName))
                 image.delete()
             }
-            callback.onDataReady(null)
+            callback?.onDataReady(null)
         }).start()
     }
 
