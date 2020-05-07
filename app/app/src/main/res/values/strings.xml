@@ -12,8 +12,11 @@
     <string-array name="s_item">
         <item>Meat</item>
         <item>Side</item>
+        <item>Max cook time 30 min</item>
+        <item>Min cook time 30 min</item>
+        <item>Max prep time 15 min</item>
+        <item>Min prep time 15 min</item>
     </string-array>
-
     <string name="title_add_recipes">Add Recipe</string>
     <string name="title_edit_recipe">Edit Recipe</string>
     <string name="create_edit_recipes_name">Name:</string>
@@ -27,7 +30,7 @@
     <string name="create_edit_recipes_fotos">Fotos:</string>
 
     <string name="minutes_text_label">Minutes</string>
-    
+
     <string-array name="skillLevel">
         <item>Beginner</item>
         <item>Intermediate</item>

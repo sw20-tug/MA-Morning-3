@@ -40,7 +40,6 @@ class RecipesFragment : Fragment() {
         lvRecipes = root.findViewById(R.id.list_recipes)
         registerForContextMenu(lvRecipes);
         val floatingButton: FloatingActionButton = root.findViewById(R.id.item_add_button)
-        Log.d("UI-Testing", "item_add_button is clickable: " + floatingButton.isClickable)
         floatingButton.setOnClickListener {
             val intent = Intent(activity, AddRecipeActivity::class.java)
             startActivity(intent)
@@ -146,15 +145,8 @@ class RecipesFragment : Fragment() {
 
                     val builder = AlertDialog.Builder(context!!)
                     builder.setTitle("Choose filters")
+                    var filters = resources.getStringArray(R.array.s_item)
 
-                    val filters = arrayOf(
-                        "Meat",
-                        "Side",
-                        "Cooking < 30 minutes",
-                        "Cooking >= 30 minutes",
-                        "Preparation < 15 minutes",
-                        "Preparation >= 15 minutes"
-                    )
                     val checkedItems = booleanArrayOf(false, false, false, false, false, false)
                     builder.setMultiChoiceItems(filters, checkedItems) { dialog, which, isChecked ->
 
