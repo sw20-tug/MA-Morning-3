@@ -138,13 +138,13 @@ class FavouritesFragment : Fragment() {
 
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
+                lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!, this@FavouritesFragment)
                 if (data != null) {
                     lv = data
                 }
             }
         }
-        RecipeService(context!!).getFavoriteRecipes(readyListener)
+        RecipeService(context!!).getFavouriteRecipes(readyListener)
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
@@ -166,7 +166,7 @@ class FavouritesFragment : Fragment() {
                 val readyListener = object : DataReadyListener<List<Recipe>> {
                     override fun onDataReady(data: List<Recipe>?) {
                         activity!!.runOnUiThread {
-                            lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
+                            lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!, this@FavouritesFragment)
                         }
                     }
                 }
@@ -203,11 +203,11 @@ class FavouritesFragment : Fragment() {
                         if (item.name.toLowerCase().contains(newText!!.toLowerCase())) {
                             tmp.add(item)
                         }
-                        list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                        list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@FavouritesFragment)
                     }
                 }
                 else {
-                    list!!.adapter = RecipeAdapter(context!!, lv, activity!!)
+                    list!!.adapter = RecipeAdapter(context!!, lv, activity!!, this@FavouritesFragment)
                 }
                 return true
             }
@@ -254,7 +254,7 @@ class FavouritesFragment : Fragment() {
                             if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
                             if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
                             if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@FavouritesFragment)
                         }
 
                         else {
@@ -263,7 +263,7 @@ class FavouritesFragment : Fragment() {
                             if (!checked[2] and checked[3]) tmp  = filterByCookMinutes(tmp, false)
                             if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
                             if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@FavouritesFragment)
                         }
                     }
                     builder.setNegativeButton("Cancel", null)

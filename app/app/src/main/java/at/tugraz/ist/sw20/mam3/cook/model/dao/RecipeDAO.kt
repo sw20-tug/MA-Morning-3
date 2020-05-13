@@ -16,8 +16,8 @@ interface RecipeDAO {
     @Query ("SELECT * FROM recipe")
     fun getAllRecipies(): List<Recipe>
 
-    @Query ("SELECT * FROM recipe WHERE favorite = 1")
-    fun getFavorites(): List<Recipe>
+    @Query ("SELECT * FROM recipe WHERE favourite = 1")
+    fun getFavourites(): List<Recipe>
 
     @Delete
     fun deleteRecipe(recipe: Recipe)
@@ -30,6 +30,9 @@ interface RecipeDAO {
 
     @Insert
     fun insertStep(step: Step): Long
+
+    @Query ("UPDATE recipe SET favourite = :isFavourite WHERE recipeID = :recipeID")
+    fun setRecipeFavourite(recipeID: Long, isFavourite: Boolean)
 
     @Query ("SELECT * FROM recipePhoto WHERE recipeID = :recipeID" )
     fun getAllPhotosFromRecipe(recipeID: Long): List<RecipePhoto>
