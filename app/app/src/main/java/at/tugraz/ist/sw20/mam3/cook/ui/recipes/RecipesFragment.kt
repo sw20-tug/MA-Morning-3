@@ -144,15 +144,8 @@ class RecipesFragment : Fragment() {
 
                     val builder = AlertDialog.Builder(context!!)
                     builder.setTitle("Choose filters")
+                    var filters = resources.getStringArray(R.array.s_item)
 
-                    val filters = arrayOf(
-                        "Meat",
-                        "Side",
-                        "Cooking < 30 minutes",
-                        "Cooking >= 30 minutes",
-                        "Preparation < 15 minutes",
-                        "Preparation >= 15 minutes"
-                    )
                     val checkedItems = booleanArrayOf(false, false, false, false, false, false)
                     builder.setMultiChoiceItems(filters, checkedItems) { dialog, which, isChecked ->
 
