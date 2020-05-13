@@ -1,6 +1,5 @@
 package at.tugraz.ist.sw20.mam3.cook
 
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
@@ -8,10 +7,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
-import at.tugraz.ist.sw20.mam3.cook.ui.recipes.RecipesFragment
 import org.junit.Test
 import org.junit.runner.RunWith
 
