@@ -65,7 +65,7 @@ class RecipesFragment : Fragment() {
                 if (data != null) {
                     listv = data
                     activity!!.runOnUiThread {
-                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
+                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!, this@RecipesFragment)
                     }
                 }
             }
@@ -92,7 +92,7 @@ class RecipesFragment : Fragment() {
                             val readyListener = object : DataReadyListener<List<Recipe>> {
                                 override fun onDataReady(data: List<Recipe>?) {
                                     activity!!.runOnUiThread {
-                                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
+                                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!, this@RecipesFragment)
                                     }
                                 }
                             }
@@ -128,10 +128,10 @@ class RecipesFragment : Fragment() {
                         if (item.name.toLowerCase().contains(newText!!.toLowerCase())) {
                             tmp.add(item)
                         }
-                        list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                        list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@RecipesFragment)
                     }
                 } else {
-                    list!!.adapter = RecipeAdapter(context!!, listv, activity!!)
+                    list!!.adapter = RecipeAdapter(context!!, listv, activity!!, this@RecipesFragment)
                 }
                 return true
             }
@@ -183,14 +183,14 @@ class RecipesFragment : Fragment() {
                             if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
                             if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
                             if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@RecipesFragment)
                         } else {
                             var tmp: MutableList<Recipe> = listv as MutableList<Recipe>
                             if (checked[2] and !checked[3]) tmp = filterByCookMinutes(tmp, true)
                             if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
                             if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
                             if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@RecipesFragment)
                         }
                     }
                     builder.setNegativeButton("Cancel", null)

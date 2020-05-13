@@ -11,13 +11,16 @@ import androidx.fragment.app.FragmentActivity
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.RecipeDetailActivity
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
+import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
+import at.tugraz.ist.sw20.mam3.cook.ui.favourites.FavouritesFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_recipes.*
 import kotlinx.android.synthetic.main.item_summarized_recipe.view.*
 
-class RecipeAdapter(private val context : Context, private val recipes : List<Recipe>, private val activity: FragmentActivity) : BaseAdapter() {
+class RecipeAdapter(private val context : Context, private val recipes : List<Recipe>, private val activity: FragmentActivity, private val fragment: Fragment) : BaseAdapter() {
     private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private var recipeList : MutableList<Recipe> = recipes.toMutableList()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view : View
@@ -53,7 +56,8 @@ class RecipeAdapter(private val context : Context, private val recipes : List<Re
         titleTextView.text = recipe.name
         if(recipe.favourite)
             favouritesBtn.setImageResource(R.drawable.ic_star_black_24dp)
-            //favouritesBtn.background.state = intArrayOf(android.R.attr.state_pressed)
+        else
+            favouritesBtn.setImageResource(R.drawable.ic_star_border_black_24dp)
         typeTextView.text = recipe.kind
         prepTimeTextView.text = recipe.prepMinutes.toString()   // TODO: format correctly
         cookTimeTextView.text = recipe.cookMinutes.toString()   // TODO: format correctly
@@ -65,15 +69,20 @@ class RecipeAdapter(private val context : Context, private val recipes : List<Re
         favouritesBtn.setOnClickListener {
             if(recipe.favourite) {
                 RecipeService(context).setRecipeFavourite(recipe, false)
-                favouritesBtn.setImageResource(R.drawable.ic_star_black_24dp)
+                favouritesBtn.setImageResource(R.drawable.ic_star_border_black_24dp)
             } else {
                 RecipeService(context).setRecipeFavourite(recipe, true)
-                favouritesBtn.setImageResource(R.drawable.ic_star_border_black_24dp)
-                //favouritesBtn.background.state = intArrayOf(android.R.attr.state_pressed)
+                favouritesBtn.setImageResource(R.drawable.ic_star_black_24dp)
             }
 
-            //val frag : Fragment = activity.nav_host_fragment.
-            //activity.supportFragmentManager.beginTransaction().detach(frag).attach(frag).commit()
+            if (fragment is FavouritesFragment){
+                removeItem(position)
+            } else {
+                setItem(position, Recipe(recipe.recipeID, recipe.name, recipe.description, recipe.kind,
+                    recipe.difficulty, recipe.prepMinutes, recipe.cookMinutes, !recipe.favourite))
+            }
+
+            notifyDataSetChanged()
         }
 
         // TODO: Load image
@@ -89,8 +98,16 @@ class RecipeAdapter(private val context : Context, private val recipes : List<Re
         return view
     }
 
+    private fun removeItem(position: Int){
+        recipeList.removeAt(position)
+    }
+
+    private fun setItem(position: Int, recipe: Recipe) {
+        recipeList[position] = recipe
+    }
+
     override fun getItem(position: Int): Any {
-        return recipes[position]
+        return recipeList[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -98,7 +115,7 @@ class RecipeAdapter(private val context : Context, private val recipes : List<Re
     }
 
     override fun getCount(): Int {
-        return recipes.size
+        return recipeList.size
     }
 
     private class ViewHolder {
