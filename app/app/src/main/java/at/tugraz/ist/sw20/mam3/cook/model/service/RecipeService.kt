@@ -102,6 +102,14 @@ class RecipeService(private val context: Context) {
         }).start()
     }
 
+    fun getAllTempPhotos(callback: DataReadyListener<List<Uri>>) {
+        Thread(Runnable {
+            val dir = File(context.filesDir, mainDirName).resolve(tempDirName)
+            val uris = dir.listFiles()?.map(File::toUri);
+            callback.onDataReady(uris)
+        }).start()
+    }
+
     fun storeImageTemporary(imageUri : Uri) : Uri {
         return storeImageTemporary(MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri))
     }
@@ -110,7 +118,7 @@ class RecipeService(private val context: Context) {
         val dir = File(context.filesDir, mainDirName).resolve(tempDirName)
         dir.mkdirs()
         // TODO: automatically detect cunter
-        val imgName = getImageName(imageNameCounter++)
+        val imgName = getNextTempImageName(dir)
         val outFile = File(dir, imgName)
         outFile.createNewFile()
         val fos = FileOutputStream(outFile)
@@ -158,6 +166,7 @@ class RecipeService(private val context: Context) {
 
     fun deleteImage(recipePhoto : RecipePhoto) {
         val recipeDir = File(context.filesDir, mainDirName).resolve(recipePhoto.recipeID.toString())
+
         recipeDir.resolve(
             getImageName(recipePhoto.photoID)).delete()
 
@@ -171,8 +180,17 @@ class RecipeService(private val context: Context) {
             getImageName(recipePhoto.photoID)).toUri()
     }
 
-    private fun getImageName(recipePhotoId : Long) : String {
-        return "img_$recipePhotoId.jpg"
+    private fun getNextTempImageName(dir : File) : String {
+        var id = 0.toLong()
+
+        while (dir.resolve(getImageName(id)).exists()) {
+            id++
+        }
+        return getImageName(id)
+    }
+
+    private fun getImageName(id : Long) : String {
+        return "img_$id.jpg"
     }
 
 }
