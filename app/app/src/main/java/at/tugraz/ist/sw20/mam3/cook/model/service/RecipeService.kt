@@ -105,7 +105,8 @@ class RecipeService(private val context: Context) {
     fun getAllTempPhotos(callback: DataReadyListener<List<Uri>>) {
         Thread(Runnable {
             val dir = File(context.filesDir, mainDirName).resolve(tempDirName)
-            val uris = dir.listFiles()?.map(File::toUri);
+            val uris = dir.listFiles()?.map(File::toUri)
+
             callback.onDataReady(uris)
         }).start()
     }

@@ -57,8 +57,9 @@ class AddRecipesFragment : Fragment() {
         root = inflater.inflate(R.layout.fragment_add_edit_recipe, container, false)
 
         lvImages = root.findViewById<RecyclerView>(R.id.image_input_recycler_view)
-        lvImages.layoutManager = LinearLayoutManager(context)
-        lvImages.isNestedScrollingEnabled = false
+        lvImages.adapter = ImagePreviewAdapter(context!!, null, emptyList())
+        lvImages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        lvImages.isNestedScrollingEnabled = true
         lvImages.setHasFixedSize(true)
 
         setViewLabels()
@@ -172,18 +173,22 @@ class AddRecipesFragment : Fragment() {
 
         imageAddBtn.setOnClickListener {
             Toast.makeText(context!!, "Clicked add image button", Toast.LENGTH_LONG).show()
-            val dialog = AlertDialog.Builder(context)
+            val dialogBuilder = AlertDialog.Builder(context)
             val cv = layoutInflater.inflate(R.layout.dialog_add_photo, null) as View
+            val dialog = dialogBuilder.create()
             dialog.setView(cv)
+
             cv.findViewById<Button>(R.id.dialog_take_picture_button).setOnClickListener {
                 Toast.makeText(context!!, "Open Camera" ,Toast.LENGTH_LONG).show()
                 val intent =  Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                dialog.cancel()
                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
             }
             cv.findViewById<Button>(R.id.dialog_gallery_button).setOnClickListener {
                 Toast.makeText(context!!, "Open Gallery" ,Toast.LENGTH_LONG).show()
                 val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 intent.type = "image/*"
+                dialog.cancel()
                 startActivityForResult(intent, RESULT_LOAD_IMAGES)
             }
 
@@ -206,7 +211,6 @@ class AddRecipesFragment : Fragment() {
                     activity!!.runOnUiThread {
                         lvImages.adapter = ImagePreviewAdapter(context!!, null, data)
                     }
-                    activity!!.finish();
                 }
             }
             val allTempImages = recipeService.getAllTempPhotos(dataReadyListener)
@@ -222,9 +226,11 @@ class AddRecipesFragment : Fragment() {
             val dataReadyListener = object : DataReadyListener<List<Uri>> {
                 override fun onDataReady(data: List<Uri>?) {
                     activity!!.runOnUiThread {
+                        Log.d("Photo Preview", "Before Adapter call")
                         lvImages.adapter = ImagePreviewAdapter(context!!, null, data)
+                        Log.d("Photo Preview", "After Adapter call")
                     }
-                    activity!!.finish();
+
                 }
             }
             val allTempImages = recipeService.getAllTempPhotos(dataReadyListener)
