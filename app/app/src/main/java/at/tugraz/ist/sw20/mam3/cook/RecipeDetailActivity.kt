@@ -1,7 +1,11 @@
 package at.tugraz.ist.sw20.mam3.cook
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
+import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.RecipeDetailFragment
 
 class RecipeDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,5 +30,24 @@ class RecipeDetailActivity : AppCompatActivity() {
             }
         })*/
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.toolbar_edit_detail_recipe, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_edit_recipe -> {
+                val recipeDetailFragment = supportFragmentManager.fragments[0] as RecipeDetailFragment
+                recipeDetailFragment.editRecipe()
+            }
+            android.R.id.home -> {
+                finish()
+            }
+        }
+        return true
     }
 }

@@ -2,9 +2,7 @@ package at.tugraz.ist.sw20.mam3.cook.ui.add_recipes
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
@@ -75,6 +73,11 @@ class AddRecipesFragment : Fragment() {
 
         return root
     }
+
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        val menuInflater = activity!!.menuInflater
+//        menuInflater.inflate(R.menu.toolbar_edit_detail_recipe, menu)
+//    }
 
     private fun setViewLabels() {
         val textViewName: TextView = root.text_input_name.findViewById(R.id.text_input_description)
