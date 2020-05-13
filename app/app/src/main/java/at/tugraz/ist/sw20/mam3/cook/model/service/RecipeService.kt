@@ -114,6 +114,22 @@ class RecipeService(private val context: Context) {
         }).start()
     }
 
+    fun deleteStep(step: Step, callback: DataReadyListener<Boolean>? = null) {
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+            db!!.recipeDao().deleteStep(step)
+            callback?.onDataReady(true)
+        }).start()
+    }
+
+    fun updateStep(step: Step, callback: DataReadyListener<Boolean>? = null) {
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+            db!!.recipeDao().updateStep(step)
+            callback?.onDataReady(true)
+        }).start()
+    }
+
     fun getAllPhotosFromRecipe(recipe: Recipe, callback: DataReadyListener<List<RecipePhoto>>) {
         // Get db instance here
         Thread(Runnable {

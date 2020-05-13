@@ -8,5 +8,5 @@ import java.io.Serializable
 data class Step(
     @PrimaryKey(autoGenerate = true) var stepID: Long,
     var recipeID: Long,
-    val name: String
+    var name: String
 ) : Serializable

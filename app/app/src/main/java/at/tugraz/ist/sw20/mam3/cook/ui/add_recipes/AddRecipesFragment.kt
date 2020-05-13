@@ -1,13 +1,19 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.add_recipes
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
+import androidx.transition.Visibility
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
@@ -16,13 +22,13 @@ import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.adapters.InstructionAdapter
-import at.tugraz.ist.sw20.mam3.cook.ui.recipes.RecipesFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.fragment_add_edit_recipe.view.*
 import kotlinx.android.synthetic.main.item_ingredients_input.*
+
 
 class AddRecipesFragment : Fragment() {
 
@@ -162,20 +168,77 @@ class AddRecipesFragment : Fragment() {
         val btnAdd = root.text_input_instructions
             .findViewById<MaterialButton>(R.id.instruction_input_button)
 
+        val btnCancel = root.text_input_instructions
+            .findViewById<MaterialButton>(R.id.instruction_cancel_button)
+
         lvInstructions.adapter = InstructionAdapter(context!!, steps)
 
+        lvInstructions.setOnItemLongClickListener { parent, view, position, id ->
+            val step = steps[position]
+            if (step.stepID > 0) {
+                recipeService.deleteStep(step)
+            }
+
+            steps.removeAt(position)
+
+            (lvInstructions.adapter as InstructionAdapter).notifyDataSetChanged()
+            true
+        }
+
+        val text = root.text_input_instructions
+            .findViewById<TextInputEditText>(R.id.instruction_input_inputfield)
+
+        var selectedStep: Step? = null
+
+        lvInstructions.setOnItemClickListener { parent, view, position, id ->
+            val step = steps[position]
+            selectedStep = step
+            text.setText(step.name)
+            text.requestFocus()
+            text.setSelection(step.name.length)
+            val inputMethodManager = context!!.getSystemService(Context.INPUT_METHOD_SERVICE)
+                    as InputMethodManager
+            inputMethodManager.showSoftInput(text, InputMethodManager.SHOW_IMPLICIT)
+
+            btnAdd.text = getString(R.string.save_button_text)
+
+            btnCancel.visibility = View.VISIBLE
+        }
+
         btnAdd.setOnClickListener {
-            val text = root.text_input_instructions
-                .findViewById<TextInputEditText>(R.id.instruction_input_inputfield)
             val stepText = text.text.toString()
 
             if (stepText.isNotBlank()) {
-                val step = Step(0, 0, stepText)
-                steps.add(step)
-                lvInstructions.adapter = InstructionAdapter(context!!, steps)
+                if (selectedStep != null) {
+                    selectedStep!!.name = stepText
+                    btnAdd.text = getString(R.string.add_button_text)
+
+                    if (selectedStep!!.stepID > 0) {
+                        recipeService.updateStep(selectedStep!!)
+                    }
+
+                    btnCancel.visibility = View.GONE
+
+                    selectedStep = null
+                }
+                else {
+                    val step = Step(0, 0, stepText)
+                    steps.add(step)
+                }
+
+                (lvInstructions.adapter as InstructionAdapter).notifyDataSetChanged()
                 setListViewHeightBasedOnChildren(lvInstructions)
                 text.text?.clear()
             }
+        }
+
+        btnCancel.setOnClickListener {
+            text.text?.clear()
+            selectedStep = null
+            val inputMethodManager = context!!.getSystemService(Context.INPUT_METHOD_SERVICE)
+                    as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(text.windowToken, 0)
+            btnCancel.visibility = View.GONE
         }
     }
 

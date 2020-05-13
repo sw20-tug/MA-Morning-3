@@ -11,6 +11,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe_detail)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         /*
         val recipeService = RecipeService(this)

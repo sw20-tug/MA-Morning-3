@@ -40,6 +40,9 @@ interface RecipeDAO {
     @Delete
     fun deleteStep(step: Step)
 
+    @Update
+    fun updateStep(step: Step)
+
     @Query ("SELECT * FROM recipePhoto WHERE recipeID = :recipeID" )
     fun getAllPhotosFromRecipe(recipeID: Long): List<RecipePhoto>
 
