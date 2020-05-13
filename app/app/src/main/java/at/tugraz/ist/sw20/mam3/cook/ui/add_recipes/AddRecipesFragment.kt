@@ -316,8 +316,8 @@ class AddRecipesFragment : Fragment() {
                 prepTime.toInt(), cookTime.toInt(), false)
         }
         else {
-            var tmpRecipe = Recipe(recipe!!.recipeID , name, descr, type, difficulty,
-                prepTime.toInt(), cookTime.toInt(), false)
+            val tmpRecipe = Recipe(recipe!!.recipeID , name, descr, type, difficulty,
+                prepTime.toInt(), cookTime.toInt(), recipe!!.favourite)
 
             tmpRecipe.ingredients = recipe!!.ingredients
             tmpRecipe.steps = recipe!!.steps

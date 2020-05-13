@@ -14,7 +14,7 @@ data class Recipe (
     val difficulty: String,
     val prepMinutes: Int,
     val cookMinutes: Int,
-    val favorite: Boolean
+    val favourite: Boolean
     ) : Serializable {
 
     @Ignore

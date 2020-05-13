@@ -2,16 +2,11 @@ package at.tugraz.ist.sw20.mam3.cook.ui.favourites
 
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageButton
-import android.view.*
 import android.widget.AdapterView
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -143,16 +138,24 @@ class FavouritesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         favouritesViewModel = ViewModelProvider(this).get(FavouritesViewModel::class.java)
+    }
 
+    override fun onResume() {
+        super.onResume()
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
-                if (data != null) {
-                    lv = data
+                activity!!.runOnUiThread {
+                    lvFavorites.adapter = RecipeAdapter(
+                        context!!, data ?: listOf(), activity!!,
+                        this@FavouritesFragment
+                    )
+                    if (data != null) {
+                        lv = data
+                    }
                 }
             }
         }
-        RecipeService(context!!).getFavoriteRecipes(readyListener)
+        RecipeService(context!!).getFavouriteRecipes(readyListener)
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
@@ -165,7 +168,7 @@ class FavouritesFragment : Fragment() {
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         if (item.toString().equals(activity!!.getString(R.string.recipe_option_delete))) {
-            startDeleteFavouriteRecipe(item)
+            startDeleteFavouriteRecipe()
         }
         else if (item.toString() == activity!!.getString(R.string.recipe_option_edit)) {
             startEditFavouriteRecipe()
@@ -173,29 +176,36 @@ class FavouritesFragment : Fragment() {
         return super.onContextItemSelected(item)
     }
 
-    private fun startDeleteFavouriteRecipe(item: MenuItem) {
-
+    private fun startDeleteFavouriteRecipe() {
         val dialogBuilder = AlertDialog.Builder(activity!!)
-        dialogBuilder.setPositiveButton(
-            activity!!.getString(R.string.recipe_option_delete),
-            DialogInterface.OnClickListener { dialog, id ->
-                RecipeService(context!!).deleteRecipe(clickedRecipe)
-                Toast.makeText(context!!, "deleted", Toast.LENGTH_LONG).show()
-                val readyListener = object : DataReadyListener<List<Recipe>> {
-                    override fun onDataReady(data: List<Recipe>?) {
-                        activity!!.runOnUiThread {
-                            lvFavorites.adapter =
-                                RecipeAdapter(context!!, data ?: listOf(), activity!!)
-                        }
+        dialogBuilder.setPositiveButton(activity!!.getString(R.string.delete_button_text),
+            DialogInterface.OnClickListener {dialog, id ->
+
+            val recipeListReadyListener = object : DataReadyListener<List<Recipe>> {
+                override fun onDataReady(data: List<Recipe>?) {
+                    activity!!.runOnUiThread {
+                        lvFavorites.adapter = RecipeAdapter(
+                            context!!, data ?: listOf(), activity!!, this@FavouritesFragment
+                        )
                     }
                 }
-                RecipeService(context!!).getAllRecipes(readyListener)
-            })
-            .setNegativeButton(
-                activity!!.getString(R.string.cancel_button_text),
-                DialogInterface.OnClickListener { dialog, id ->
-                    dialog.dismiss()
-                })
+            }
+
+            val deleteFinishedListener = object : DataReadyListener<Boolean> {
+                override fun onDataReady(data: Boolean?) {
+                    RecipeService(context!!).getAllRecipes(recipeListReadyListener)
+                }
+            }
+
+            RecipeService(context!!).deleteRecipe(clickedRecipe, deleteFinishedListener)
+
+            Toast.makeText(context!!, "deleted", Toast.LENGTH_LONG).show()
+        })
+        .setNegativeButton(activity!!.getString(R.string.cancel_button_text),
+            DialogInterface.OnClickListener { dialog, id ->
+                dialog.dismiss()
+        })
+
         val alert = dialogBuilder.create()
         alert.setTitle("Are you sure you want to delete the recipe?")
         alert.show()
@@ -227,11 +237,11 @@ class FavouritesFragment : Fragment() {
                         if (item.name.toLowerCase().contains(newText!!.toLowerCase())) {
                             tmp.add(item)
                         }
-                        list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                        list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@FavouritesFragment)
                     }
                 }
                 else {
-                    list!!.adapter = RecipeAdapter(context!!, lv, activity!!)
+                    list!!.adapter = RecipeAdapter(context!!, lv, activity!!, this@FavouritesFragment)
                 }
                 return true
             }
@@ -244,12 +254,13 @@ class FavouritesFragment : Fragment() {
 
                     val builder = AlertDialog.Builder(context!!)
                     builder.setTitle("Choose filters")
+                    var filters = resources.getStringArray(R.array.s_item)
 
-                    val filters = arrayOf("Meat", "Side", "Cooking < 30 minutes", "Cooking >= 30 minutes", "Preparation < 15 minutes", "Preparation >= 15 minutes")
                     val checkedItems = booleanArrayOf(false, false, false, false, false, false)
                     builder.setMultiChoiceItems(filters, checkedItems) { dialog, which, isChecked ->
 
                     }
+
 
                     builder.setPositiveButton("OK") { dialog, which ->
                         var tmp : MutableList<Recipe> = mutableListOf()
@@ -277,7 +288,7 @@ class FavouritesFragment : Fragment() {
                             if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
                             if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
                             if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@FavouritesFragment)
                         }
 
                         else {
@@ -286,7 +297,7 @@ class FavouritesFragment : Fragment() {
                             if (!checked[2] and checked[3]) tmp  = filterByCookMinutes(tmp, false)
                             if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
                             if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@FavouritesFragment)
                         }
                     }
                     builder.setNegativeButton("Cancel", null)

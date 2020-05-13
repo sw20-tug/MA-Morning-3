@@ -27,17 +27,17 @@ class RecipeService(private val context: Context) {
         // Get db instance here
         Thread(Runnable {
             db = CookDB.getCookDB(context)
-            val allRecipies = db!!.recipeDao().getAllRecipies()
-            callback.onDataReady(allRecipies)
+            val allRecipes = db!!.recipeDao().getAllRecipies()
+            callback.onDataReady(allRecipes)
         }).start()
     }
 
-    fun getFavoriteRecipes(callback: DataReadyListener<List<Recipe>>) {
+    fun getFavouriteRecipes(callback: DataReadyListener<List<Recipe>>) {
         // Get db instance here
         Thread(Runnable {
             db = CookDB.getCookDB(context)
-            val allRecipies = db!!.recipeDao().getFavorites()
-            callback.onDataReady(allRecipies)
+            val allRecipes = db!!.recipeDao().getFavourites()
+            callback.onDataReady(allRecipes)
         }).start()
     }
 
@@ -97,7 +97,7 @@ class RecipeService(private val context: Context) {
     }
 
     // Callback function call when finished
-    fun deleteRecipe(recipe: Recipe) {
+    fun deleteRecipe(recipe: Recipe, callback: DataReadyListener<Boolean>? = null) {
         // Get db instance here
         Thread(Runnable {
             db = CookDB.getCookDB(context)
@@ -108,9 +108,19 @@ class RecipeService(private val context: Context) {
                         db!!.recipeDao().deleteRecipePhoto(image);
                     }
                     db!!.recipeDao().deleteRecipe(recipe)
+
+                    callback?.onDataReady(true)
                 }
             }
             getAllPhotosFromRecipe(recipe, readyListener)
+        }).start()
+    }
+
+    fun setRecipeFavourite(recipe: Recipe, isFavourite: Boolean) {
+        // Get db instance here
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+            db!!.recipeDao().setRecipeFavourite(recipe.recipeID, isFavourite)
         }).start()
     }
 
