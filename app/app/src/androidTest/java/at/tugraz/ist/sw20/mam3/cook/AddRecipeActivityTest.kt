@@ -109,6 +109,8 @@ class AddRecipeActivityTest {
     fun testElements() {
         val activityScenario = ActivityScenario.launch(AddRecipeActivity::class.java)
 
+        onView(withId(R.id.add_edit_recipe_fragment)).check(matches(isDisplayed()))
+        onView(withId(R.id.recipe_scroll_view)).check(matches(isDisplayed()))
         onView(withId(R.id.text_input_name)).check(matches(isDisplayed()))
         onView(withId(R.id.text_input_descr)).check(matches(isDisplayed()))
         onView(withId(R.id.text_input_type)).check(matches(isDisplayed()))
