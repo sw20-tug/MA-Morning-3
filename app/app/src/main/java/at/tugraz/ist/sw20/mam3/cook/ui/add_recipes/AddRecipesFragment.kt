@@ -36,7 +36,7 @@ class AddRecipesFragment : Fragment() {
 
     private lateinit var root: View
 
-    private val steps: MutableList<Step> = mutableListOf()
+    private var steps: MutableList<Step> = mutableListOf()
 
     private var recipe: Recipe? = null
 
@@ -245,10 +245,20 @@ class AddRecipesFragment : Fragment() {
             return false
         }
 
-        recipe = Recipe(if (recipe == null) 0 else recipe!!.recipeID, name, descr, type, difficulty,
-            prepTime.toInt(), cookTime.toInt(), false
-        )
+        if (recipe == null) {
+            recipe = Recipe( 0 , name, descr, type, difficulty,
+                prepTime.toInt(), cookTime.toInt(), false)
+        }
+        else {
+            var tmpRecipe = Recipe(recipe!!.recipeID , name, descr, type, difficulty,
+                prepTime.toInt(), cookTime.toInt(), false)
 
+            tmpRecipe.ingredients = recipe!!.ingredients
+            tmpRecipe.steps = recipe!!.steps
+            tmpRecipe.photos = recipe!!.photos
+
+            recipe = tmpRecipe
+        }
 
         recipeService.addOrUpdateRecipe(recipe!!, ingredients, steps, photos,
             object : DataReadyListener<Long> {

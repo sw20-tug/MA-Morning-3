@@ -71,12 +71,13 @@ class RecipeService(private val context: Context) {
             }
 
             for (step in steps) {
+                step.stepID = 0
                 step.recipeID = rID
                 db!!.recipeDao().insertStep(step)
             }
 
             //TODO test if this works once photos are a thing
-            storeImages(rID, null)
+//            storeImages(rID, null)
 
             callback.onDataReady(rID)
         }).start()
