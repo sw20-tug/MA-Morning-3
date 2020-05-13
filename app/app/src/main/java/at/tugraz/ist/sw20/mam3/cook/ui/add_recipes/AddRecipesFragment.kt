@@ -97,8 +97,6 @@ class AddRecipesFragment : Fragment() {
         val textViewInstr: TextView =
             root.text_input_instructions.findViewById(R.id.instruction_input_description)
         textViewInstr.setText(R.string.create_edit_recipes_instructions)
-        val textViewImage: TextView = root.text_input_images.findViewById(R.id.image_input_description)
-        textViewImage.setText(R.string.create_edit_recipes_fotos)
 
         val textViewPrepMin: TextView = root.text_input_preptime.findViewById(R.id.time_input_minutes)
         textViewPrepMin.setText(R.string.minutes_text_label)
@@ -166,7 +164,10 @@ class AddRecipesFragment : Fragment() {
             }
         }
     }
+
     fun setupImages() {
+
+        RecipeService(context!!).deleteTemporaryImages();
 
         val imageAddBtn = root.image_add_image_button
         .findViewById<ImageView>(R.id.image_add_image_button)
@@ -199,13 +200,11 @@ class AddRecipesFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        //  TODO: sample code taking pictures and loading from storage
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data!!.extras!!.get("data") as Bitmap
             val recipeService = RecipeService(context!!)
             // TODO: handle edit recipe
             recipeService.storeImageTemporary(imageBitmap)
-            // TODO: update gallery
             val dataReadyListener = object : DataReadyListener<List<Uri>> {
                 override fun onDataReady(data: List<Uri>?) {
                     activity!!.runOnUiThread {
@@ -226,9 +225,7 @@ class AddRecipesFragment : Fragment() {
             val dataReadyListener = object : DataReadyListener<List<Uri>> {
                 override fun onDataReady(data: List<Uri>?) {
                     activity!!.runOnUiThread {
-                        Log.d("Photo Preview", "Before Adapter call")
                         lvImages.adapter = ImagePreviewAdapter(context!!, null, data)
-                        Log.d("Photo Preview", "After Adapter call")
                     }
 
                 }
