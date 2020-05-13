@@ -2,16 +2,11 @@ package at.tugraz.ist.sw20.mam3.cook.ui.favourites
 
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageButton
-import android.view.*
 import android.widget.AdapterView
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
