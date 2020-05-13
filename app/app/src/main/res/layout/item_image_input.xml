@@ -11,17 +11,32 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/image_input_recycler_view"
         android:text=""
-        android:layout_marginStart="@dimen/item_left_margin" />
-<!--        app:layout_constraintBottom_toTopOf="@+id/image_input_recycler_view"-->
+        android:layout_marginStart="@dimen/item_left_margin"
+        />
 
-<!--    <android.support.v7.widget.RecyclerView-->
-<!--        android:id="@id/image_input_recycler_view"-->
-<!--        android:scrollbars="vertical"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/image_input_description"-->
-<!--        app:layout_constraintStart_toStartOf="parent"/>-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/image_input_recycler_view"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/image_input_description"
+        app:layout_constraintBottom_toTopOf="@id/image_add_image_button"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <ImageButton
+        android:id="@+id/image_add_image_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_input_recycler_view"
+        android:background="@drawable/ic_add_a_photo_black_24dp"
+        android:backgroundTint="@color/primaryColor"
+        android:contentDescription="@string/image_add_photos"
+        android:layout_margin="10dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
