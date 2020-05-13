@@ -55,9 +55,9 @@ class RecipeAdapter(private val context : Context, private val recipes : List<Re
         val recipe = getItem(position) as Recipe
         titleTextView.text = recipe.name
         if(recipe.favourite)
-            favouritesBtn.setImageResource(R.drawable.ic_star_black_24dp)
+            favouritesBtn.setImageResource(R.drawable.ic_fav_star_filled)
         else
-            favouritesBtn.setImageResource(R.drawable.ic_star_border_black_24dp)
+            favouritesBtn.setImageResource(R.drawable.ic_fav_star_white)
         typeTextView.text = recipe.kind
         prepTimeTextView.text = recipe.prepMinutes.toString()   // TODO: format correctly
         cookTimeTextView.text = recipe.cookMinutes.toString()   // TODO: format correctly
@@ -69,10 +69,10 @@ class RecipeAdapter(private val context : Context, private val recipes : List<Re
         favouritesBtn.setOnClickListener {
             if(recipe.favourite) {
                 RecipeService(context).setRecipeFavourite(recipe, false)
-                favouritesBtn.setImageResource(R.drawable.ic_star_border_black_24dp)
+                favouritesBtn.setImageResource(R.drawable.ic_fav_star_white)
             } else {
                 RecipeService(context).setRecipeFavourite(recipe, true)
-                favouritesBtn.setImageResource(R.drawable.ic_star_black_24dp)
+                favouritesBtn.setImageResource(R.drawable.ic_fav_star_filled)
             }
 
             if (fragment is FavouritesFragment){
