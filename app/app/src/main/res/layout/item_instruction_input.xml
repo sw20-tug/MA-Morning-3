@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:text=""
         android:layout_marginStart="@dimen/margin_item_left_right"
+        android:layout_marginBottom="@dimen/margin_title"
         android:textColor="@color/primaryTextColor"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,11 +22,12 @@
         android:id="@+id/instruction_input_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/item_left_margin_big"
+        android:layout_marginEnd="@dimen/item_left_margin_big"
         app:layout_constraintTop_toBottomOf="@id/instruction_input_description"
         app:layout_constraintBottom_toTopOf="@id/instruction_input_inputfield"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/item_left_margin_big"
-        android:layout_marginEnd="@dimen/item_left_margin_big"/>
+        />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/instruction_input_inputfield"
@@ -52,7 +54,6 @@
         android:backgroundTint="@color/primaryTextColor"
         android:layout_height="wrap_content"
         android:text="@string/cancel_button_text_short"
-        android:layout_marginEnd="@dimen/margin_item_left_right"
         app:layout_constraintTop_toBottomOf="@id/instruction_input_listView"
         app:layout_constraintStart_toEndOf="@id/instruction_input_button"
         app:layout_constraintEnd_toEndOf="parent"

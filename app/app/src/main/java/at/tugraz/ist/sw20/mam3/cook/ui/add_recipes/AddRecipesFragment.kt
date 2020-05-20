@@ -194,6 +194,8 @@ class AddRecipesFragment : Fragment() {
         val lvInstructions = root.text_input_instructions
             .findViewById<ListView>(R.id.instruction_input_listView)
 
+        lvInstructions.divider = null
+
         val btnAdd = root.text_input_instructions
             .findViewById<MaterialButton>(R.id.instruction_input_button)
 
@@ -373,6 +375,8 @@ class AddRecipesFragment : Fragment() {
 
         val lvInstructions = root.text_input_instructions
             .findViewById<ListView>(R.id.instruction_input_listView)
+
+        lvInstructions.divider = null
 
         steps.addAll(recipe!!.steps!!)
         lvInstructions.adapter = InstructionAdapter(context!!, steps)
