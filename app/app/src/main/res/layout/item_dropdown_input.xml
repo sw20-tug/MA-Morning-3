@@ -13,17 +13,27 @@
         android:textColor="@color/primaryTextColor"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/dropdown_input_inputfield"
+        app:layout_constraintBottom_toBottomOf="@id/dropdown_relative_layout"
         />
 
-    <Spinner
-        android:id="@+id/dropdown_input_inputfield"
+    <RelativeLayout
+        android:id="@+id/dropdown_relative_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/dropdown_input_description"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Spinner
+            style="@style/Widget.AppCompat.DropDownItem.Spinner"
+            android:id="@+id/dropdown_input_inputfield"
+            android:layout_width="@dimen/drop_down_menu_width"
+            android:layout_height="@dimen/drop_down_menu_height"
+            android:spinnerMode="dropdown"/>
+
+    </RelativeLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

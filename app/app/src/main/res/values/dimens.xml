@@ -16,4 +16,6 @@
 
     <dimen name="margin_add_recipe_top">10dp</dimen>
     <dimen name="margin_item_left_right">9dp</dimen>
+    <dimen name="drop_down_menu_width">150dp</dimen>
+    <dimen name="drop_down_menu_height">40dp</dimen>
 </resources>
