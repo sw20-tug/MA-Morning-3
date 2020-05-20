@@ -34,6 +34,7 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="which_image_source">Which image source?</string>
+    <string name="hashtag">#</string>
     <string-array name="skillLevel">
         <item>Beginner</item>
         <item>Intermediate</item>
