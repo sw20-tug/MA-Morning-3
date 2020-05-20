@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Version: "
+                android:text="@string/version_title"
                 android:textStyle="bold" />
 
             <TextView
@@ -34,8 +34,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginTop="@dimen/margin_text"
+            android:layout_marginBottom="@dimen/margin_text"
             android:background="@android:color/darker_gray" />
 
         <LinearLayout
@@ -56,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/margin_text"
                 android:autoLink="web"
                 android:linksClickable="true"
                 android:text="@string/icon_provider1" />
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/margin_text"
                 android:autoLink="web"
                 android:linksClickable="true"
                 android:text="@string/icon_provider2" />
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/margin_text"
                 android:autoLink="web"
                 android:linksClickable="true"
                 android:text="@string/icon_provider3" />
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/margin_text"
                 android:autoLink="web"
                 android:linksClickable="true"
                 android:text="@string/icon_provider4"
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/margin_text"
                 android:autoLink="web"
                 android:linksClickable="true"
                 android:text="@string/icon_provider5" />
@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/margin_text"
                 android:autoLink="web"
                 android:linksClickable="true"
                 android:text="@string/icon_provider6" />
@@ -111,8 +111,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginTop="@dimen/margin_text"
+            android:layout_marginBottom="@dimen/margin_text"
             android:background="@android:color/darker_gray" />
 
         <LinearLayout
@@ -127,64 +127,64 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="3dp"
-                android:text="App developed by:"
+                android:text="@string/app_developed_by"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:text="Manuel Doler" />
+                android:layout_marginTop="@dimen/margin_text"
+                android:text="@string/manuel_doler" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:text="Damian Garber" />
+                android:layout_marginTop="@dimen/margin_text"
+                android:text="@string/damian_garber" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:text="Amela Kurtic" />
+                android:layout_marginTop="@dimen/margin_text"
+                android:text="@string/amela_kurtic" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:text="Hannah Lederer" />
+                android:layout_marginTop="@dimen/margin_text"
+                android:text="@string/hannah_lederer" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:text="Thomas Steinbauer" />
+                android:layout_marginTop="@dimen/margin_text"
+                android:text="@string/thomas_steinbauer" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:text="Lukas Stracke" />
+                android:layout_marginTop="@dimen/margin_text"
+                android:text="@string/lukas_stracke" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:text="Alexandra Taupe" />
+                android:layout_marginTop="@dimen/margin_text"
+                android:text="@string/alexandra_taupe" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:text="Paul Weissensteiner" />
+                android:layout_marginTop="@dimen/margin_text"
+                android:text="@string/paul_weissensteiner" />
         </LinearLayout>
 
     </LinearLayout>

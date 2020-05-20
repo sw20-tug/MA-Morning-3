@@ -66,6 +66,16 @@
     <string name="save_button_text">Save</string>
     <string name="add_button_text">Add</string>
     <string name="cancel_button_text_short">X</string>
+    <string name="version_title">Version:</string>
+    <string name="app_developed_by">App developed by:</string>
+    <string name="manuel_doler">Manuel Doler</string>
+    <string name="damian_garber">Damian Garber</string>
+    <string name="amela_kurtic">Amela Kurtic</string>
+    <string name="hannah_lederer">Hannah Lederer</string>
+    <string name="thomas_steinbauer">Thomas Steinbauer</string>
+    <string name="lukas_stracke">Lukas Stracke</string>
+    <string name="alexandra_taupe">Alexandra Taupe</string>
+    <string name="paul_weissensteiner">Paul Weissensteiner</string>
 
 
 </resources>
