@@ -19,17 +19,29 @@ interface RecipeDAO {
     @Query ("SELECT * FROM recipe WHERE favourite = 1")
     fun getFavourites(): List<Recipe>
 
+    @Insert
+    fun insertRecipe(recipe: Recipe): Long
+
     @Delete
     fun deleteRecipe(recipe: Recipe)
 
-    @Insert
-    fun insertRecipe(recipe: Recipe): Long
+    @Update
+    fun updateRecipe(recipe: Recipe)
 
     @Insert
     fun insertIngredient(ingredient: Ingredient): Long
 
+    @Delete
+    fun deleteIngredient(ingredient: Ingredient)
+
     @Insert
     fun insertStep(step: Step): Long
+
+    @Delete
+    fun deleteStep(step: Step)
+
+    @Update
+    fun updateStep(step: Step)
 
     @Query ("UPDATE recipe SET favourite = :isFavourite WHERE recipeID = :recipeID")
     fun setRecipeFavourite(recipeID: Long, isFavourite: Boolean)

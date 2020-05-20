@@ -11,7 +11,7 @@ import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.entities.RecipePhoto
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
 
-@Database(entities = arrayOf(Recipe::class, Ingredient::class, Step::class, RecipePhoto::class), version =3)
+@Database(entities = arrayOf(Recipe::class, Ingredient::class, Step::class, RecipePhoto::class), version = 4)
 abstract class CookDB : RoomDatabase() {
 
     abstract fun recipeDao(): RecipeDAO
