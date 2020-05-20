@@ -11,23 +11,26 @@
         android:id="@+id/ingredient_input_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/primaryTextColor"
+        android:text=""
+        android:layout_marginStart="@dimen/margin_item_left_right"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/ingredient_input_chipGroup"
-        android:text=""
-        android:layout_marginStart="@dimen/item_left_margin"/>
+        />
 
     <com.google.android.material.chip.ChipGroup
+        android:id="@+id/ingredient_input_chipGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/ingredient_input_chipGroup"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/ingredient_input_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/ingredient_input_button"
-        android:layout_marginTop="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="8dp"
         app:singleSelection="true"
         style="@style/Theme.MaterialComponents.Light.DarkActionBar" />
 
@@ -38,13 +41,13 @@
         app:layout_constraintTop_toBottomOf="@id/ingredient_input_chipGroup"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ingredient_input_button"
-        android:layout_marginStart="@dimen/item_left_margin"/>
+        android:layout_marginStart="@dimen/margin_item_left_right"/>
 
     <Button
         android:id="@+id/ingredient_input_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
+        android:text="@string/add"
         app:layout_constraintTop_toBottomOf="@id/ingredient_input_chipGroup"
         app:layout_constraintStart_toEndOf="@id/ingredient_input_inputfield"
         app:layout_constraintEnd_toEndOf="parent"/>

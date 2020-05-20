@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.view.children
+import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -132,8 +133,13 @@ class AddRecipesFragment : Fragment() {
                 chip.setOnCloseIconClickListener {
                     TransitionManager.beginDelayedTransition(ingredient_input_chipGroup)
                     ingredient_input_chipGroup.removeView(chip)
+                    if (ingredient_input_chipGroup.isEmpty()) {
+                        ingredient_input_chipGroup.visibility = View.GONE
+                    }
                 }
-
+                if (ingredient_input_chipGroup.visibility == View.GONE) {
+                    ingredient_input_chipGroup.visibility = View.VISIBLE
+                }
                 ingredient_input_chipGroup.addView(chip)
 
                 textView.text?.clear()
@@ -301,7 +307,7 @@ class AddRecipesFragment : Fragment() {
         }
         else {
             root.text_input_name.findViewById<TextView>(R.id.text_input_description)
-                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+                .setTextColor(resources.getColor(R.color.primaryTextColor, activity!!.theme))
         }
         if (descr.isBlank()) {
             valid = false
@@ -310,12 +316,12 @@ class AddRecipesFragment : Fragment() {
         }
         else {
             root.text_input_descr.findViewById<TextView>(R.id.text_input_description)
-                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+                .setTextColor(resources.getColor(R.color.primaryTextColor, activity!!.theme))
         }
 
         if (!prepTime.isBlank() && (prepTime.toInt() >= 0)) {
             root.text_input_preptime.findViewById<TextView>(R.id.time_input_description)
-                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+                .setTextColor(resources.getColor(R.color.primaryTextColor, activity!!.theme))
         }
         else {
             valid = false
@@ -325,7 +331,7 @@ class AddRecipesFragment : Fragment() {
 
         if (!cookTime.isBlank() && (cookTime.toInt() >= 0)) {
             root.text_input_cooktime.findViewById<TextView>(R.id.time_input_description)
-                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+                .setTextColor(resources.getColor(R.color.primaryTextColor, activity!!.theme))
         }
         else {
             valid = false
@@ -340,7 +346,7 @@ class AddRecipesFragment : Fragment() {
         }
         else {
             root.text_input_ingredients.findViewById<TextView>(R.id.ingredient_input_description)
-                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+                .setTextColor(resources.getColor(R.color.primaryTextColor, activity!!.theme))
         }
 
         if (steps.isEmpty()) {
@@ -350,7 +356,7 @@ class AddRecipesFragment : Fragment() {
         }
         else {
             root.text_input_instructions.findViewById<TextView>(R.id.instruction_input_description)
-                .setTextColor(resources.getColor(R.color.textViewColor, activity!!.theme))
+                .setTextColor(resources.getColor(R.color.primaryTextColor, activity!!.theme))
         }
 
         return valid

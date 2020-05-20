@@ -19,9 +19,9 @@
     </string-array>
     <string name="title_add_recipes">Add Recipe</string>
     <string name="title_edit_recipe">Edit Recipe</string>
-    <string name="create_edit_recipes_name">Name:</string>
+    <string name="create_edit_recipes_name">Recipe Name:</string>
     <string name="create_edit_recipes_descr">Description:</string>
-    <string name="create_edit_recipes_type">Type:</string>
+    <string name="create_edit_recipes_type">Meal Type:</string>
     <string name="create_edit_recipes_difficulty">Difficulty:</string>
     <string name="create_edit_recipes_preptime">Prep Time:</string>
     <string name="create_edit_recipes_cooktime">Cook Time:</string>
@@ -35,6 +35,7 @@
     <string name="gallery">Gallery</string>
     <string name="which_image_source">Which image source?</string>
     <string name="hashtag">#</string>
+    <string name="add">Add</string>
     <string-array name="skillLevel">
         <item>Beginner</item>
         <item>Intermediate</item>
