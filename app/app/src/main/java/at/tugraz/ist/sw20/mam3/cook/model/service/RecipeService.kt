@@ -74,9 +74,8 @@ class RecipeService(private val context: Context) {
                 step.recipeID = rID
                 db!!.recipeDao().insertStep(step)
             }
-            storeImages(rID, null)
+            storeImages(rID, callback)
 
-            callback.onDataReady(rID)
         }).start()
     }
 
@@ -175,7 +174,7 @@ class RecipeService(private val context: Context) {
         return outFile.toUri()
     }
 
-    fun storeImages(recipeID: Long, callback: DataReadyListener<Unit>?) {
+    fun storeImages(recipeID: Long, callback: DataReadyListener<Long>?) {
         val srcDir = File(context.filesDir, mainDirName).resolve(tempDirName)
         val destDir = File(context.filesDir, mainDirName).resolve(recipeID.toString())
 
@@ -191,11 +190,12 @@ class RecipeService(private val context: Context) {
             for (image in srcDir.listFiles()!!) {
                 val recipePhotoId = db!!.recipeDao().insertRecipePhoto(RecipePhoto(0,
                     recipeID))
+                Log.d("DEBUG recipe Photo ID", recipePhotoId.toString())
                 val imgName = getImageName(recipePhotoId)
                 image.copyTo(File(destDir, imgName))
                 image.delete()
             }
-            callback?.onDataReady(null)
+            callback?.onDataReady(recipeID)
         }).start()
     }
 

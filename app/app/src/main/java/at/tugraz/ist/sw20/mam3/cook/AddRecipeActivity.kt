@@ -23,6 +23,9 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private fun customizeActionBar() {
         supportActionBar?.title = getString(R.string.title_add_recipes)
+        if (intent.getLongExtra(AddRecipesFragment.INTENT_EXTRA_RECIPE_ID, -1L) > 0) {
+            supportActionBar?.title = getString(R.string.title_edit_recipe)
+        }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
