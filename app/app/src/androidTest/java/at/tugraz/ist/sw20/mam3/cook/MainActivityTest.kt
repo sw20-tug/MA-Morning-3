@@ -40,11 +40,11 @@ class MainActivityTest {
 
     fun addTestRecipes() {
         var recipe = Recipe(0, "Burger", "...", "fast food","...",
-            10, 5,true)
+            10, 5,false)
         recipeDao.insertRecipe(recipe)
 
         recipe = Recipe(0, "Pizza", "...", "fast food","...",
-            30, 10,true)
+            30, 10,false)
         recipeDao.insertRecipe(recipe)
 
         recipe = Recipe(0, "Pasta", "...", "...","...",
@@ -60,7 +60,7 @@ class MainActivityTest {
         recipeDao.insertRecipe(recipe)
 
         recipe = Recipe(0, "Salami Pizza", "...", "fast food","...",
-            40, 10,true)
+            40, 10,false)
         recipeDao.insertRecipe(recipe)
     }
 
@@ -82,7 +82,7 @@ class MainActivityTest {
         onView(withId(R.id.search)).check(matches(isClickable()))
         onView(withId(R.id.button_add_recipes)).check(matches(isDisplayed()))
         onView(withId(R.id.button_add_recipes)).perform(click())
-
+        onView(withId(R.id.recipe_favourite_star)).check(matches(isClickable()))
     }
 
     @Test
@@ -132,5 +132,15 @@ class MainActivityTest {
         onView(withId(R.id.recipe_type)).check(matches(isDisplayed()))
         onView(withId(R.id.recipe_ingredients_text)).check(matches(isDisplayed()))
         onView(withId(R.id.recipe_instructions_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun testFavButton() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        val recipeItem = onData(anything()).inAdapterView(withId(R.id.list_recipes)).atPosition(0)
+        recipeItem.onChildView(withId(R.id.recipe_favourite_star)).perform(click())
+        onData(anything()).inAdapterView(withId(R.id.list_favorites)).atPosition(0).onChildView(withId(R.id.recipe_title)).check(
+            matches(withText("Burger")))
+//        onView(withId(R.id.recipe_favourite_star)).
     }
 }
