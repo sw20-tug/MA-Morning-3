@@ -2,41 +2,50 @@ package at.tugraz.ist.sw20.mam3.cook
 
 import android.content.Context
 import android.content.Intent
+import androidx.core.content.ContextCompat.startActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.*
 import at.tugraz.ist.sw20.mam3.cook.model.dao.RecipeDAO
 import at.tugraz.ist.sw20.mam3.cook.model.database.CookDB
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.core.IsAnything
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
-
 
 @RunWith(AndroidJUnit4::class)
 
 class EditRecipeActivityTest {
     private lateinit var recipeDao: RecipeDAO
     private var db: CookDB = CookDB.getTestDB(ApplicationProvider.getApplicationContext<Context>())!!
+    private var recipeID = -1L
 
     @Before
     fun setup() {
+        //val context = ApplicationProvider.getApplicationContext<Context>()
+        //db = CookDB.getTestDB(context)!!
         recipeDao = db.recipeDao()
 
-        var recipe = Recipe(0, "Burger", "...", "fast food",
-            "Beginner", 10, 5,true)
-        recipeDao.insertRecipe(recipe)
+        val recipe = Recipe(0, "Pizza", "...", "fast food","...",
+            30, 10,true)
+        recipeID = recipeDao.insertRecipe(recipe)
+
     }
+
 
     @After
     @Throws(IOException::class)
@@ -45,44 +54,36 @@ class EditRecipeActivityTest {
         CookDB.destroyDataBase()
     }
 
-    @Rule // third parameter is set to false which means the activity is not started automatically
-    var mActivityRule: ActivityTestRule<AddRecipeActivity> =
-        ActivityTestRule(AddRecipeActivity::class.java, false, false)
-
     @Test
-    fun editRecipe() {
-        val intent = Intent(ApplicationProvider.getApplicationContext(), AddRecipeActivity::class.java)
-        intent.putExtra(AddRecipesFragment.INTENT_EXTRA_RECIPE_ID, 1)
+    fun addRecipe() {
+        ActivityScenario.launch(MainActivity::class.java)
 
-        mActivityRule.launchActivity(intent)
+        onView(withId(R.id.recipe_title)).perform(longClick())
+        onView(withText("Edit")).check(matches(isDisplayed())).perform(click())
 
         onView(withId(R.id.add_edit_recipe_fragment)).check(matches(isDisplayed()))
         onView(withId(R.id.recipe_scroll_view)).check(matches(isDisplayed()))
-//        onView(allOf(withParent(withId(R.id.text_input_name)), withId(R.id.text_input_inputfield)))
-//            .perform(typeText("Pizza"))
-//        onView(allOf(withParent(withId(R.id.text_input_descr)), withId(R.id.text_input_inputfield)))
-//            .perform(typeText("Blabla"))
-//        onView(allOf(withParent(withId(R.id.text_input_preptime)), withId(R.id.time_input_inputfield)))
-//            .perform(typeText("10"))
-//        onView(allOf(withParent(withId(R.id.text_input_cooktime)), withId(R.id.time_input_inputfield)))
-//            .perform(typeText("10"))
-//        onView(allOf(withParent(withId(R.id.text_input_ingredients)), withId(R.id.ingredient_input_inputfield)))
-//            .perform(typeText("Blabla"))
-//        onView(allOf(withParent(withId(R.id.text_input_ingredients)), withId(R.id.ingredient_input_button)))
-//            .perform(click())
-//
-//
-//        onView(allOf(withParent(withId(R.id.text_input_instructions)), withId(R.id.instruction_input_inputfield)))
-//            .perform(scrollTo(), typeText("Blabla"))
-//        onView(allOf(withParent(withId(R.id.text_input_instructions)), withId(R.id.instruction_input_button)))
-//            .perform(scrollTo(), click())
-//        onView(withId(R.id.action_save_recipe)).perform(click())
-//        ActivityScenario.launch(MainActivity::class.java)
-//
-//
-//        onView(withId(R.id.recipe_title)).check(matches(withText("Pizza")))
-//        println()
+        onView(allOf(withParent(withId(R.id.text_input_name)), withId(R.id.text_input_inputfield)))
+            .perform(replaceText("PizzaEdited"))
+        onView(allOf(withParent(withId(R.id.text_input_descr)), withId(R.id.text_input_inputfield)))
+            .perform(replaceText("Edited Pizza"))
+        onView(allOf(withParent(withId(R.id.text_input_preptime)), withId(R.id.time_input_inputfield)))
+            .perform(replaceText("11"))
+        onView(allOf(withParent(withId(R.id.text_input_cooktime)), withId(R.id.time_input_inputfield)))
+            .perform(replaceText("11"))
+        onView(allOf(withParent(withId(R.id.text_input_ingredients)), withId(R.id.ingredient_input_inputfield)))
+            .perform(replaceText("Edited Step"))
+        onView(allOf(withParent(withId(R.id.text_input_ingredients)), withId(R.id.ingredient_input_button)))
+            .perform(click())
 
+
+        onView(allOf(withParent(withId(R.id.text_input_instructions)), withId(R.id.instruction_input_inputfield)))
+            .perform(scrollTo(), replaceText("Replaced instruction"))
+        onView(allOf(withParent(withId(R.id.text_input_instructions)), withId(R.id.instruction_input_button)))
+            .perform(scrollTo(), click())
+        onView(withId(R.id.action_save_recipe)).perform(click())
+
+        onView(withId(R.id.recipe_title)).check(matches(withText("PizzaEdited")))
     }
 
     @Test
