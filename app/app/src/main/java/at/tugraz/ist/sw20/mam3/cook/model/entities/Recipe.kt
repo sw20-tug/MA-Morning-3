@@ -13,7 +13,7 @@ data class Recipe  (
     val difficulty: String,
     val prepMinutes: Int,
     val cookMinutes: Int,
-    val favorite: Boolean
+    val favourite: Boolean
     ) {
     @Ignore
     var steps: List<Step>? = null
