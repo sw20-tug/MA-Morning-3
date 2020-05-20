@@ -1,18 +1,23 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.add_recipes
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.TransitionManager
+import androidx.transition.Visibility
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
+import at.tugraz.ist.sw20.mam3.cook.model.entities.RecipePhoto
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
@@ -24,13 +29,22 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.fragment_add_edit_recipe.view.*
 import kotlinx.android.synthetic.main.item_ingredients_input.*
 
+
 class AddRecipesFragment : Fragment() {
+
+    companion object {
+        const val INTENT_EXTRA_RECIPE_ID = "recipeID"
+    }
 
     private lateinit var addRecipesViewModel: AddRecipesViewModel
 
     private lateinit var root: View
 
-    private val steps: MutableList<Step> = mutableListOf()
+    private var steps: MutableList<Step> = mutableListOf()
+
+    private var recipe: Recipe? = null
+
+    private lateinit var recipeService: RecipeService
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,15 +54,36 @@ class AddRecipesFragment : Fragment() {
         addRecipesViewModel = ViewModelProvider(this).get(AddRecipesViewModel::class.java)
         root = inflater.inflate(R.layout.fragment_add_edit_recipe, container, false)
 
+        recipeService= RecipeService(context!!)
+
         setViewLabels()
 
-        setupDropdownMenus(root.text_input_type, R.array.types)
-        setupDropdownMenus(root.text_input_difficulty, R.array.skillLevel)
+        setupDropdownMenus(root.text_input_type, R.array.types, null)
+        setupDropdownMenus(root.text_input_difficulty, R.array.skillLevel, null)
         setupIngredients()
         setupInstructions()
 
+        val recipeID = activity!!.intent?.getLongExtra(INTENT_EXTRA_RECIPE_ID,
+            -1)
+
+        if (recipeID!! > -1) {
+            recipeService.getRecipeById(recipeID, object: DataReadyListener<Recipe> {
+                override fun onDataReady(data: Recipe?) {
+                    recipe = data!!
+                    activity!!.runOnUiThread {
+                        setRecipeValues()
+                    }
+                }
+            })
+        }
+
         return root
     }
+
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        val menuInflater = activity!!.menuInflater
+//        menuInflater.inflate(R.menu.toolbar_edit_detail_recipe, menu)
+//    }
 
     private fun setViewLabels() {
         val textViewName: TextView = root.text_input_name.findViewById(R.id.text_input_description)
@@ -84,11 +119,16 @@ class AddRecipesFragment : Fragment() {
 
     }
 
-    private fun setupDropdownMenus(root: View, arrayList: Int) {
-        val skillLevel = resources.getStringArray(arrayList)
+    private fun setupDropdownMenus(root: View, arrayList: Int, selectedItem: String?) {
+        val items = resources.getStringArray(arrayList)
         val spinner: Spinner = root.findViewById(R.id.dropdown_input_inputfield)
-        val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, skillLevel)
-        spinner.adapter = adapter
+
+        if (selectedItem == null) {
+            val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, items)
+            spinner.adapter = adapter
+        } else {
+            spinner.setSelection(items.indexOf(selectedItem))
+        }
     }
 
     private fun setupIngredients() {
@@ -98,26 +138,26 @@ class AddRecipesFragment : Fragment() {
                 R.id.ingredient_input_inputfield)
 
             if (textView.text.toString().isNotBlank()) {
-                val chip = Chip(context!!)
-                chip.text = textView.text
-                chip.isClickable = true
-                chip.isCheckable = false
-                chip.isCloseIconVisible = true
-
-                chip.setOnClickListener {
-                    Toast.makeText(context!!, "Clicked: ${chip.text}", Toast.LENGTH_LONG).show()
-                }
-
-                chip.setOnCloseIconClickListener {
-                    TransitionManager.beginDelayedTransition(ingredient_input_chipGroup)
-                    ingredient_input_chipGroup.removeView(chip)
-                }
-
-                ingredient_input_chipGroup.addView(chip)
-
+                addChip(textView.text.toString())
                 textView.text?.clear()
             }
         }
+
+    }
+
+    private fun addChip(text: String) {
+        val chip = Chip(context!!)
+        chip.text = text
+        chip.isClickable = true
+        chip.isCheckable = false
+        chip.isCloseIconVisible = true
+
+        chip.setOnCloseIconClickListener {
+            TransitionManager.beginDelayedTransition(ingredient_input_chipGroup)
+            ingredient_input_chipGroup.removeView(chip)
+        }
+
+        ingredient_input_chipGroup.addView(chip)
     }
 
     fun setupInstructions() {
@@ -128,20 +168,77 @@ class AddRecipesFragment : Fragment() {
         val btnAdd = root.text_input_instructions
             .findViewById<MaterialButton>(R.id.instruction_input_button)
 
+        val btnCancel = root.text_input_instructions
+            .findViewById<MaterialButton>(R.id.instruction_cancel_button)
+
         lvInstructions.adapter = InstructionAdapter(context!!, steps)
 
+        lvInstructions.setOnItemLongClickListener { parent, view, position, id ->
+            val step = steps[position]
+            if (step.stepID > 0) {
+                recipeService.deleteStep(step)
+            }
+
+            steps.removeAt(position)
+
+            (lvInstructions.adapter as InstructionAdapter).notifyDataSetChanged()
+            true
+        }
+
+        val text = root.text_input_instructions
+            .findViewById<TextInputEditText>(R.id.instruction_input_inputfield)
+
+        var selectedStep: Step? = null
+
+        lvInstructions.setOnItemClickListener { parent, view, position, id ->
+            val step = steps[position]
+            selectedStep = step
+            text.setText(step.name)
+            text.requestFocus()
+            text.setSelection(step.name.length)
+            val inputMethodManager = context!!.getSystemService(Context.INPUT_METHOD_SERVICE)
+                    as InputMethodManager
+            inputMethodManager.showSoftInput(text, InputMethodManager.SHOW_IMPLICIT)
+
+            btnAdd.text = getString(R.string.save_button_text)
+
+            btnCancel.visibility = View.VISIBLE
+        }
+
         btnAdd.setOnClickListener {
-            val text = root.text_input_instructions
-                .findViewById<TextInputEditText>(R.id.instruction_input_inputfield)
             val stepText = text.text.toString()
 
             if (stepText.isNotBlank()) {
-                val step = Step(0, 0, stepText)
-                steps.add(step)
-                lvInstructions.adapter = InstructionAdapter(context!!, steps)
+                if (selectedStep != null) {
+                    selectedStep!!.name = stepText
+                    btnAdd.text = getString(R.string.add_button_text)
+
+                    if (selectedStep!!.stepID > 0) {
+                        recipeService.updateStep(selectedStep!!)
+                    }
+
+                    btnCancel.visibility = View.GONE
+
+                    selectedStep = null
+                }
+                else {
+                    val step = Step(0, 0, stepText)
+                    steps.add(step)
+                }
+
+                (lvInstructions.adapter as InstructionAdapter).notifyDataSetChanged()
                 setListViewHeightBasedOnChildren(lvInstructions)
                 text.text?.clear()
             }
+        }
+
+        btnCancel.setOnClickListener {
+            text.text?.clear()
+            selectedStep = null
+            val inputMethodManager = context!!.getSystemService(Context.INPUT_METHOD_SERVICE)
+                    as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(text.windowToken, 0)
+            btnCancel.visibility = View.GONE
         }
     }
 
@@ -159,6 +256,32 @@ class AddRecipesFragment : Fragment() {
                 + listView.dividerHeight * (listAdapter.count - 1))
         listView.layoutParams = params
         listView.requestLayout()
+    }
+
+    private fun setRecipeValues() {
+        root.text_input_name.findViewById<TextView>(R.id.text_input_inputfield)
+            .text = recipe!!.name
+        root.text_input_descr.findViewById<TextView>(R.id.text_input_inputfield)
+            .text = recipe!!.description
+
+        setupDropdownMenus(root.text_input_type, R.array.types, recipe!!.kind)
+        setupDropdownMenus(root.text_input_difficulty, R.array.skillLevel, recipe!!.difficulty)
+
+        root.text_input_preptime.findViewById<TextView>(R.id.time_input_inputfield)
+            .text = recipe!!.prepMinutes.toString()
+        root.text_input_cooktime.findViewById<TextView>(R.id.time_input_inputfield)
+            .text = recipe!!.cookMinutes.toString()
+
+        recipe!!.ingredients?.forEach{ ingredient ->
+            addChip(ingredient.name)
+        }
+
+        val lvInstructions = root.text_input_instructions
+            .findViewById<ListView>(R.id.instruction_input_listView)
+
+        steps.addAll(recipe!!.steps!!)
+        lvInstructions.adapter = InstructionAdapter(context!!, steps)
+        setListViewHeightBasedOnChildren(lvInstructions)
     }
 
     fun saveRecipe(): Boolean {
@@ -181,17 +304,32 @@ class AddRecipesFragment : Fragment() {
                 Ingredient(0, 0, (chip as Chip).text.toString().trim())
             }.toList()
 
+        //TODO once photos are a thing, insert them here
+        val photos = listOf<RecipePhoto>()
+
         if (!validateRecipe(name, descr, prepTime, cookTime, ingredients)) {
             return false
         }
 
-        val recipe = Recipe(0, name, descr, type, difficulty, prepTime.toInt(),
-            cookTime.toInt(), false)
+        if (recipe == null) {
+            recipe = Recipe( 0 , name, descr, type, difficulty,
+                prepTime.toInt(), cookTime.toInt(), false)
+        }
+        else {
+            val tmpRecipe = Recipe(recipe!!.recipeID , name, descr, type, difficulty,
+                prepTime.toInt(), cookTime.toInt(), recipe!!.favourite)
 
-        val service = RecipeService(context!!)
+            tmpRecipe.ingredients = recipe!!.ingredients
+            tmpRecipe.steps = recipe!!.steps
+            tmpRecipe.photos = recipe!!.photos
 
-        service.addRecipe(recipe, ingredients, steps, object: DataReadyListener<Long> {
-            override fun onDataReady(data: Long?) {
+            recipe = tmpRecipe
+        }
+
+        recipeService.addOrUpdateRecipe(recipe!!, ingredients, steps, photos,
+            object : DataReadyListener<Long> {
+
+                override fun onDataReady(data: Long?) {
                 Log.i("DB", "Successfully inserted Recipe with ID $data")
                 activity!!.runOnUiThread {
                     Toast.makeText(context!!, "Saved recipe", Toast.LENGTH_SHORT).show()
