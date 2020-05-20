@@ -50,7 +50,6 @@ class RecipeService(private val context: Context) {
 
             if (recipe.recipeID == 0L) {
                 rID = db!!.recipeDao().insertRecipe(recipe)
-
             }
             else {
                 db!!.recipeDao().updateRecipe(recipe)
@@ -62,6 +61,7 @@ class RecipeService(private val context: Context) {
                     deleteImage(it)
                     db!!.recipeDao().deleteRecipePhoto(it)
                 }
+
             }
 
             for (ingredient in ingredients) {
@@ -74,9 +74,7 @@ class RecipeService(private val context: Context) {
                 step.recipeID = rID
                 db!!.recipeDao().insertStep(step)
             }
-
-            //TODO test if this works once photos are a thing
-//            storeImages(rID, null)
+            storeImages(rID, null)
 
             callback.onDataReady(rID)
         }).start()
@@ -197,6 +195,21 @@ class RecipeService(private val context: Context) {
                 image.copyTo(File(destDir, imgName))
                 image.delete()
             }
+            callback?.onDataReady(null)
+        }).start()
+    }
+
+    fun storeImage(recipeID: Long, uri : Uri, callback: DataReadyListener<Unit>?) {
+        val destDir = File(context.filesDir, mainDirName).resolve(recipeID.toString())
+
+        destDir.mkdirs()
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+
+            val recipePhotoId = db!!.recipeDao().insertRecipePhoto(RecipePhoto(0,
+                recipeID))
+            val imgName = getImageName(recipePhotoId)
+            uri.toFile().copyTo(File(destDir, imgName))
             callback?.onDataReady(null)
         }).start()
     }

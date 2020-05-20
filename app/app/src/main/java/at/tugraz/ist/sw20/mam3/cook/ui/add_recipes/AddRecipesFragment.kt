@@ -71,7 +71,6 @@ class AddRecipesFragment : Fragment() {
         recipeService= RecipeService(context!!)
 
         lvImages = root.findViewById<RecyclerView>(R.id.image_input_recycler_view)
-        lvImages.adapter = ImagePreviewAdapter(context!!, null, mutableListOf())
         lvImages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         lvImages.isNestedScrollingEnabled = true
         lvImages.setHasFixedSize(true)
@@ -91,11 +90,15 @@ class AddRecipesFragment : Fragment() {
             recipeService.getRecipeById(recipeID, object: DataReadyListener<Recipe> {
                 override fun onDataReady(data: Recipe?) {
                     recipe = data!!
+                    lvImages.adapter = ImagePreviewAdapter(context!!, recipe!!.photos?.toMutableList(), mutableListOf())
+                    Log.d("DEBUG EDIT", data.photos?.size.toString())
                     activity!!.runOnUiThread {
                         setRecipeValues()
                     }
                 }
             })
+        } else {
+            lvImages.adapter = ImagePreviewAdapter(context!!, null, mutableListOf())
         }
 
         return root

@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                     Log.INFO, "Hi this is the special output asdfjölasdflak",
                     data!!.size.toString()
                 )
-                Log.println(Log.INFO, "DB", "Number of Recipes: ${data!!.size}")
+                Log.println(Log.INFO, "DB", "Number of Recipes: ${data.size}")
             }
         })
     }
