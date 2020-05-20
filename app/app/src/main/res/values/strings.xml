@@ -12,8 +12,11 @@
     <string-array name="s_item">
         <item>Meat</item>
         <item>Side</item>
+        <item>Max cook time 30 min</item>
+        <item>Min cook time 30 min</item>
+        <item>Max prep time 15 min</item>
+        <item>Min prep time 15 min</item>
     </string-array>
-
     <string name="title_add_recipes">Add Recipe</string>
     <string name="title_edit_recipe">Edit Recipe</string>
     <string name="create_edit_recipes_name">Name:</string>
@@ -32,6 +35,7 @@
     <string name="gallery">Gallery</string>
     <string name="which_image_source">Which image source?</string>
 
+
     <string-array name="skillLevel">
         <item>Beginner</item>
         <item>Intermediate</item>
@@ -44,4 +48,14 @@
         <item>Vegan</item>
         <item>Sweet</item>
     </string-array>
+
+    <string name="recipe_option_edit">Edit</string>
+    <string name="recipe_option_delete">Delete</string>
+    <string name="delete_button_text">Delete</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="save_button_text">Save</string>
+    <string name="add_button_text">Add</string>
+    <string name="cancel_button_text_short">X</string>
+
+
 </resources>
