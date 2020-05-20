@@ -5,7 +5,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity
-data class Recipe  (
+data class Recipe (
     @PrimaryKey(autoGenerate = true) val recipeID: Long,
     val name: String,
     val description: String,
@@ -15,6 +15,7 @@ data class Recipe  (
     val cookMinutes: Int,
     val favourite: Boolean
     ) {
+
     @Ignore
     var steps: List<Step>? = null
 

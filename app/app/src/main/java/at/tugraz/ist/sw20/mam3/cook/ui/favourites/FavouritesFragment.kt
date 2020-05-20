@@ -17,10 +17,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import at.tugraz.ist.sw20.mam3.cook.AddRecipeActivity
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
+import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
+import at.tugraz.ist.sw20.mam3.cook.ui.recipes.RecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 
 class FavouritesFragment : Fragment() {
@@ -135,12 +138,20 @@ class FavouritesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         favouritesViewModel = ViewModelProvider(this).get(FavouritesViewModel::class.java)
+    }
 
+    override fun onResume() {
+        super.onResume()
         val readyListener = object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!, this@FavouritesFragment)
-                if (data != null) {
-                    lv = data
+                activity!!.runOnUiThread {
+                    lvFavorites.adapter = RecipeAdapter(
+                        context!!, data ?: listOf(), activity!!,
+                        this@FavouritesFragment
+                    )
+                    if (data != null) {
+                        lv = data
+                    }
                 }
             }
         }
@@ -151,36 +162,59 @@ class FavouritesFragment : Fragment() {
         val lv = v as ListView
         val acmi = menuInfo as AdapterView.AdapterContextMenuInfo
         clickedRecipe = lv.getItemAtPosition(acmi.position) as Recipe
-        menu.add("Rename")
-        menu.add("Edit")
-        menu.add("Delete")
+        menu.add(activity!!.getString(R.string.recipe_option_edit))
+        menu.add(activity!!.getString(R.string.recipe_option_delete))
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        if (item.toString().equals("Delete")) {
-            val dialogBuilder = AlertDialog.Builder(activity!!)
-            dialogBuilder.setPositiveButton("Delete", DialogInterface.OnClickListener{
-                    dialog, id ->
-                RecipeService(context!!).deleteRecipe(clickedRecipe)
-                Toast.makeText(context!!, "deleted" , Toast.LENGTH_LONG).show()
-                val readyListener = object : DataReadyListener<List<Recipe>> {
-                    override fun onDataReady(data: List<Recipe>?) {
-                        activity!!.runOnUiThread {
-                            lvFavorites.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!, this@FavouritesFragment)
-                        }
-                    }
-                }
-                RecipeService(context!!).getAllRecipes(readyListener)
-            })
-                .setNegativeButton("Cancel", DialogInterface.OnClickListener {
-                        dialog, id ->
-                    dialog.dismiss()
-                })
-            val alert = dialogBuilder.create()
-            alert.setTitle("Are you sure you want to delete the recipe?")
-            alert.show()
+        if (item.toString().equals(activity!!.getString(R.string.recipe_option_delete))) {
+            startDeleteFavouriteRecipe()
+        }
+        else if (item.toString() == activity!!.getString(R.string.recipe_option_edit)) {
+            startEditFavouriteRecipe()
         }
         return super.onContextItemSelected(item)
+    }
+
+    private fun startDeleteFavouriteRecipe() {
+        val dialogBuilder = AlertDialog.Builder(activity!!)
+        dialogBuilder.setPositiveButton(activity!!.getString(R.string.delete_button_text),
+            DialogInterface.OnClickListener {dialog, id ->
+
+            val recipeListReadyListener = object : DataReadyListener<List<Recipe>> {
+                override fun onDataReady(data: List<Recipe>?) {
+                    activity!!.runOnUiThread {
+                        lvFavorites.adapter = RecipeAdapter(
+                            context!!, data ?: listOf(), activity!!, this@FavouritesFragment
+                        )
+                    }
+                }
+            }
+
+            val deleteFinishedListener = object : DataReadyListener<Boolean> {
+                override fun onDataReady(data: Boolean?) {
+                    RecipeService(context!!).getAllRecipes(recipeListReadyListener)
+                }
+            }
+
+            RecipeService(context!!).deleteRecipe(clickedRecipe, deleteFinishedListener)
+
+            Toast.makeText(context!!, "deleted", Toast.LENGTH_LONG).show()
+        })
+        .setNegativeButton(activity!!.getString(R.string.cancel_button_text),
+            DialogInterface.OnClickListener { dialog, id ->
+                dialog.dismiss()
+        })
+
+        val alert = dialogBuilder.create()
+        alert.setTitle("Are you sure you want to delete the recipe?")
+        alert.show()
+    }
+
+    private fun startEditFavouriteRecipe() {
+        val intent = Intent(activity, AddRecipeActivity::class.java)
+        intent.putExtra(AddRecipesFragment.INTENT_EXTRA_RECIPE_ID, clickedRecipe.recipeID)
+        context!!.startActivity(intent)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
