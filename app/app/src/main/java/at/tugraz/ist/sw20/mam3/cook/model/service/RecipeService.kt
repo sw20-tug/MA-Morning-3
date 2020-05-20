@@ -21,7 +21,6 @@ class RecipeService(private val context: Context) {
 
     private val mainDirName = "recipes"
     private val tempDirName = "tmp"
-    private var imageNameCounter : Long = 0
 
     fun getAllRecipes(callback: DataReadyListener<List<Recipe>>) {
         // Get db instance here
@@ -118,7 +117,7 @@ class RecipeService(private val context: Context) {
     fun storeImageTemporary(imageBitmap : Bitmap) : Uri {
         val dir = File(context.filesDir, mainDirName).resolve(tempDirName)
         dir.mkdirs()
-        // TODO: automatically detect cunter
+        // TODO: automatically detect counter
         val imgName = getNextTempImageName(dir)
         val outFile = File(dir, imgName)
         outFile.createNewFile()
@@ -166,6 +165,12 @@ class RecipeService(private val context: Context) {
     }
 
     fun deleteImage(recipePhoto : RecipePhoto) {
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+
+            db!!.recipeDao().deleteRecipePhoto(recipePhoto)
+        }).start()
+
         val recipeDir = File(context.filesDir, mainDirName).resolve(recipePhoto.recipeID.toString())
 
         recipeDir.resolve(

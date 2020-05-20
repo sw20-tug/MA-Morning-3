@@ -44,6 +44,7 @@ class AddRecipesFragment : Fragment() {
     private val steps: MutableList<Step> = mutableListOf()
 
     private lateinit var lvImages : RecyclerView
+    private lateinit var clickedPhoto: ImagePreviewAdapter.ViewHolder
 
     private val RESULT_LOAD_IMAGES = 1
     private val REQUEST_IMAGE_CAPTURE = 2
@@ -57,7 +58,7 @@ class AddRecipesFragment : Fragment() {
         root = inflater.inflate(R.layout.fragment_add_edit_recipe, container, false)
 
         lvImages = root.findViewById<RecyclerView>(R.id.image_input_recycler_view)
-        lvImages.adapter = ImagePreviewAdapter(context!!, null, emptyList())
+        lvImages.adapter = ImagePreviewAdapter(context!!, null, mutableListOf())
         lvImages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         lvImages.isNestedScrollingEnabled = true
         lvImages.setHasFixedSize(true)
@@ -208,7 +209,7 @@ class AddRecipesFragment : Fragment() {
             val dataReadyListener = object : DataReadyListener<List<Uri>> {
                 override fun onDataReady(data: List<Uri>?) {
                     activity!!.runOnUiThread {
-                        lvImages.adapter = ImagePreviewAdapter(context!!, null, data)
+                        lvImages.adapter = ImagePreviewAdapter(context!!, null, data!!.toMutableList())
                     }
                 }
             }
@@ -225,7 +226,7 @@ class AddRecipesFragment : Fragment() {
             val dataReadyListener = object : DataReadyListener<List<Uri>> {
                 override fun onDataReady(data: List<Uri>?) {
                     activity!!.runOnUiThread {
-                        lvImages.adapter = ImagePreviewAdapter(context!!, null, data)
+                        lvImages.adapter = ImagePreviewAdapter(context!!, null, data!!.toMutableList())
                     }
 
                 }
