@@ -77,5 +77,10 @@
     <string name="alexandra_taupe">Alexandra Taupe</string>
     <string name="paul_weissensteiner">Paul Weissensteiner</string>
 
+    <string name="title_on_site_cooking">On Site Cooking</string>
+    <string name="button_text_next">Next</string>
+    <string name="button_text_back">Back</string>
+    <string name="button_text_done">Done</string>
+    <string name="lbl_step_title">Step %1s</string>
 
 </resources>
