@@ -50,7 +50,7 @@ class AddRecipesFragment : Fragment() {
 
     private var steps: MutableList<Step> = mutableListOf()
 
-    private var recipe: Recipe? = null
+    var recipe: Recipe? = null
 
     private lateinit var recipeService: RecipeService
 
