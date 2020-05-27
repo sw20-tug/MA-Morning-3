@@ -1,18 +1,15 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.recipes
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.ContextMenu.ContextMenuInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.ListView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import at.tugraz.ist.sw20.mam3.cook.AddRecipeActivity
@@ -23,6 +20,8 @@ import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.item_dropdown_input.view.*
+import kotlinx.android.synthetic.main.item_time_input.view.*
 
 
 class RecipesFragment : Fragment() {
@@ -178,50 +177,52 @@ class RecipesFragment : Fragment() {
                 more.setOnClickListener {
 
                     val builder = AlertDialog.Builder(context!!)
-                    builder.setTitle("Choose filters")
-                    var filters = resources.getStringArray(R.array.s_item)
-
-                    val checkedItems = booleanArrayOf(false, false, false, false, false, false)
-                    builder.setMultiChoiceItems(filters, checkedItems) { dialog, which, isChecked ->
-
-                    }
-
-                    builder.setPositiveButton("OK") { dialog, which ->
-                        var tmp: MutableList<Recipe> = mutableListOf()
+                    val cv = layoutInflater.inflate(R.layout.dialog_filter, null) as View
+                    setupDropdownMenus(cv, R.array.types, null)
+                    cv.findViewById<TextView>(R.id.dropdown_input_description).text = getString(R.string.create_edit_recipes_type)
+                    cv.findViewById<TextView>(R.id.filter_prep_time).time_input_description.text = "max Prep"
+                    cv.findViewById<TextView>(R.id.filter_cook_time).time_input_description.text = "max Cook"
+                    cv.findViewById<TextView>(R.id.filter_prep_time).time_input_minutes.text = getString(R.string.minutes_text_label)
+                    cv.findViewById<TextView>(R.id.filter_cook_time).time_input_minutes.text = getString(R.string.minutes_text_label)
+                    cv.findViewById<Button>(R.id.filter_button_ok).setOnClickListener {
+                        var tmp_type: MutableList<Recipe> = mutableListOf()
+                        var tmp_prep: MutableList<Recipe> = mutableListOf()
+                        var tmp_cook: MutableList<Recipe> = mutableListOf()
                         var list: ListView = lvRecipes
 
-                        val checked =
-                            (dialog as AlertDialog).listView
-                                .checkedItemPositions
-                        if ((!checked[0] and checked[1]) or (checked[0] and !checked[1])) {
-                            if (checked[0]) {
-                                for (item in listv) {
-                                    if (item.kind.equals("Meat")) {
-                                        tmp.add(item)
-                                    }
-                                }
-                            } else {
-                                for (item in listv) {
-                                    if (item.kind.equals("Side")) {
-                                        tmp.add(item)
-                                    }
+                        val type = cv.findViewById<Spinner>(R.id.filter_dropdown).dropdown_input_inputfield.selectedItem.toString()
+                        val prepTime = cv.findViewById<TextView>(R.id.filter_prep_time).time_input_inputfield.text.toString()
+                        val cookTime = cv.findViewById<TextView>(R.id.filter_cook_time).time_input_inputfield.text.toString()
+
+
+                        for (item in listv) {
+                            if (item.kind == type) {
+                                tmp_type.add(item)
+                            }
+                        }
+                        if (prepTime.isBlank() || (prepTime.toInt() < 0)) {
+                            tmp_prep = tmp_type
+                        } else {
+                            for (item in tmp_type) {
+                                if (item.prepMinutes <= prepTime.toInt()) {
+                                    tmp_prep.add(item)
                                 }
                             }
-                            if (checked[2] and !checked[3]) tmp = filterByCookMinutes(tmp, true)
-                            if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
-                            if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
-                            if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@RecipesFragment)
-                        } else {
-                            var tmp: MutableList<Recipe> = listv as MutableList<Recipe>
-                            if (checked[2] and !checked[3]) tmp = filterByCookMinutes(tmp, true)
-                            if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
-                            if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
-                            if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@RecipesFragment)
                         }
+                        if (cookTime.isBlank() || (cookTime.toInt() < 0)) {
+                            tmp_cook = tmp_prep
+                        } else {
+                            for (item in tmp_prep) {
+                                if (item.cookMinutes <= cookTime.toInt()) {
+                                    tmp_cook.add(item)
+                                }
+                            }
+                        }
+                        list!!.adapter = RecipeAdapter(context!!, tmp_cook, activity!!, this@RecipesFragment)
                     }
-                    builder.setNegativeButton("Cancel", null)
+
+                    builder.setView(cv)
+                    builder.setTitle("Choose filters")
 
                     val dialog = builder.create()
                     dialog.show()
@@ -230,40 +231,16 @@ class RecipesFragment : Fragment() {
         }).start()
     }
 
-    private fun filterByCookMinutes(list: MutableList<Recipe>, less: Boolean): MutableList<Recipe> {
-        var tmp: MutableList<Recipe> = mutableListOf()
-        if (less) {
-            for (item in list) {
-                if (item.cookMinutes < 30) {
-                    tmp.add(item)
-                }
-            }
-        } else {
-            for (item in list) {
-                if (item.cookMinutes >= 30) {
-                    tmp.add(item)
-                }
-            }
-        }
-        return tmp
-    }
+    private fun setupDropdownMenus(root: View, arrayList: Int, selectedItem: String?) {
+        val items = resources.getStringArray(arrayList)
+        val spinner: Spinner = root.findViewById(R.id.dropdown_input_inputfield)
 
-    private fun filterByPrepMinutes(list: MutableList<Recipe>, less: Boolean): MutableList<Recipe> {
-        var tmp: MutableList<Recipe> = mutableListOf()
-        if (less) {
-            for (item in list) {
-                if (item.prepMinutes < 15) {
-                    tmp.add(item)
-                }
-            }
+        if (selectedItem == null) {
+            val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, items)
+            spinner.adapter = adapter
         } else {
-            for (item in list) {
-                if (item.prepMinutes >= 15) {
-                    tmp.add(item)
-                }
-            }
+            spinner.setSelection(items.indexOf(selectedItem))
         }
-        return tmp
     }
 
 }
