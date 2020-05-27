@@ -91,7 +91,7 @@ class AddRecipesFragment : Fragment() {
                 override fun onDataReady(data: Recipe?) {
                     recipe = data!!
                     lvImages.adapter = ImagePreviewAdapter(context!!, recipe!!.photos?.toMutableList(), mutableListOf())
-                    Log.d("DEBUG EDIT", data.photos?.size.toString())
+                    Log.d("DEBUG recipe photo count", data.photos?.size.toString())
                     activity!!.runOnUiThread {
                         setRecipeValues()
                     }
@@ -293,38 +293,43 @@ class AddRecipesFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            val imageBitmap = data!!.extras!!.get("data") as Bitmap
-            val recipeService = RecipeService(context!!)
+        if ((requestCode == REQUEST_IMAGE_CAPTURE || requestCode == RESULT_LOAD_IMAGES) && resultCode == RESULT_OK) {
+
             // TODO: handle edit recipe
-            recipeService.storeImageTemporary(imageBitmap)
-            val dataReadyListener = object : DataReadyListener<List<Uri>> {
-                override fun onDataReady(data: List<Uri>?) {
-                    activity!!.runOnUiThread {
-                        lvImages.adapter = ImagePreviewAdapter(context!!, null, data!!.toMutableList())
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                val imageBitmap = data!!.extras!!.get("data") as Bitmap
+                recipeService.storeImageTemporary(imageBitmap)
+            } else {
+                recipeService.storeImageTemporary(data!!.data!!)
+            }
+
+            val recipeService = RecipeService(context!!)
+            if (recipe == null) {
+                val dataReadyListener = object : DataReadyListener<List<Uri>> {
+                    override fun onDataReady(data: List<Uri>?) {
+                        activity!!.runOnUiThread {
+                            lvImages.adapter = ImagePreviewAdapter(context!!, null, data!!.toMutableList())
+                        }
                     }
                 }
+                recipeService.getAllTempPhotos(dataReadyListener)
+            } else {
+                val dataReadyListener = object : DataReadyListener<List<RecipePhoto>> {
+                    override fun onDataReady(data: List<RecipePhoto>?) {
+                        val dataReadyInListener = object : DataReadyListener<List<Uri>> {
+                            override fun onDataReady(dataIn: List<Uri>?) {
+                                activity!!.runOnUiThread {
+                                    lvImages.adapter = ImagePreviewAdapter(context!!, data!!.toMutableList(), dataIn!!.toMutableList())
+                                }
+                            }
+                        }
+                        recipeService.getAllTempPhotos(dataReadyInListener)
+                    }
+                }
+                recipeService.getAllPhotosFromRecipe(recipe!!, dataReadyListener)
             }
-            val allTempImages = recipeService.getAllTempPhotos(dataReadyListener)
             Log.d("Photo", "Take Foto: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()?.size.toString())
 
-        }
-
-        if(requestCode == RESULT_LOAD_IMAGES && resultCode == RESULT_OK) {
-
-            val recipeService = RecipeService(context!!)
-
-            val tempImage = recipeService.storeImageTemporary(data!!.data!!)
-            val dataReadyListener = object : DataReadyListener<List<Uri>> {
-                override fun onDataReady(data: List<Uri>?) {
-                    activity!!.runOnUiThread {
-                        lvImages.adapter = ImagePreviewAdapter(context!!, null, data!!.toMutableList())
-                    }
-
-                }
-            }
-            val allTempImages = recipeService.getAllTempPhotos(dataReadyListener)
-            Log.d("Photo", "After add: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()!!.size.toString())
         }
     }
 
