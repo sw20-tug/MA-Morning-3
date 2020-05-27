@@ -19,6 +19,7 @@ import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
+import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.adapters.ImageAdapter
 import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.adapters.IngredientAdapter
 import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.adapters.InstructionAdapter
 import kotlinx.android.synthetic.main.fragment_recipe_detail.*
@@ -72,6 +73,8 @@ class RecipeDetailFragment : Fragment() {
                     }
                     var lvIngredients = root.findViewById<RecyclerView>(R.id.recipe_ingredients)
                     var lvInstructions = root.findViewById<RecyclerView>(R.id.recipe_instructions)
+                    var lvImages = root.findViewById<RecyclerView>(R.id.recipe_images)
+
                     lvIngredients.layoutManager = LinearLayoutManager(context)
                     lvIngredients.isNestedScrollingEnabled = false
                     lvIngredients.setHasFixedSize(true)
@@ -80,11 +83,16 @@ class RecipeDetailFragment : Fragment() {
                     lvInstructions.isNestedScrollingEnabled = false
                     lvInstructions.setHasFixedSize(true)
 
+                    lvImages.layoutManager = LinearLayoutManager(context)
+                    lvImages.isNestedScrollingEnabled = true
+                    lvImages.setHasFixedSize(false)
 
                     lvInstructions.adapter =
                         InstructionAdapter(context!!, recipe.steps ?: listOf(), activity!!)
                     lvIngredients.adapter =
                         IngredientAdapter(context!!, recipe.ingredients ?: listOf(), activity!!)
+                    lvImages.adapter =
+                        ImageAdapter(context!!, recipe.photos ?: listOf(), activity!!)
                 }
             }
         })
