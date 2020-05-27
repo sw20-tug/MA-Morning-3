@@ -12,7 +12,7 @@ import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import kotlinx.android.synthetic.main.item_ingredient.view.*
 
-class IngredientAdapter(val context : Context, val ingredients : List<Ingredient>, private val activity: FragmentActivity) :
+class IngredientAdapter(val context : Context, val ingredients : List<Ingredient>) :
         RecyclerView.Adapter<IngredientAdapter.ViewHolder>() {
     // private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
