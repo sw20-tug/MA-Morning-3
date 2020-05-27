@@ -246,7 +246,7 @@ class RecipeService(private val context: Context) {
             getImageName(recipePhoto.photoID)).toUri()
     }
 
-    private fun getNextTempImageName(dir : File) : String {
+    public fun getNextTempImageName(dir : File) : String {
         var id = 0.toLong()
 
         while (dir.resolve(getImageName(id)).exists()) {
