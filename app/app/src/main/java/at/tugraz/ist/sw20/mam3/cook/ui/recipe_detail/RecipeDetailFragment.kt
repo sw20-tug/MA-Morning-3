@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isGone
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import at.tugraz.ist.sw20.mam3.cook.AddRecipeActivity
+import at.tugraz.ist.sw20.mam3.cook.OnSiteCookingActivity
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
@@ -85,6 +87,12 @@ class RecipeDetailFragment : Fragment() {
                         InstructionAdapter(context!!, recipe.steps ?: listOf(), activity!!)
                     lvIngredients.adapter =
                         IngredientAdapter(context!!, recipe.ingredients ?: listOf(), activity!!)
+
+                    root.findViewById<ImageButton>(R.id.recipe_play_button).setOnClickListener() {
+                        val intent = Intent(context!!, OnSiteCookingActivity::class.java)
+                        intent.putExtra(AddRecipesFragment.INTENT_EXTRA_RECIPE_ID, data.recipeID)
+                        context!!.startActivity(intent)
+                    }
                 }
             }
         })
