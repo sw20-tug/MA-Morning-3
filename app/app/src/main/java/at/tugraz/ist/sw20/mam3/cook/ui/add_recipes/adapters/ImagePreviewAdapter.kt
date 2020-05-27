@@ -32,13 +32,13 @@ class ImagePreviewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (imagesRP != null) {
+        if (imagesRP != null && position < imagesRP.size) {
             val recipePhoto = imagesRP[position] as RecipePhoto
             holder.iv.setImageURI(RecipeService(context).loadImage(recipePhoto))
             holder.rp = recipePhoto
-        }
-        else {
-            val imageUri = imagesUri!![position] as Uri
+        } else {
+            val offset = imagesRP?.size ?: 0
+            val imageUri = imagesUri!![position - offset] as Uri
             holder.iv.setImageURI(imageUri)
             holder.uri = imageUri
         }
@@ -49,7 +49,10 @@ class ImagePreviewAdapter(
     }
 
     override fun getItemCount(): Int {
-        return imagesRP?.size ?: imagesUri!!.size
+        var ret = 0
+        ret += imagesRP?.size ?: 0
+        ret += imagesUri?.size ?: 0
+        return ret
     }
 
     inner class ViewHolder(view : View) : RecyclerView.ViewHolder(view), View.OnCreateContextMenuListener {

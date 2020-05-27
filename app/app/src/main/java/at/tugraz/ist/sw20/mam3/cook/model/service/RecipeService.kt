@@ -50,18 +50,14 @@ class RecipeService(private val context: Context) {
 
             if (recipe.recipeID == 0L) {
                 rID = db!!.recipeDao().insertRecipe(recipe)
-
             }
             else {
+
                 db!!.recipeDao().updateRecipe(recipe)
                 rID = recipe.recipeID
 
                 recipe.ingredients?.forEach { db!!.recipeDao().deleteIngredient(it) }
                 recipe.steps?.forEach { db!!.recipeDao().deleteStep(it) }
-                recipe.photos?.forEach {
-                    deleteImage(it)
-                    db!!.recipeDao().deleteRecipePhoto(it)
-                }
             }
 
             for (ingredient in ingredients) {
@@ -74,11 +70,8 @@ class RecipeService(private val context: Context) {
                 step.recipeID = rID
                 db!!.recipeDao().insertStep(step)
             }
+            storeImages(rID, callback)
 
-            //TODO test if this works once photos are a thing
-//            storeImages(rID, null)
-
-            callback.onDataReady(rID)
         }).start()
     }
 
@@ -177,7 +170,7 @@ class RecipeService(private val context: Context) {
         return outFile.toUri()
     }
 
-    fun storeImages(recipeID: Long, callback: DataReadyListener<Unit>?) {
+    fun storeImages(recipeID: Long, callback: DataReadyListener<Long>?) {
         val srcDir = File(context.filesDir, mainDirName).resolve(tempDirName)
         val destDir = File(context.filesDir, mainDirName).resolve(recipeID.toString())
 
@@ -189,14 +182,29 @@ class RecipeService(private val context: Context) {
         destDir.mkdirs()
         Thread(Runnable {
             db = CookDB.getCookDB(context)
-
             for (image in srcDir.listFiles()!!) {
                 val recipePhotoId = db!!.recipeDao().insertRecipePhoto(RecipePhoto(0,
                     recipeID))
+                Log.d("DEBUG recipe Photo ID", recipePhotoId.toString())
                 val imgName = getImageName(recipePhotoId)
                 image.copyTo(File(destDir, imgName))
                 image.delete()
             }
+            callback?.onDataReady(recipeID)
+        }).start()
+    }
+
+    fun storeImage(recipeID: Long, uri : Uri, callback: DataReadyListener<Unit>?) {
+        val destDir = File(context.filesDir, mainDirName).resolve(recipeID.toString())
+
+        destDir.mkdirs()
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+
+            val recipePhotoId = db!!.recipeDao().insertRecipePhoto(RecipePhoto(0,
+                recipeID))
+            val imgName = getImageName(recipePhotoId)
+            uri.toFile().copyTo(File(destDir, imgName))
             callback?.onDataReady(null)
         }).start()
     }
@@ -226,13 +234,13 @@ class RecipeService(private val context: Context) {
         recipeDir.resolve(
             getImageName(recipePhoto.photoID)).delete()
 
-        if (recipeDir.listFiles()!!.isEmpty()) {
+        if (recipeDir.listFiles() != null && recipeDir.listFiles()!!.isEmpty()) {
             recipeDir.delete()
         }
     }
 
     fun loadImage(recipePhoto : RecipePhoto) : Uri {
-        return File(context.filesDir, mainDirName).resolve(recipePhoto.photoID.toString()).resolve(
+        return File(context.filesDir, mainDirName).resolve(recipePhoto.recipeID.toString()).resolve(
             getImageName(recipePhoto.photoID)).toUri()
     }
 
