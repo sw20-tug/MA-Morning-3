@@ -23,4 +23,8 @@
     <dimen name="drop_down_menu_height">40dp</dimen>
     <dimen name="margin_list">20dp</dimen>
     <dimen name="padding_list">16dp</dimen>
+    <dimen name="detail_image_size">200dp</dimen>
+    <dimen name="text_title_size">35sp</dimen>
+    <dimen name="margin_title_large">20dp</dimen>
+    <dimen name="icon_size_cooking_mode">35dp</dimen>
 </resources>

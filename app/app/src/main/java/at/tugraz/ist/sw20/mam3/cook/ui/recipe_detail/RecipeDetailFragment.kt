@@ -68,7 +68,7 @@ class RecipeDetailFragment : Fragment() {
                         val uri = RecipeService(context!!).loadImage(photos[0]);
                         root.findViewById<ImageView>(R.id.image_displayed_recipe).setImageURI(uri)
                     } else {
-                        root.findViewById<ImageView>(R.id.image_displayed_recipe).isGone = true
+                        root.findViewById<ImageView>(R.id.image_displayed_recipe).setImageResource(R.drawable.sample_food_placeholder_background)
                     }
                     var lvIngredients = root.findViewById<RecyclerView>(R.id.recipe_ingredients)
                     var lvInstructions = root.findViewById<RecyclerView>(R.id.recipe_instructions)

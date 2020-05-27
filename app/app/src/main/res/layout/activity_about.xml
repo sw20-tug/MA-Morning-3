@@ -181,6 +181,7 @@
                 android:layout_marginTop="@dimen/margin_text"
                 android:autoLink="web"
                 android:linksClickable="true"
+                android:textAlignment="center"
                 android:text="@string/icon_provider6" />
         </LinearLayout>
 
