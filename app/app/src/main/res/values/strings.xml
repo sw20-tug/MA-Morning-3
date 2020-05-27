@@ -1,5 +1,19 @@
 <resources>
     <string name="app_name">Cook</string>
+    <string name="app_version">1.0</string>
+    <string name="icon_provider1"><a href="https://www.vecteezy.com/free-vector/donut-burger">Donut Burger Vectors by Vecteezy</a>
+</string>
+    <string name="icon_provider2"><div>Icons made by <a href="https://www.flaticon.com/authors/those-icons" title="Those Icons">Those Icons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div></string>
+    <string name="icon_provider3"><div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+</string>
+    <string name="icon_provider4"><div>Icons made by <a href="https://www.flaticon.com/authors/creaticca-creative-agency" title="Creaticca Creative Agency">Creaticca Creative Agency</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+</string>
+    <string name="icon_provider5"><div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+</string>
+    <string name="icon_provider6"><a href="https://de.freepik.com/fotos-vektoren-kostenlos/kueche">Küche Vektor erstellt von freepik - de.freepik.com</a>
+</string>
+
+    <string name="icon_provider_title">Icon providers: </string>
     <string name="title_recipes">Recipes</string>
     <string name="title_favourites">Favourites</string>
     <string name="recipe_ingredients_title">Ingredients:</string>
@@ -36,6 +50,8 @@
     <string name="which_image_source">Which image source?</string>
     <string name="hashtag">#</string>
     <string name="add">Add</string>
+    <string name="about">About</string>
+
     <string-array name="skillLevel">
         <item>Beginner</item>
         <item>Intermediate</item>
@@ -56,6 +72,16 @@
     <string name="save_button_text">Save</string>
     <string name="add_button_text">Add</string>
     <string name="cancel_button_text_short">X</string>
+    <string name="version_title">Version:</string>
+    <string name="app_developed_by">App developed by:</string>
+    <string name="manuel_doler">Manuel Doler</string>
+    <string name="damian_garber">Damian Garber</string>
+    <string name="amela_kurtic">Amela Kurtic</string>
+    <string name="hannah_lederer">Hannah Lederer</string>
+    <string name="thomas_steinbauer">Thomas Steinbauer</string>
+    <string name="lukas_stracke">Lukas Stracke</string>
+    <string name="alexandra_taupe">Alexandra Taupe</string>
+    <string name="paul_weissensteiner">Paul Weissensteiner</string>
 
 
 </resources>
