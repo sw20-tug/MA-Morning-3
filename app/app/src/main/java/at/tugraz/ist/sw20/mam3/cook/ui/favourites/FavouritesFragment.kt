@@ -221,6 +221,9 @@ class FavouritesFragment : Fragment() {
         val si = menu?.findItem(R.id.search) as MenuItem
         val sv = si.getActionView() as SearchView
         val ti = menu?.findItem(R.id.filter) as MenuItem
+        ti.actionView.setBackgroundResource(R.drawable.ic_filter_white)
+        sv.isIconifiedByDefault = false
+        sv.requestFocus()
 
         sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 

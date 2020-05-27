@@ -1,15 +1,18 @@
 package at.tugraz.ist.sw20.mam3.cook.ui.recipes
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.ContextMenu.ContextMenuInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.ListView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import at.tugraz.ist.sw20.mam3.cook.AddRecipeActivity
@@ -141,6 +144,10 @@ class RecipesFragment : Fragment() {
         val si = menu?.findItem(R.id.search) as MenuItem
         val sv = si.getActionView() as SearchView
         val ti = menu?.findItem(R.id.filter) as MenuItem
+        ti.actionView.setBackgroundResource(R.drawable.ic_filter_white)
+        sv.isIconifiedByDefault = false
+        sv.requestFocus()
+
         sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
