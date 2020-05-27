@@ -11,122 +11,49 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:paddingLeft="@dimen/padding_list"
+        android:paddingRight="@dimen/padding_list">
+
+        <ImageView
+            android:src="@drawable/ic_launcher_foreground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/margin_list">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/version_title"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginEnd="@dimen/margin_text"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="@string/app_version" />
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/margin_text"
-            android:layout_marginBottom="@dimen/margin_text"
-            android:background="@android:color/darker_gray" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="3dp"
-                android:text="@string/icon_provider_title"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_text"
-                android:autoLink="web"
-                android:linksClickable="true"
-                android:text="@string/icon_provider1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_text"
-                android:autoLink="web"
-                android:linksClickable="true"
-                android:text="@string/icon_provider2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_text"
-                android:autoLink="web"
-                android:linksClickable="true"
-                android:text="@string/icon_provider3" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_text"
-                android:autoLink="web"
-                android:linksClickable="true"
-                android:text="@string/icon_provider4"
-                android:textAlignment="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_text"
-                android:autoLink="web"
-                android:linksClickable="true"
-                android:text="@string/icon_provider5" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/margin_text"
-                android:autoLink="web"
-                android:linksClickable="true"
-                android:text="@string/icon_provider6" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/margin_text"
-            android:layout_marginBottom="@dimen/margin_text"
-            android:background="@android:color/darker_gray" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:paddingLeft="@dimen/padding_list"
+            android:paddingRight="@dimen/padding_list"
+            android:layout_marginBottom="@dimen/margin_list">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="3dp"
+                android:layout_marginBottom="@dimen/margin_title"
                 android:text="@string/app_developed_by"
                 android:textStyle="bold" />
 
@@ -185,6 +112,76 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/margin_text"
                 android:text="@string/paul_weissensteiner" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_title"
+                android:text="@string/icon_provider_title"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_text"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:text="@string/icon_provider1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_text"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:text="@string/icon_provider2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_text"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:text="@string/icon_provider3" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_text"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:text="@string/icon_provider4"
+                android:textAlignment="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_text"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:text="@string/icon_provider5" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_text"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:text="@string/icon_provider6" />
         </LinearLayout>
 
     </LinearLayout>
