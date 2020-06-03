@@ -23,8 +23,8 @@
         <activity android:name=".RecipeDetailActivity"/>
         <activity android:name=".AddRecipeActivity"/>
         <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.example.android.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
