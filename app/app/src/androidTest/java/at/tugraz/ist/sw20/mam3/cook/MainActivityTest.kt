@@ -1,25 +1,28 @@
 package at.tugraz.ist.sw20.mam3.cook
 
 import android.content.Context
+import android.view.View
+import android.widget.ListView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.matcher.ViewMatchers.isClickable
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import at.tugraz.ist.sw20.mam3.cook.model.dao.RecipeDAO
 import at.tugraz.ist.sw20.mam3.cook.model.database.CookDB
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.hamcrest.core.IsAnything.anything
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.Description
 import org.junit.runner.RunWith
 import java.io.IOException
 
@@ -38,13 +41,13 @@ class MainActivityTest {
         addTestRecipes()
     }
 
-    fun addTestRecipes() {
+    private fun addTestRecipes() {
         var recipe = Recipe(0, "Burger", "...", "fast food","...",
-            10, 5,true)
+            10, 5,false)
         recipeDao.insertRecipe(recipe)
 
         recipe = Recipe(0, "Pizza", "...", "fast food","...",
-            30, 10,true)
+            30, 10,false)
         recipeDao.insertRecipe(recipe)
 
         recipe = Recipe(0, "Pasta", "...", "...","...",
@@ -60,8 +63,20 @@ class MainActivityTest {
         recipeDao.insertRecipe(recipe)
 
         recipe = Recipe(0, "Salami Pizza", "...", "fast food","...",
-            40, 10,true)
+            40, 10,false)
         recipeDao.insertRecipe(recipe)
+    }
+
+    private fun withListSize (size: Int) : Matcher<View> {
+        return object : TypeSafeMatcher<View>() {
+            override fun matchesSafely(view: View): Boolean {
+                return (view as ListView).count == size
+            }
+
+            override fun describeTo(description: org.hamcrest.Description?) {
+                description?.appendText("ListView should have $size items")
+            }
+        }
     }
 
 
@@ -82,7 +97,7 @@ class MainActivityTest {
         onView(withId(R.id.search)).check(matches(isClickable()))
         onView(withId(R.id.button_add_recipes)).check(matches(isDisplayed()))
         onView(withId(R.id.button_add_recipes)).perform(click())
-
+        onView(withId(R.id.recipe_favourite_star)).check(matches(isClickable()))
     }
 
     @Test
@@ -132,5 +147,33 @@ class MainActivityTest {
         onView(withId(R.id.recipe_type)).check(matches(isDisplayed()))
         onView(withId(R.id.recipe_ingredients_text)).check(matches(isDisplayed()))
         onView(withId(R.id.recipe_instructions_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun testFavButton() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        onData(anything()).inAdapterView(withId(R.id.list_recipes)).atPosition(0).
+            onChildView(withId(R.id.recipe_favourite_star)).perform(click())
+
+
+        onView(withId(R.id.navigation_favourites)).perform(click())
+        onView(withId(R.id.list_favorites)).check(matches(withListSize(1)))
+        onData(anything()).inAdapterView(withId(R.id.list_favorites)).atPosition(0).
+            onChildView(withId(R.id.recipe_title)).check(matches(withText("Burger")))
+
+
+        onView(withId(R.id.navigation_recipes)).perform(click())
+        onData(anything()).inAdapterView(withId(R.id.list_recipes)).atPosition(3).
+            onChildView(withId(R.id.recipe_favourite_star)).perform(click())
+
+        onView(withId(R.id.navigation_favourites)).perform(click())
+        onView(withId(R.id.list_favorites)).check(matches(withListSize(2)))
+        onData(anything()).inAdapterView(withId(R.id.list_favorites)).atPosition(1).
+            onChildView(withId(R.id.recipe_title)).check(matches(withText("Knödel")))
+
+        onData(anything()).inAdapterView(withId(R.id.list_favorites)).atPosition(1).
+            onChildView(withId(R.id.recipe_favourite_star)).perform(click())
+
+        onView(withId(R.id.list_favorites)).check(matches(withListSize(1)))
     }
 }
