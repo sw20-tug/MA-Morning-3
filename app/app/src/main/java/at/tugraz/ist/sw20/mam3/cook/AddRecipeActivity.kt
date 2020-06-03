@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 
 
@@ -37,9 +38,19 @@ class AddRecipeActivity : AppCompatActivity() {
                 addRecipeFragment.saveRecipe()
             }
             android.R.id.home -> {
+                cleanup()
                 finish()
             }
         }
         return true
+    }
+
+    override fun onBackPressed() {
+        cleanup()
+        super.onBackPressed()
+    }
+
+    fun cleanup() {
+        RecipeService(this).cancelPendingDeletes()
     }
 }

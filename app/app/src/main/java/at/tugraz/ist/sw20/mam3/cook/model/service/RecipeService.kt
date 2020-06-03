@@ -64,6 +64,7 @@ class RecipeService(private val context: Context) {
 
                 recipe.ingredients?.forEach { db!!.recipeDao().deleteIngredient(it) }
                 recipe.steps?.forEach { db!!.recipeDao().deleteStep(it) }
+                deleteToDeletePhotos()
             }
 
             for (ingredient in ingredients) {
@@ -191,7 +192,7 @@ class RecipeService(private val context: Context) {
             db = CookDB.getCookDB(context)
             for (image in srcDir.listFiles()!!) {
                 val recipePhotoId = db!!.recipeDao().insertRecipePhoto(RecipePhoto(0,
-                    recipeID))
+                    recipeID, false))
                 Log.d("DEBUG recipe Photo ID", recipePhotoId.toString())
                 val imgName = getImageName(recipePhotoId)
                 image.copyTo(File(destDir, imgName))
@@ -209,7 +210,7 @@ class RecipeService(private val context: Context) {
             db = CookDB.getCookDB(context)
 
             val recipePhotoId = db!!.recipeDao().insertRecipePhoto(RecipePhoto(0,
-                recipeID))
+                recipeID, false))
             val imgName = getImageName(recipePhotoId)
             uri.toFile().copyTo(File(destDir, imgName))
             callback?.onDataReady(null)
@@ -251,7 +252,7 @@ class RecipeService(private val context: Context) {
             getImageName(recipePhoto.photoID)).toUri()
     }
 
-    private fun getNextTempImageName(dir : File) : String {
+    public fun getNextTempImageName(dir : File) : String {
         var id = 0.toLong()
 
         while (dir.resolve(getImageName(id)).exists()) {
@@ -262,6 +263,30 @@ class RecipeService(private val context: Context) {
 
     private fun getImageName(id : Long) : String {
         return "img_$id.jpg"
+    }
+
+    fun setPhotoToDelete(recipePhoto : RecipePhoto) {
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+
+            db!!.recipeDao().updateRecipePhoto(recipePhoto)
+        }).start()
+    }
+
+    fun cancelPendingDeletes() {
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+            db!!.recipeDao().cancelPendingDeletes()
+        }).start()
+    }
+
+    fun deleteToDeletePhotos() {
+        Thread(Runnable {
+            db = CookDB.getCookDB(context)
+            val photos = db!!.recipeDao().getToDeletePhotos()
+            photos.forEach { recipePhoto: RecipePhoto ->  deleteImage(recipePhoto)
+            }
+        }).start()
     }
 
 }

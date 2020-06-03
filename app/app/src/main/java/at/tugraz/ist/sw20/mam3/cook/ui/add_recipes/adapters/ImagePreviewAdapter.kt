@@ -20,12 +20,7 @@ import kotlinx.android.synthetic.main.listitem_image_preview.view.*
 class ImagePreviewAdapter(
     val context : Context,
     val imagesRP : MutableList<RecipePhoto>?,
-    val imagesUri : MutableList<Uri>?
-    ) : RecyclerView.Adapter<ImagePreviewAdapter.ViewHolder>() {
-
-
-    // private val inflater : LayoutInflater = context.getSystemService(
-    //    Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    val imagesUri : MutableList<Uri>?) : RecyclerView.Adapter<ImagePreviewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImagePreviewAdapter.ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.listitem_image_preview, parent, false))
@@ -78,7 +73,7 @@ class ImagePreviewAdapter(
                         imagesUri!!.remove(uri!!)
                     }
                     else {
-                        rs.deleteImage(rp!!)
+                        rs.setPhotoToDelete(RecipePhoto(rp!!.photoID, rp!!.recipeID, true))
                         imagesRP!!.remove(rp!!)
                     }
                     notifyDataSetChanged()

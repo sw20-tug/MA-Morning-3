@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.content.Context
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.FileProvider
+import androidx.core.net.toFile
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -50,7 +53,7 @@ class AddRecipesFragment : Fragment() {
 
     private var steps: MutableList<Step> = mutableListOf()
 
-    private var recipe: Recipe? = null
+    var recipe: Recipe? = null
 
     private lateinit var recipeService: RecipeService
 
@@ -275,6 +278,12 @@ class AddRecipesFragment : Fragment() {
             cv.findViewById<Button>(R.id.dialog_take_picture_button).setOnClickListener {
                 Toast.makeText(context!!, "Open Camera" ,Toast.LENGTH_LONG).show()
                 val intent =  Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                val targetUri = RecipeService(context!!).storeImageTemporary(
+                                Bitmap.createBitmap(42,42, Bitmap.Config.ARGB_8888))
+                val uri = FileProvider.getUriForFile(context!!,
+                            context!!.packageName + ".provider", targetUri.toFile())
+
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
                 dialog.cancel()
                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
             }
@@ -295,11 +304,7 @@ class AddRecipesFragment : Fragment() {
 
         if ((requestCode == REQUEST_IMAGE_CAPTURE || requestCode == RESULT_LOAD_IMAGES) && resultCode == RESULT_OK) {
 
-            // TODO: handle edit recipe
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                val imageBitmap = data!!.extras!!.get("data") as Bitmap
-                recipeService.storeImageTemporary(imageBitmap)
-            } else {
+            if (requestCode == RESULT_LOAD_IMAGES) {
                 recipeService.storeImageTemporary(data!!.data!!)
             }
 
