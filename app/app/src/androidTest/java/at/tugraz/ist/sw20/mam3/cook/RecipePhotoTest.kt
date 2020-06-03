@@ -36,7 +36,7 @@ class SimpleRecipePhotoReadWriteTest {
     @Test
     @Throws(Exception::class)
     fun testInsertRecipePhoto() {
-        val photo = RecipePhoto(0, 0)
+        val photo = RecipePhoto(0, 0, false)
 
         val rID = recipeDao.insertRecipePhoto(photo)
 
@@ -46,7 +46,7 @@ class SimpleRecipePhotoReadWriteTest {
     @Test
     @Throws(Exception::class)
     fun testGetAllRecipePhoto() {
-        val photo = RecipePhoto(0, 0)
+        val photo = RecipePhoto(0, 0, false)
 
         recipeDao.insertRecipePhoto(photo)
         recipeDao.insertRecipePhoto(photo)
