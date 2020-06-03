@@ -12,7 +12,7 @@ import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import kotlinx.android.synthetic.main.item_image.view.*
 
 class ImageAdapter(val context : Context, val recipePhotos : List<RecipePhoto>) :
-    RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+        RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
     class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
         val image = view.recipe_image

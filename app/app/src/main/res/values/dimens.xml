@@ -19,4 +19,6 @@
     <dimen name="margin_text">5dp</dimen>
 
     <dimen name="font_size_step_title">18sp</dimen>
+    <dimen name="image_height">550dp</dimen>
+
 </resources>
