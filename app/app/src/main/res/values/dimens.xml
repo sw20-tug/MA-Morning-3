@@ -32,6 +32,7 @@
     <dimen name="image_height">500dp</dimen>
 
     <dimen name="onsite_image_margin">150dp</dimen>
+    <dimen name="image_preview_size">250dp</dimen>
 
 
 </resources>

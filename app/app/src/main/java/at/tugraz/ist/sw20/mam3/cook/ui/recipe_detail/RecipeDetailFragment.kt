@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -74,6 +75,7 @@ class RecipeDetailFragment : Fragment() {
                         val uri = RecipeService(context!!).loadImage(photos[0]);
                         root.findViewById<ImageView>(R.id.image_displayed_recipe).setImageURI(uri)
                     } else {
+                        root.findViewById<TextView>(R.id.recipe_images_text).isGone = true
                         root.findViewById<ImageView>(R.id.image_displayed_recipe).setImageResource(R.drawable.sample_food_placeholder_background)
                     }
                     val lvIngredients = root.findViewById<RecyclerView>(R.id.recipe_ingredients)

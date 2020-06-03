@@ -279,14 +279,12 @@ class AddRecipesFragment : Fragment() {
         .findViewById<ImageView>(R.id.image_add_image_button)
 
         imageAddBtn.setOnClickListener {
-            Toast.makeText(context!!, "Clicked add image button", Toast.LENGTH_LONG).show()
             val dialogBuilder = AlertDialog.Builder(context)
             val cv = layoutInflater.inflate(R.layout.dialog_add_photo, null) as View
             val dialog = dialogBuilder.create()
             dialog.setView(cv)
 
             cv.findViewById<Button>(R.id.dialog_take_picture_button).setOnClickListener {
-                Toast.makeText(context!!, "Open Camera" ,Toast.LENGTH_LONG).show()
                 val intent =  Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 val targetUri = RecipeService(context!!).storeImageTemporary(
                                 Bitmap.createBitmap(42,42, Bitmap.Config.ARGB_8888))
@@ -298,7 +296,6 @@ class AddRecipesFragment : Fragment() {
                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
             }
             cv.findViewById<Button>(R.id.dialog_gallery_button).setOnClickListener {
-                Toast.makeText(context!!, "Open Gallery" ,Toast.LENGTH_LONG).show()
                 val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 intent.type = "image/*"
                 dialog.cancel()
