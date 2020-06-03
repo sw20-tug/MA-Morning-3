@@ -1,9 +1,24 @@
 <resources>
     <string name="app_name">Cook</string>
+    <string name="app_version">1.0</string>
+    <string name="icon_provider1"><a href="https://www.vecteezy.com/free-vector/donut-burger">Donut Burger Vectors by Vecteezy</a>
+</string>
+    <string name="icon_provider2"><div>Icons made by <a href="https://www.flaticon.com/authors/those-icons" title="Those Icons">Those Icons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div></string>
+    <string name="icon_provider3"><div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+</string>
+    <string name="icon_provider4"><div>Icons made by <a href="https://www.flaticon.com/authors/creaticca-creative-agency" title="Creaticca Creative Agency">Creaticca Creative Agency</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+</string>
+    <string name="icon_provider5"><div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+</string>
+    <string name="icon_provider6"><a href="https://de.freepik.com/fotos-vektoren-kostenlos/hintergrund">Hintergrund Vektor erstellt von rawpixel.com - de.freepik.com</a>
+</string>
+
+    <string name="icon_provider_title">Icon providers: </string>
     <string name="title_recipes">Recipes</string>
     <string name="title_favourites">Favourites</string>
     <string name="recipe_ingredients_title">Ingredients:</string>
     <string name="recipe_instructions_title">Instructions:</string>
+    <string name="recipe_images_title">Images:</string>
     <string name="recipe_step">Step %1$d:</string>
     <string name="placeholder_long">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</string>
     <string name="action_search">Search</string>
@@ -12,13 +27,16 @@
     <string-array name="s_item">
         <item>Meat</item>
         <item>Side</item>
+        <item>Max cook time 30 min</item>
+        <item>Min cook time 30 min</item>
+        <item>Max prep time 15 min</item>
+        <item>Min prep time 15 min</item>
     </string-array>
-
     <string name="title_add_recipes">Add Recipe</string>
     <string name="title_edit_recipe">Edit Recipe</string>
-    <string name="create_edit_recipes_name">Name:</string>
+    <string name="create_edit_recipes_name">Recipe Name:</string>
     <string name="create_edit_recipes_descr">Description:</string>
-    <string name="create_edit_recipes_type">Type:</string>
+    <string name="create_edit_recipes_type">Meal Type:</string>
     <string name="create_edit_recipes_difficulty">Difficulty:</string>
     <string name="create_edit_recipes_preptime">Prep Time:</string>
     <string name="create_edit_recipes_cooktime">Cook Time:</string>
@@ -27,7 +45,15 @@
     <string name="create_edit_recipes_fotos">Fotos:</string>
 
     <string name="minutes_text_label">Minutes</string>
-    
+    <string name="image_add_photos">Add photo to recipe</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="which_image_source">Which image source?</string>
+    <string name="hashtag">#</string>
+    <string name="add">Add</string>
+
+    <string name="about">About</string>
+
     <string-array name="skillLevel">
         <item>Beginner</item>
         <item>Intermediate</item>
@@ -40,4 +66,42 @@
         <item>Vegan</item>
         <item>Sweet</item>
     </string-array>
+
+    <string name="type_hashtag">#%1$s</string>
+
+    <string name="recipe_option_edit">Edit</string>
+    <string name="recipe_option_delete">Delete</string>
+    <string name="delete_button_text">Delete</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="save_button_text">Save</string>
+    <string name="add_button_text">Add</string>
+    <string name="cancel_button_text_short">X</string>
+    <string name="version_title">Version:</string>
+    <string name="app_developed_by">App developed by:</string>
+    <string name="manuel_doler">Manuel Doler</string>
+    <string name="damian_garber">Damian Garber</string>
+    <string name="amela_kurtic">Amela Kurtic</string>
+    <string name="hannah_lederer">Hannah Lederer</string>
+    <string name="thomas_steinbauer">Thomas Steinbauer</string>
+    <string name="lukas_stracke">Lukas Stracke</string>
+    <string name="alexandra_taupe">Alexandra Taupe</string>
+    <string name="paul_weissensteiner">Paul Weissensteiner</string>
+    <string name="ok_button_text">Ok</string>
+
+    <string name="confirm_delete_message">Are you sure you want to delete the recipe?</string>
+    <string name="confirm_deleted_notification">Deleted</string>
+
+    <string name="title_on_site_cooking">On Site Cooking</string>
+    <string name="button_text_next">Next</string>
+    <string name="button_text_back">Back</string>
+    <string name="button_text_done">Done</string>
+    <string name="lbl_step_title">Step %1s</string>
+    <string name="filter_max_prep_time_short">Max Prep</string>
+    <string name="filter_max_cook_time_short">Max Cook</string>
+    <string name="filter_title">Choose filters</string>
+    <string name="filter_clear">Clear</string>
+
+    <string name="time_format">%1$d:%2$d</string>
+    <string name="time_format_minutes_leading_zero">%1$d:0%2$d</string>
+
 </resources>

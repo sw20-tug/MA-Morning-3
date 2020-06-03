@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="at.tugraz.ist.sw20.mam3.cook.ui.onsite.OnSiteCookingFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recipe_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="horizontal"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_onsite_step_title"
+        />
+
+    <TextView
+        android:id="@+id/tv_onsite_step_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recipe_images"
+        android:layout_marginTop="@dimen/margin_title_large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="@dimen/font_size_step_title"
+        tools:text="Step 1"/>
+
+    <TextView
+        android:id="@+id/tv_onsite_step_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_onsite_step_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Make pizza dough"/>
+
+    <Button
+        android:id="@+id/btn_onsite_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_text_next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/margin_floating_button"/>
+
+    <Button
+        android:id="@+id/btn_onsite_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_text_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="@dimen/margin_floating_button"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

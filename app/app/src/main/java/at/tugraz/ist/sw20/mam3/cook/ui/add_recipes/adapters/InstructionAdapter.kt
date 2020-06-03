@@ -20,7 +20,7 @@ class InstructionAdapter(val context : Context, val instructions : List<Step>)
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view : View
         val viewHolder : ViewHolder
-
+2
         if(convertView == null) {
             view = inflater.inflate(R.layout.listitem_instruction, parent, false)
 

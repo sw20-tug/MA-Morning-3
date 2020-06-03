@@ -22,79 +22,90 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
             <include
-                android:id="@+id/text_input_name"
                 layout="@layout/item_text_input"
+                android:id="@+id/text_input_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_add_recipe_top"
+                android:layout_marginEnd="@dimen/margin_item_left_right"
                 app:layout_constraintBottom_toTopOf="@id/text_input_descr"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <include
-                android:id="@+id/text_input_descr"
                 layout="@layout/item_text_input"
+                android:id="@+id/text_input_descr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_item_left_right"
                 app:layout_constraintBottom_toTopOf="@id/text_input_type"
                 app:layout_constraintTop_toBottomOf="@id/text_input_name" />
 
             <include
-                android:id="@+id/text_input_type"
                 layout="@layout/item_dropdown_input"
+                android:id="@+id/text_input_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/types"
+                android:layout_marginEnd="@dimen/margin_item_left_right"
                 app:layout_constraintBottom_toTopOf="@id/text_input_difficulty"
                 app:layout_constraintTop_toBottomOf="@id/text_input_descr" />
 
             <include
-                android:id="@+id/text_input_difficulty"
                 layout="@layout/item_dropdown_input"
+                android:id="@+id/text_input_difficulty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/skillLevel"
+                android:layout_marginEnd="@dimen/margin_item_left_right"
                 app:layout_constraintBottom_toTopOf="@id/text_input_preptime"
                 app:layout_constraintTop_toBottomOf="@id/text_input_type" />
 
             <include
-                android:id="@+id/text_input_preptime"
                 layout="@layout/item_time_input"
+                android:id="@+id/text_input_preptime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_item_left_right"
                 app:layout_constraintBottom_toTopOf="@id/text_input_cooktime"
                 app:layout_constraintTop_toBottomOf="@id/text_input_difficulty" />
 
             <include
-                android:id="@+id/text_input_cooktime"
                 layout="@layout/item_time_input"
+                android:id="@+id/text_input_cooktime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_item_left_right"
                 app:layout_constraintBottom_toTopOf="@id/text_input_ingredients"
                 app:layout_constraintTop_toBottomOf="@id/text_input_preptime" />
 
             <include
-                android:id="@+id/text_input_ingredients"
                 layout="@layout/item_ingredients_input"
+                android:id="@+id/text_input_ingredients"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_item_left_right"
+                android:layout_marginTop="@dimen/margin_item_top"
                 app:layout_constraintBottom_toTopOf="@id/text_input_instructions"
                 app:layout_constraintTop_toBottomOf="@id/text_input_cooktime" />
 
             <include
-                android:id="@+id/text_input_instructions"
                 layout="@layout/item_instruction_input"
+                android:id="@+id/text_input_instructions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_item_top"
                 app:layout_constraintBottom_toTopOf="@id/text_input_images"
                 app:layout_constraintTop_toBottomOf="@id/text_input_ingredients" />
 
             <include
-                android:id="@+id/text_input_images"
                 layout="@layout/item_image_input"
+                android:id="@+id/text_input_images"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_item_top"
+                android:layout_marginEnd="@dimen/margin_item_left_right"
                 app:layout_constraintTop_toBottomOf="@id/text_input_instructions" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

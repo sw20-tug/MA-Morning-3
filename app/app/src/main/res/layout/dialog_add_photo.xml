@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<TextView
+    android:id="@+id/dialog_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textStyle="bold"
+    android:gravity="center"
+    android:textSize="12pt"
+    android:layout_margin="30dp"
+    android:text="@string/which_image_source"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+
+    />
+    <ImageView
+        android:id="@+id/dialog_take_picture_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/ic_add_a_photo_black_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/dialog_gallery_view"
+        app:layout_constraintTop_toBottomOf="@id/dialog_title"
+        />
+    <ImageView
+        android:id="@+id/dialog_gallery_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/ic_photo_library_black_24dp"
+        app:layout_constraintStart_toEndOf="@id/dialog_take_picture_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dialog_title"
+        />
+
+    <Button
+        android:id="@+id/dialog_take_picture_button"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintStart_toStartOf="@id/dialog_take_picture_view"
+        app:layout_constraintEnd_toEndOf="@id/dialog_take_picture_view"
+        app:layout_constraintTop_toBottomOf="@id/dialog_take_picture_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="50dp"
+        android:text="@string/camera"
+        />
+    <Button
+        android:id="@+id/dialog_gallery_button"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintStart_toStartOf="@id/dialog_gallery_view"
+        app:layout_constraintEnd_toEndOf="@id/dialog_gallery_view"
+        app:layout_constraintTop_toBottomOf="@id/dialog_gallery_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="50dp"
+        android:text="@string/gallery"
+        />
+    </androidx.constraintlayout.widget.ConstraintLayout>

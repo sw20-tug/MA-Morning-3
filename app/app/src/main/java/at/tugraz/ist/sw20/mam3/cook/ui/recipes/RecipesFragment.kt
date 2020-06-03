@@ -17,8 +17,11 @@ import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
+import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.item_dropdown_input.view.*
+import kotlinx.android.synthetic.main.item_time_input.view.*
 
 
 class RecipesFragment : Fragment() {
@@ -58,6 +61,7 @@ class RecipesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
         val readyListener = object : DataReadyListener<List<Recipe>> {
@@ -65,7 +69,7 @@ class RecipesFragment : Fragment() {
                 if (data != null) {
                     listv = data
                     activity!!.runOnUiThread {
-                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
+                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!, this@RecipesFragment)
                     }
                 }
             }
@@ -77,43 +81,73 @@ class RecipesFragment : Fragment() {
         val lv = v as ListView
         val acmi = menuInfo as AdapterContextMenuInfo
         clickedRecipe = lv.getItemAtPosition(acmi.position) as Recipe
-        menu.add("Rename")
-        menu.add("Edit")
-        menu.add("Delete")
+
+        menu.add(activity!!.getString(R.string.recipe_option_edit))
+        menu.add(activity!!.getString(R.string.recipe_option_delete))
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        if (item.toString().equals("Delete")) {
-            val dialogBuilder = AlertDialog.Builder(activity!!)
-                        dialogBuilder.setPositiveButton("Delete", DialogInterface.OnClickListener{
-                            dialog, id ->
-                            RecipeService(context!!).deleteRecipe(clickedRecipe)
-                            Toast.makeText(context!!, "deleted" ,Toast.LENGTH_LONG).show()
-                            val readyListener = object : DataReadyListener<List<Recipe>> {
-                                override fun onDataReady(data: List<Recipe>?) {
-                                    activity!!.runOnUiThread {
-                                        lvRecipes.adapter = RecipeAdapter(context!!, data ?: listOf(), activity!!)
-                                    }
-                                }
-                            }
-                            RecipeService(context!!).getAllRecipes(readyListener)
-                        })
-                        .setNegativeButton("Cancel", DialogInterface.OnClickListener {
-                                dialog, id ->
-                            dialog.dismiss()
-                        })
-            val alert = dialogBuilder.create()
-            alert.setTitle("Are you sure you want to delete the recipe?")
-            alert.show()
+        if (item.toString() == activity!!.getString(R.string.recipe_option_delete)) {
+            startDeleteRecipe()
+        }
+        else if (item.toString() == activity!!.getString(R.string.recipe_option_edit)) {
+            startEditRecipe()
         }
         return super.onContextItemSelected(item)
     }
 
+    private fun startDeleteRecipe() {
+        val dialogBuilder = AlertDialog.Builder(activity!!)
+        dialogBuilder.setPositiveButton(activity!!.getString(
+            R.string
+                .delete_button_text
+        ), DialogInterface.OnClickListener {dialog, id ->
+
+            val recipeListReadyListener = object : DataReadyListener<List<Recipe>> {
+                override fun onDataReady(data: List<Recipe>?) {
+                    activity!!.runOnUiThread {
+                        lvRecipes.adapter = RecipeAdapter(
+                            context!!, data ?: listOf(), activity!!, this@RecipesFragment
+                        )
+                    }
+                }
+            }
+
+            val deleteFinishedListener = object : DataReadyListener<Boolean> {
+                override fun onDataReady(data: Boolean?) {
+                    RecipeService(context!!).getAllRecipes(recipeListReadyListener)
+                }
+            }
+
+            RecipeService(context!!).deleteRecipe(clickedRecipe, deleteFinishedListener)
+
+            Toast.makeText(context!!, getString(R.string.confirm_deleted_notification), Toast.LENGTH_LONG).show()
+        })
+        .setNegativeButton(activity!!.getString(R.string.cancel_button_text),
+            DialogInterface.OnClickListener { dialog, id ->
+                dialog.dismiss()
+        })
+
+        val alert = dialogBuilder.create()
+        alert.setTitle(getString(R.string.confirm_delete_message))
+        alert.show()
+    }
+
+    private fun startEditRecipe() {
+        val intent = Intent(activity, AddRecipeActivity::class.java)
+        intent.putExtra(AddRecipesFragment.INTENT_EXTRA_RECIPE_ID, clickedRecipe.recipeID)
+        context!!.startActivity(intent)
+    }
+
     override fun onPrepareOptionsMenu(menu: Menu) {
-        val si = menu?.findItem(R.id.search) as MenuItem
-        val sv = si.getActionView() as SearchView
-        val ti = menu?.findItem(R.id.filter) as MenuItem
-        sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        val itemSearch = menu?.findItem(R.id.search) as MenuItem
+        val searchView = itemSearch.getActionView() as SearchView
+        val itemFilter = menu?.findItem(R.id.filter) as MenuItem
+        itemFilter.actionView.setBackgroundResource(R.drawable.ic_filter_white)
+        searchView.isIconifiedByDefault = false
+        searchView.requestFocus()
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
@@ -128,114 +162,105 @@ class RecipesFragment : Fragment() {
                         if (item.name.toLowerCase().contains(newText!!.toLowerCase())) {
                             tmp.add(item)
                         }
-                        list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
+                        list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@RecipesFragment)
                     }
                 } else {
-                    list!!.adapter = RecipeAdapter(context!!, listv, activity!!)
+                    list!!.adapter = RecipeAdapter(context!!, listv, activity!!, this@RecipesFragment)
                 }
                 return true
             }
+
         })
 
         Thread(Runnable {
-            val more = ti.getActionView() as ImageButton
+            val more = itemFilter.getActionView() as ImageButton
             this.activity?.runOnUiThread(java.lang.Runnable {
                 more.setOnClickListener {
 
                     val builder = AlertDialog.Builder(context!!)
-                    builder.setTitle("Choose filters")
+                    val cv = layoutInflater.inflate(R.layout.dialog_filter, null) as View
 
-                    val filters = arrayOf(
-                        "Meat",
-                        "Side",
-                        "Cooking < 30 minutes",
-                        "Cooking >= 30 minutes",
-                        "Preparation < 15 minutes",
-                        "Preparation >= 15 minutes"
-                    )
-                    val checkedItems = booleanArrayOf(false, false, false, false, false, false)
-                    builder.setMultiChoiceItems(filters, checkedItems) { dialog, which, isChecked ->
-
-                    }
-
-                    builder.setPositiveButton("OK") { dialog, which ->
-                        var tmp: MutableList<Recipe> = mutableListOf()
-                        var list: ListView = lvRecipes
-
-                        val checked =
-                            (dialog as AlertDialog).listView
-                                .checkedItemPositions
-                        if ((!checked[0] and checked[1]) or (checked[0] and !checked[1])) {
-                            if (checked[0]) {
-                                for (item in listv) {
-                                    if (item.kind.equals("Meat")) {
-                                        tmp.add(item)
-                                    }
-                                }
-                            } else {
-                                for (item in listv) {
-                                    if (item.kind.equals("Side")) {
-                                        tmp.add(item)
-                                    }
-                                }
-                            }
-                            if (checked[2] and !checked[3]) tmp = filterByCookMinutes(tmp, true)
-                            if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
-                            if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
-                            if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
-                        } else {
-                            var tmp: MutableList<Recipe> = listv as MutableList<Recipe>
-                            if (checked[2] and !checked[3]) tmp = filterByCookMinutes(tmp, true)
-                            if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
-                            if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
-                            if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!)
-                        }
-                    }
-                    builder.setNegativeButton("Cancel", null)
+                    builder.setView(cv)
+                    builder.setTitle(getString(R.string.filter_title))
 
                     val dialog = builder.create()
+
+                    setupDropdownMenus(cv.findViewById(R.id.filter_dropdown_type), R.array.types, null)
+                    setupDropdownMenus(cv.findViewById(R.id.filter_dropdown_difficulty), R.array.skillLevel, null)
+                    cv.findViewById<TextView>(R.id.filter_dropdown_type).dropdown_input_description.text = getString(R.string.create_edit_recipes_type)
+                    cv.findViewById<TextView>(R.id.filter_dropdown_difficulty).dropdown_input_description.text = getString(R.string.create_edit_recipes_difficulty)
+                    cv.findViewById<TextView>(R.id.filter_prep_time).time_input_description.text = getString(R.string.filter_max_prep_time_short)
+                    cv.findViewById<TextView>(R.id.filter_cook_time).time_input_description.text = getString(R.string.filter_max_cook_time_short)
+                    cv.findViewById<TextView>(R.id.filter_prep_time).time_input_minutes.text = getString(R.string.minutes_text_label)
+                    cv.findViewById<TextView>(R.id.filter_cook_time).time_input_minutes.text = getString(R.string.minutes_text_label)
+
+                    cv.findViewById<Button>(R.id.filter_button_clear_filters).setOnClickListener {
+                        var list: ListView = lvRecipes
+                        list!!.adapter = RecipeAdapter(context!!, listv, activity!!, this@RecipesFragment)
+                        dialog.dismiss()
+                    }
+
+                    cv.findViewById<Button>(R.id.filter_button_ok).setOnClickListener {
+                        var tmp_type: MutableList<Recipe> = mutableListOf()
+                        var tmp_diff: MutableList<Recipe> = mutableListOf()
+                        var tmp_prep: MutableList<Recipe> = mutableListOf()
+                        var tmp_cook: MutableList<Recipe> = mutableListOf()
+                        var list: ListView = lvRecipes
+
+                        val type = cv.findViewById<Spinner>(R.id.filter_dropdown_type).dropdown_input_inputfield.selectedItem.toString()
+                        val difficulty = cv.findViewById<Spinner>(R.id.filter_dropdown_difficulty).dropdown_input_inputfield.selectedItem.toString()
+                        val prepTime = cv.findViewById<TextView>(R.id.filter_prep_time).time_input_inputfield.text.toString()
+                        val cookTime = cv.findViewById<TextView>(R.id.filter_cook_time).time_input_inputfield.text.toString()
+
+
+                        for (item in listv) {
+                            if (item.kind == type) {
+                                tmp_type.add(item)
+                            }
+                        }
+                        for (item in tmp_type) {
+                            if (item.difficulty == difficulty) {
+                                tmp_diff.add(item)
+                            }
+                        }
+                        if (prepTime.isBlank() || (prepTime.toInt() < 0)) {
+                            tmp_prep = tmp_diff
+                        } else {
+                            for (item in tmp_diff) {
+                                if (item.prepMinutes <= prepTime.toInt()) {
+                                    tmp_prep.add(item)
+                                }
+                            }
+                        }
+                        if (cookTime.isBlank() || (cookTime.toInt() < 0)) {
+                            tmp_cook = tmp_prep
+                        } else {
+                            for (item in tmp_prep) {
+                                if (item.cookMinutes <= cookTime.toInt()) {
+                                    tmp_cook.add(item)
+                                }
+                            }
+                        }
+                        list!!.adapter = RecipeAdapter(context!!, tmp_cook, activity!!, this@RecipesFragment)
+                        dialog.dismiss()
+                    }
+
                     dialog.show()
                 }
             })
         }).start()
     }
 
-    private fun filterByCookMinutes(list: MutableList<Recipe>, less: Boolean): MutableList<Recipe> {
-        var tmp: MutableList<Recipe> = mutableListOf()
-        if (less) {
-            for (item in list) {
-                if (item.cookMinutes < 30) {
-                    tmp.add(item)
-                }
-            }
-        } else {
-            for (item in list) {
-                if (item.cookMinutes >= 30) {
-                    tmp.add(item)
-                }
-            }
-        }
-        return tmp
-    }
+    private fun setupDropdownMenus(root: View, arrayList: Int, selectedItem: String?) {
+        val items = resources.getStringArray(arrayList)
+        val spinner: Spinner = root.findViewById(R.id.dropdown_input_inputfield)
 
-    private fun filterByPrepMinutes(list: MutableList<Recipe>, less: Boolean): MutableList<Recipe> {
-        var tmp: MutableList<Recipe> = mutableListOf()
-        if (less) {
-            for (item in list) {
-                if (item.prepMinutes < 15) {
-                    tmp.add(item)
-                }
-            }
+        if (selectedItem == null) {
+            val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, items)
+            spinner.adapter = adapter
         } else {
-            for (item in list) {
-                if (item.prepMinutes >= 15) {
-                    tmp.add(item)
-                }
-            }
+            spinner.setSelection(items.indexOf(selectedItem))
         }
-        return tmp
     }
 
 }
