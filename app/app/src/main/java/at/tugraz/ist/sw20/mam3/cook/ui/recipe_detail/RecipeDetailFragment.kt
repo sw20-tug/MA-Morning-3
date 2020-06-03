@@ -49,14 +49,6 @@ class RecipeDetailFragment : Fragment() {
             override fun onDataReady(data: Recipe?) {
                 val recipe = data!!
                 activity!!.runOnUiThread {
-                    Log.println(Log.INFO, "Recipe", recipe.toString())
-                    Log.println(Log.INFO, "Steps", recipe.steps.toString())
-                    Log.println(Log.INFO, "Ingredients", recipe.ingredients.toString())
-                    Log.println(Log.INFO, "Images", recipe.photos.toString())
-                    //TODO as soon as images are supported update this
-                    // image_displayed_recipe.setBackgroundResource()
-
-
                     recipe_title.text = recipe.name
                     recipe_type.text = "#" + recipe.kind
                     recipe_cook_time.findViewById<TextView>(R.id.recipe_time).text =

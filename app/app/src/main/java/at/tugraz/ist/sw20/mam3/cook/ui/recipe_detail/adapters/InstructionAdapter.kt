@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.item_instruction.view.*
 
 class InstructionAdapter(val context : Context, val instructions : List<Step>) :
         RecyclerView.Adapter<InstructionAdapter.ViewHolder>() {
-    // private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val step = view.step_text
