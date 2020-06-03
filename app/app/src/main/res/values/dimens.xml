@@ -28,4 +28,6 @@
     <dimen name="margin_title_large">20dp</dimen>
     <dimen name="icon_size_cooking_mode">35dp</dimen>
     <dimen name="in_front">1dp</dimen>
+    <dimen name="image_height">500dp</dimen>
+
 </resources>

@@ -18,6 +18,7 @@ import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
+import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.adapters.ImageAdapter
 import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.adapters.IngredientAdapter
 import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.adapters.InstructionAdapter
 import at.tugraz.ist.sw20.mam3.cook.ui.utils.TimeFormatter
@@ -49,13 +50,6 @@ class RecipeDetailFragment : Fragment() {
             override fun onDataReady(data: Recipe?) {
                 val recipe = data!!
                 activity!!.runOnUiThread {
-                    Log.println(Log.INFO, "Recipe", data.toString())
-                    Log.println(Log.INFO, "Steps", data.steps.toString())
-                    Log.println(Log.INFO, "Ingredients", data.ingredients.toString())
-                    //TODO as soon as images are supported update this
-                    // image_displayed_recipe.setBackgroundResource()
-
-
                     recipe_title.text = recipe.name
                     recipe_type.text = getString(R.string.type_hashtag, recipe.kind)
                     recipe_cook_time.findViewById<TextView>(R.id.recipe_time).text =
@@ -80,8 +74,10 @@ class RecipeDetailFragment : Fragment() {
                     } else {
                         root.findViewById<ImageView>(R.id.image_displayed_recipe).setImageResource(R.drawable.sample_food_placeholder_background)
                     }
-                    var lvIngredients = root.findViewById<RecyclerView>(R.id.recipe_ingredients)
-                    var lvInstructions = root.findViewById<RecyclerView>(R.id.recipe_instructions)
+                    val lvIngredients = root.findViewById<RecyclerView>(R.id.recipe_ingredients)
+                    val lvInstructions = root.findViewById<RecyclerView>(R.id.recipe_instructions)
+                    val lvImages = root.findViewById<RecyclerView>(R.id.recipe_images)
+
                     lvIngredients.layoutManager = LinearLayoutManager(context)
                     lvIngredients.isNestedScrollingEnabled = false
                     lvIngredients.setHasFixedSize(true)
@@ -90,11 +86,16 @@ class RecipeDetailFragment : Fragment() {
                     lvInstructions.isNestedScrollingEnabled = false
                     lvInstructions.setHasFixedSize(true)
 
+                    lvImages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    lvImages.isNestedScrollingEnabled = true
+                    lvImages.setHasFixedSize(false)
 
                     lvInstructions.adapter =
-                        InstructionAdapter(context!!, recipe.steps ?: listOf(), activity!!)
+                        InstructionAdapter(context!!, recipe.steps ?: listOf())
                     lvIngredients.adapter =
-                        IngredientAdapter(context!!, recipe.ingredients ?: listOf(), activity!!)
+                        IngredientAdapter(context!!, recipe.ingredients ?: listOf())
+                    lvImages.adapter =
+                        ImageAdapter(context!!, recipe.photos ?: listOf())
                 }
             }
         })

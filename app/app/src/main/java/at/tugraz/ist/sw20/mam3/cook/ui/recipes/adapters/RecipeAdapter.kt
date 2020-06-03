@@ -64,7 +64,11 @@ class RecipeAdapter(private val context : Context, private val recipes : List<Re
         cookTimeTextView.text = TimeFormatter().formatMinutesIntoTimeStampString(recipe.cookMinutes,
             context!!)
 
-        titleImageView.setImageResource(R.drawable.sample_food_placeholder_background)     // TODO: get correct image id from recipe
+        if (recipe.photos != null && recipe.photos?.any()!!) {
+            titleImageView.setImageURI(RecipeService(context).loadImage(recipe.photos!![0]))
+        } else {
+            titleImageView.setImageResource(R.drawable.sample_food_placeholder_background)
+        }
         prepTimeIcon.setImageResource(R.drawable.ic_whisk)
         cookTimeIcon.setImageResource(R.drawable.ic_cooking)
 
@@ -80,15 +84,11 @@ class RecipeAdapter(private val context : Context, private val recipes : List<Re
             if (fragment is FavouritesFragment){
                 removeItem(position)
             } else {
-                setItem(position, Recipe(recipe.recipeID, recipe.name, recipe.description, recipe.kind,
-                    recipe.difficulty, recipe.prepMinutes, recipe.cookMinutes, !recipe.favourite))
+                recipeList[position].favourite = !recipe.favourite
             }
 
             notifyDataSetChanged()
         }
-
-        // TODO: Load image
-        // TODO: Picasso.with(context).load(recipe.imageUrl).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView)
 
         view.setOnClickListener {
             val intent = Intent(activity, RecipeDetailActivity::class.java)
