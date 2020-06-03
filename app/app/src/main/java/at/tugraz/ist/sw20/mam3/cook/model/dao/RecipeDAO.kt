@@ -66,4 +66,13 @@ interface RecipeDAO {
 
     @Query ("SELECT * FROM ingredient WHERE recipeID = :id")
     fun getIngredientsByRecipeID(id : Long): List<Ingredient>
+
+    @Query ("DELETE FROM recipePhoto WHERE toDelete = 1")
+    fun deleteToDeletePhotos()
+
+    @Query ("SELECT * FROM recipePhoto WHERE toDelete = 1")
+    fun getToDeletePhotos(): List<RecipePhoto>
+
+    @Query ("UPDATE recipePhoto SET toDelete = 0 WHERE toDelete = 1")
+    fun cancelPendingDeletes()
 }

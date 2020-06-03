@@ -44,6 +44,11 @@
     <string name="create_edit_recipes_fotos">Fotos:</string>
 
     <string name="minutes_text_label">Minutes</string>
+    <string name="image_add_photos">Add photo to recipe</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="which_image_source">Which image source?</string>
+
     <string name="about">About</string>
 
     <string-array name="skillLevel">
