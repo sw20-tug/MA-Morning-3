@@ -96,8 +96,7 @@ class EditRecipeActivityTest {
                 withId(R.id.time_input_inputfield)))
             .perform(replaceText("11"))
 
-        onView(allOf(withParent(withId(R.id.text_input_ingredients)),
-                withId(R.id.ingredient_input_inputfield)))
+        onView(withId(R.id.ingredient_input_inputfield))
             .perform(replaceText("Edited Step"))
 
         onView(allOf(withParent(withId(R.id.text_input_ingredients)),

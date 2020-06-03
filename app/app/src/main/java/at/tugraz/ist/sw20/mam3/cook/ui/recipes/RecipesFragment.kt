@@ -62,6 +62,7 @@ class RecipesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
         val readyListener = object : DataReadyListener<List<Recipe>> {
@@ -121,7 +122,7 @@ class RecipesFragment : Fragment() {
 
             RecipeService(context!!).deleteRecipe(clickedRecipe, deleteFinishedListener)
 
-            Toast.makeText(context!!, "deleted", Toast.LENGTH_LONG).show()
+            Toast.makeText(context!!, getString(R.string.confirm_deleted_notification), Toast.LENGTH_LONG).show()
         })
         .setNegativeButton(activity!!.getString(R.string.cancel_button_text),
             DialogInterface.OnClickListener { dialog, id ->
@@ -129,7 +130,7 @@ class RecipesFragment : Fragment() {
         })
 
         val alert = dialogBuilder.create()
-        alert.setTitle("Are you sure you want to delete the recipe?")
+        alert.setTitle(getString(R.string.confirm_delete_message))
         alert.show()
     }
 
@@ -140,14 +141,14 @@ class RecipesFragment : Fragment() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        val si = menu?.findItem(R.id.search) as MenuItem
-        val sv = si.getActionView() as SearchView
-        val ti = menu?.findItem(R.id.filter) as MenuItem
-        ti.actionView.setBackgroundResource(R.drawable.ic_filter_white)
-        sv.isIconifiedByDefault = false
-        sv.requestFocus()
+        val itemSearch = menu?.findItem(R.id.search) as MenuItem
+        val searchView = itemSearch.getActionView() as SearchView
+        val itemFilter = menu?.findItem(R.id.filter) as MenuItem
+        itemFilter.actionView.setBackgroundResource(R.drawable.ic_filter_white)
+        searchView.isIconifiedByDefault = false
+        searchView.requestFocus()
 
-        sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
@@ -169,28 +170,46 @@ class RecipesFragment : Fragment() {
                 }
                 return true
             }
+
         })
 
         Thread(Runnable {
-            val more = ti.getActionView() as ImageButton
+            val more = itemFilter.getActionView() as ImageButton
             this.activity?.runOnUiThread(java.lang.Runnable {
                 more.setOnClickListener {
 
                     val builder = AlertDialog.Builder(context!!)
                     val cv = layoutInflater.inflate(R.layout.dialog_filter, null) as View
-                    setupDropdownMenus(cv, R.array.types, null)
-                    cv.findViewById<TextView>(R.id.dropdown_input_description).text = getString(R.string.create_edit_recipes_type)
-                    cv.findViewById<TextView>(R.id.filter_prep_time).time_input_description.text = "max Prep"
-                    cv.findViewById<TextView>(R.id.filter_cook_time).time_input_description.text = "max Cook"
+
+                    builder.setView(cv)
+                    builder.setTitle(getString(R.string.filter_title))
+
+                    val dialog = builder.create()
+
+                    setupDropdownMenus(cv.findViewById(R.id.filter_dropdown_type), R.array.types, null)
+                    setupDropdownMenus(cv.findViewById(R.id.filter_dropdown_difficulty), R.array.skillLevel, null)
+                    cv.findViewById<TextView>(R.id.filter_dropdown_type).dropdown_input_description.text = getString(R.string.create_edit_recipes_type)
+                    cv.findViewById<TextView>(R.id.filter_dropdown_difficulty).dropdown_input_description.text = getString(R.string.create_edit_recipes_difficulty)
+                    cv.findViewById<TextView>(R.id.filter_prep_time).time_input_description.text = getString(R.string.filter_max_prep_time_short)
+                    cv.findViewById<TextView>(R.id.filter_cook_time).time_input_description.text = getString(R.string.filter_max_cook_time_short)
                     cv.findViewById<TextView>(R.id.filter_prep_time).time_input_minutes.text = getString(R.string.minutes_text_label)
                     cv.findViewById<TextView>(R.id.filter_cook_time).time_input_minutes.text = getString(R.string.minutes_text_label)
+
+                    cv.findViewById<Button>(R.id.filter_button_clear_filters).setOnClickListener {
+                        var list: ListView = lvRecipes
+                        list!!.adapter = RecipeAdapter(context!!, listv, activity!!, this@RecipesFragment)
+                        dialog.dismiss()
+                    }
+
                     cv.findViewById<Button>(R.id.filter_button_ok).setOnClickListener {
                         var tmp_type: MutableList<Recipe> = mutableListOf()
+                        var tmp_diff: MutableList<Recipe> = mutableListOf()
                         var tmp_prep: MutableList<Recipe> = mutableListOf()
                         var tmp_cook: MutableList<Recipe> = mutableListOf()
                         var list: ListView = lvRecipes
 
-                        val type = cv.findViewById<Spinner>(R.id.filter_dropdown).dropdown_input_inputfield.selectedItem.toString()
+                        val type = cv.findViewById<Spinner>(R.id.filter_dropdown_type).dropdown_input_inputfield.selectedItem.toString()
+                        val difficulty = cv.findViewById<Spinner>(R.id.filter_dropdown_difficulty).dropdown_input_inputfield.selectedItem.toString()
                         val prepTime = cv.findViewById<TextView>(R.id.filter_prep_time).time_input_inputfield.text.toString()
                         val cookTime = cv.findViewById<TextView>(R.id.filter_cook_time).time_input_inputfield.text.toString()
 
@@ -200,10 +219,15 @@ class RecipesFragment : Fragment() {
                                 tmp_type.add(item)
                             }
                         }
+                        for (item in tmp_type) {
+                            if (item.difficulty == difficulty) {
+                                tmp_diff.add(item)
+                            }
+                        }
                         if (prepTime.isBlank() || (prepTime.toInt() < 0)) {
-                            tmp_prep = tmp_type
+                            tmp_prep = tmp_diff
                         } else {
-                            for (item in tmp_type) {
+                            for (item in tmp_diff) {
                                 if (item.prepMinutes <= prepTime.toInt()) {
                                     tmp_prep.add(item)
                                 }
@@ -219,12 +243,9 @@ class RecipesFragment : Fragment() {
                             }
                         }
                         list!!.adapter = RecipeAdapter(context!!, tmp_cook, activity!!, this@RecipesFragment)
+                        dialog.dismiss()
                     }
 
-                    builder.setView(cv)
-                    builder.setTitle("Choose filters")
-
-                    val dialog = builder.create()
                     dialog.show()
                 }
             })

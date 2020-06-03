@@ -11,11 +11,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:orientation="vertical"
-        android:layout_marginStart="@dimen/width_input_cancel_short">
+        android:layout_marginStart="@dimen/width_input_cancel_short"
+        android:layout_marginTop="@dimen/margin_list"
+        >
 
         <include
             layout="@layout/item_dropdown_input"
-            android:id="@+id/filter_dropdown"
+            android:id="@+id/filter_dropdown_type"
+            />
+
+        <include
+            layout="@layout/item_dropdown_input"
+            android:id="@+id/filter_dropdown_difficulty"
             />
 
         <include
@@ -40,9 +47,20 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/filter_options"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/margin_text"
+        android:layout_marginTop="@dimen/margin_list"
         android:orientation="horizontal"
         android:gravity="right"
         >
+
+        <Button
+            android:id="@+id/filter_button_clear_filters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_clear"
+            android:backgroundTint="@color/light_grey"
+            android:layout_marginEnd="@dimen/item_left_margin_big"/>
 
         <Button
             android:id="@+id/filter_button_ok"

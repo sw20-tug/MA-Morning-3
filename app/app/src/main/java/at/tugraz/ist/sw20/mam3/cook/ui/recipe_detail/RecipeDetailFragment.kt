@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +20,9 @@ import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.adapters.IngredientAdapter
 import at.tugraz.ist.sw20.mam3.cook.ui.recipe_detail.adapters.InstructionAdapter
+import at.tugraz.ist.sw20.mam3.cook.ui.utils.TimeFormatter
 import kotlinx.android.synthetic.main.fragment_recipe_detail.*
+import kotlin.math.floor
 
 class RecipeDetailFragment : Fragment() {
     private var recipeID: Long? = -1L
@@ -56,13 +57,22 @@ class RecipeDetailFragment : Fragment() {
 
 
                     recipe_title.text = recipe.name
-                    recipe_type.text = "#" + recipe.kind
+                    recipe_type.text = getString(R.string.type_hashtag, recipe.kind)
                     recipe_cook_time.findViewById<TextView>(R.id.recipe_time).text =
-                        "" + recipe.cookMinutes
+                        TimeFormatter().formatMinutesIntoTimeStampString(recipe.cookMinutes,
+                            context!!)
                     recipe_cook_time.findViewById<ImageView>(R.id.recipe_time_img)
                         .setImageResource(R.drawable.ic_cooking)
                     recipe_prepare_time.findViewById<TextView>(R.id.recipe_time).text =
-                        "" + recipe.prepMinutes
+                        TimeFormatter().formatMinutesIntoTimeStampString(recipe.prepMinutes,
+                            context!!)
+                    val skillLevelStrings = resources.getStringArray(R.array.skillLevel)
+
+                    when (recipe.difficulty) {
+                        skillLevelStrings[0] -> recipe_difficulty.setImageResource(R.drawable.ic_difficulty_beginner)
+                        skillLevelStrings[1] -> recipe_difficulty.setImageResource(R.drawable.ic_difficulty_intermediate)
+                        skillLevelStrings[2] -> recipe_difficulty.setImageResource(R.drawable.ic_difficulty_professional)
+                    }
                     val photos = recipe.photos
                     if (photos != null && photos.isNotEmpty()) {
                         val uri = RecipeService(context!!).loadImage(photos[0]);

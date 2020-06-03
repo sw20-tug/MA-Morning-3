@@ -42,20 +42,13 @@ class MainActivity : AppCompatActivity() {
 
         recipeService.getAllRecipes(object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                Log.println(
-                    Log.INFO, "Hi this is the special output asdfjölasdflak",
-                    data!!.size.toString()
-                )
+                Log.println(Log.INFO, "DB", "Number of Recipes: ${data!!.size}")
                 listv = data as MutableList<Recipe>
             }
         })
         recipeService.getFavouriteRecipes(object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                Log.println(
-                    Log.INFO, "Hi this is the special output asdfjölasdflak",
-                    data!!.size.toString()
-                )
-                Log.println(Log.INFO, "DB", "Number of Recipes: ${data!!.size}")
+                Log.println(Log.INFO, "DB", "Number of favourite Recipes: ${data!!.size}")
             }
         })
     }

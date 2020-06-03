@@ -160,7 +160,7 @@ class AddRecipesFragment : Fragment() {
                 R.id.ingredient_input_inputfield)
 
             if (textView.text.toString().isNotBlank()) {
-                addChip(textView.text.toString())
+                addChip(textView.text.toString().trim())
                 textView.text?.clear()
             }
         }
@@ -200,7 +200,7 @@ class AddRecipesFragment : Fragment() {
             .findViewById<MaterialButton>(R.id.instruction_input_button)
 
         val btnCancel = root.text_input_instructions
-            .findViewById<MaterialButton>(R.id.instruction_cancel_button)
+            .findViewById<ImageButton>(R.id.instruction_cancel_button)
 
         lvInstructions.adapter = InstructionAdapter(context!!, steps)
 
@@ -237,7 +237,7 @@ class AddRecipesFragment : Fragment() {
         }
 
         btnAdd.setOnClickListener {
-            val stepText = text.text.toString()
+            val stepText = text.text.toString().trim()
 
             if (stepText.isNotBlank()) {
                 if (selectedStep != null) {
@@ -397,7 +397,6 @@ class AddRecipesFragment : Fragment() {
             .text.toString()
         val cookTime = root.text_input_cooktime.findViewById<TextView>(R.id.time_input_inputfield)
             .text.toString()
-
         val ingredients = root.text_input_ingredients.findViewById<ChipGroup>(R.id.ingredient_input_chipGroup)
             .children.map { chip ->
                 Ingredient(0, 0, (chip as Chip).text.toString().trim())
@@ -431,7 +430,7 @@ class AddRecipesFragment : Fragment() {
                 override fun onDataReady(data: Long?) {
                 Log.i("DB", "Successfully inserted Recipe with ID $data")
                 activity!!.runOnUiThread {
-                    Toast.makeText(context!!, "Saved recipe", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context!!, "Saved recipe", Toast.LENGTH_SHORT).show() // TODO outsource string
                 }
                 activity!!.finish();
             }

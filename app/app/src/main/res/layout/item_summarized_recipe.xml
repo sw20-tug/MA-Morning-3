@@ -18,11 +18,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_fav_star_white"
+        android:translationZ="@dimen/in_front"
         android:background="#00ffffff"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/recipe_image"
         android:layout_marginEnd="@dimen/margin_floating_button"
-        android:layout_marginTop="@dimen/margin_floating_button"
+        android:layout_marginBottom="@dimen/margin_floating_button"
         />
 
     <TextView
@@ -86,7 +87,6 @@
             android:textStyle="bold"
             android:textColor="@color/primaryTextColor"
             android:gravity="center"
-            android:text="#Meat"
             />
     </LinearLayout>
 
