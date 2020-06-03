@@ -421,8 +421,7 @@ class AddRecipesFragment : Fragment() {
         if (recipe == null) {
             recipe = Recipe( 0 , name, descr, type, difficulty,
                 prepTime.toInt(), cookTime.toInt(), false)
-        }
-        else {
+        } else {
             val tmpRecipe = Recipe(recipe!!.recipeID , name, descr, type, difficulty,
                 prepTime.toInt(), cookTime.toInt(), recipe!!.favourite)
 

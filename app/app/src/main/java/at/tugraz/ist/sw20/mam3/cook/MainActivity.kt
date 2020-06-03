@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         })
         recipeService.getFavouriteRecipes(object : DataReadyListener<List<Recipe>> {
             override fun onDataReady(data: List<Recipe>?) {
-                Log.println(Log.INFO, "DB", "Number of favourite Recipes: ${data.size}")
+                Log.println(Log.INFO, "DB", "Number of favourite Recipes: ${data!!.size}")
             }
         })
     }
