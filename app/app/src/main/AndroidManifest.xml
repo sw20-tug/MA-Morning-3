@@ -24,6 +24,7 @@
         <activity android:name=".RecipeDetailActivity"/>
         <activity android:name=".AddRecipeActivity"/>
         <activity android:name=".AboutActivity"/>
+        <activity android:name=".OnSiteCookingActivity"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

@@ -91,6 +91,11 @@
     <string name="confirm_delete_message">Are you sure you want to delete the recipe?</string>
     <string name="confirm_deleted_notification">Deleted</string>
 
+    <string name="title_on_site_cooking">On Site Cooking</string>
+    <string name="button_text_next">Next</string>
+    <string name="button_text_back">Back</string>
+    <string name="button_text_done">Done</string>
+    <string name="lbl_step_title">Step %1s</string>
     <string name="filter_max_prep_time_short">Max Prep</string>
     <string name="filter_max_cook_time_short">Max Cook</string>
     <string name="filter_title">Choose filters</string>
