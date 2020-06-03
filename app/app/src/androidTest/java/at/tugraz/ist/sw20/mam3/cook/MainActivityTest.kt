@@ -97,7 +97,6 @@ class MainActivityTest {
         onView(withId(R.id.search)).check(matches(isClickable()))
         onView(withId(R.id.button_add_recipes)).check(matches(isDisplayed()))
         onView(withId(R.id.button_add_recipes)).perform(click())
-        onView(withId(R.id.recipe_favourite_star)).check(matches(isClickable()))
     }
 
     @Test
