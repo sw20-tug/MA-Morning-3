@@ -82,8 +82,7 @@ class RecipeAdapter(private val context : Context, private val recipes : List<Re
             if (fragment is FavouritesFragment){
                 removeItem(position)
             } else {
-                setItem(position, Recipe(recipe.recipeID, recipe.name, recipe.description, recipe.kind,
-                    recipe.difficulty, recipe.prepMinutes, recipe.cookMinutes, !recipe.favourite))
+                recipeList[position].favourite = !recipe.favourite
             }
 
             notifyDataSetChanged()
