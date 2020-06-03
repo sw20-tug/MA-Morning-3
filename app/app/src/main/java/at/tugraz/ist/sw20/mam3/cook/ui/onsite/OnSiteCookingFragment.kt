@@ -64,9 +64,7 @@ class OnSiteCookingFragment: Fragment() {
             LinearLayoutManager.HORIZONTAL, false)
         lvImages.isNestedScrollingEnabled = true
         lvImages.setHasFixedSize(false)
-
         lvImages.adapter = ImageAdapter(context!!, recipe.photos ?: listOf())
-
 
         if (steps.size == 1) {
             btnNext.text = resources.getString(R.string.button_text_done)
@@ -76,8 +74,8 @@ class OnSiteCookingFragment: Fragment() {
         val step0 = steps[0]
         tvStepTitle.text = resources.getString(R.string.lbl_step_title, '1')
         tvStepContent.text = step0.name
-
         var stepIndex = 1
+
         btnNext.setOnClickListener {
             ++stepIndex
             if (stepIndex > 0) {
@@ -106,14 +104,10 @@ class OnSiteCookingFragment: Fragment() {
                 tvStepTitle.text = resources.getString(R.string.lbl_step_title, stepIndex.toString())
                 tvStepContent.text = steps[stepIndex - 1].name
             }
-
             if (stepIndex == 1) {
                 btnBack.visibility = View.GONE
             }
-
             btnNext.text = resources.getString(R.string.button_text_next)
         }
-
     }
-
 }
