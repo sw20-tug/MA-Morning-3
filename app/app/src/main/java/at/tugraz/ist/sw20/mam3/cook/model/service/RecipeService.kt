@@ -15,7 +15,6 @@ import at.tugraz.ist.sw20.mam3.cook.model.entities.Step
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
-import java.util.function.Consumer
 
 class RecipeService(private val context: Context) {
     private var db: CookDB? = null //getter from singleton we created here

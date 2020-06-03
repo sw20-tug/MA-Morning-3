@@ -22,10 +22,6 @@ class ImagePreviewAdapter(
     val imagesRP : MutableList<RecipePhoto>?,
     val imagesUri : MutableList<Uri>?) : RecyclerView.Adapter<ImagePreviewAdapter.ViewHolder>() {
 
-
-    // private val inflater : LayoutInflater = context.getSystemService(
-    //    Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImagePreviewAdapter.ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.listitem_image_preview, parent, false))
     }
