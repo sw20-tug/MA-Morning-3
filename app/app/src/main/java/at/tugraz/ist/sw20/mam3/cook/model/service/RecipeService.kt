@@ -183,8 +183,12 @@ class RecipeService(private val context: Context) {
         val destDir = File(context.filesDir, mainDirName).resolve(recipeID.toString())
 
         if (!srcDir.exists()) {
-            throw FileNotFoundException(tempDirName + " dir does not exist. Why do we want to " +
-                "store anything that does not exist?")
+            Thread(Runnable {
+                callback?.onDataReady(null)
+            }).start()
+            // throw FileNotFoundException(tempDirName + " dir does not exist. Why do we want to " +
+            //    "store anything that does not exist?")
+            return
         }
 
         destDir.mkdirs()

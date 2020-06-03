@@ -94,11 +94,10 @@ class EditRecipeActivityTest {
 
         onView(allOf(withParent(withId(R.id.text_input_cooktime)),
                 withId(R.id.time_input_inputfield)))
-            .perform(replaceText("11"))
+            .perform(replaceText("11"), closeSoftKeyboard())
 
-        onView(allOf(withParent(withId(R.id.text_input_ingredients)),
-                withId(R.id.ingredient_input_inputfield)))
-            .perform(replaceText("Edited Step"))
+        onView(withId(R.id.ingredient_input_inputfield))
+            .perform(replaceText("Edited Step"), closeSoftKeyboard())
 
         onView(allOf(withParent(withId(R.id.text_input_ingredients)),
                 withId(R.id.ingredient_input_button))).perform(click())

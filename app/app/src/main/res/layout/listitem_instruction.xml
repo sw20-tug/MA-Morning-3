@@ -2,12 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
    <TextView
        android:id="@+id/li_instruction_number"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
+       tools:text="Step 1"
+       android:textStyle="bold"
+       android:textColor="@color/primaryTextColor"
        app:layout_constraintTop_toTopOf="parent"
        app:layout_constraintBottom_toTopOf="@id/li_instruction_text"/>
 
@@ -15,6 +19,10 @@
         android:id="@+id/li_instruction_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/li_instruction_number"/>
+        android:textColor="@color/primaryTextColor"
+        android:layout_marginStart="10dp"
+        tools:text="Just do it"
+        app:layout_constraintTop_toBottomOf="@id/li_instruction_number"
+        app:layout_constraintStart_toStartOf="@id/li_instruction_number"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

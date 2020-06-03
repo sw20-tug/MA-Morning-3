@@ -5,15 +5,10 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.ImageButton
-import android.widget.AdapterView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.SearchView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,8 +18,9 @@ import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
 import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
-import at.tugraz.ist.sw20.mam3.cook.ui.recipes.RecipesFragment
 import at.tugraz.ist.sw20.mam3.cook.ui.recipes.adapters.RecipeAdapter
+import kotlinx.android.synthetic.main.item_dropdown_input.view.*
+import kotlinx.android.synthetic.main.item_time_input.view.*
 
 class FavouritesFragment : Fragment() {
 
@@ -51,23 +47,6 @@ class FavouritesFragment : Fragment() {
             textView.text = it
         })
 
-        // TODO: not in favourites fragment
-        /*
-        val importBtn = root.findViewById<Button>(R.id.button_import_image)
-        importBtn?.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            intent.type = "image/*"
-            startActivityForResult(intent, RESULT_LOAD_IMAGES)
-        }
-
-        val takeBtn = root.findViewById<Button>(R.id.button_take_image)
-        takeBtn?.setOnClickListener {
-            val intent =  Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
-        }
-        */
-        */
-
         lvFavorites = root.findViewById(R.id.list_favorites)
         registerForContextMenu(lvFavorites);
         return root
@@ -77,63 +56,6 @@ class FavouritesFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
       }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        //  TODO: sample code taking pictures and loading from storage
-        /*
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            val imageBitmap = data!!.extras!!.get("data") as Bitmap
-            val recipeService = RecipeService(context!!)
-            recipeService.storeImageTemporary(imageBitmap)
-            img_preview.setImageBitmap(imageBitmap)
-            Log.d("Photo", "Take Foto: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()?.size.toString())
-        }
-
-        if(requestCode == RESULT_LOAD_IMAGES && resultCode == RESULT_OK) {
-
-            val recipeService = RecipeService(context!!)
-            Log.d("Photo", "Before delete: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()?.size.toString())
-            recipeService.deleteTemporaryImages()
-            Log.d("Photo", "After delete: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()?.size.toString())
-
-            recipeService.storeImageTemporary(data!!.data!!)
-            recipeService.storeImageTemporary(data!!.data!!)
-            val tempImage = recipeService.storeImageTemporary(data!!.data!!)
-            Log.d("Photo", "After add: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()!!.size.toString())
-
-
-            val readyListener = object : DataReadyListener<Unit> {
-                override fun onDataReady(data: Unit?) {
-                    Log.d("Photo", "After store: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()!!.size.toString())
-                    Log.d("Photo", "In store: " + File(context!!.filesDir, "recipes").resolve(1.toString()).listFiles()!!.size.toString())
-
-                    val readyListener = object : DataReadyListener<List<RecipePhoto>> {
-                        override fun onDataReady(data: List<RecipePhoto>?) {
-                            this@FavouritesFragment.activity!!.runOnUiThread {
-                                img_preview.setImageURI(
-                                    recipeService.loadImage(
-                                        RecipePhoto(
-                                            data!!.first().photoID,
-                                            data!!.first().recipeID
-                                        )
-                                    )
-                                )
-                            }
-                        }
-                    }
-                    recipeService.getAllPhotosFromRecipe(
-                        Recipe(1, "", "", "", 0, 0, true), readyListener)
-                }
-            }
-
-            recipeService.storeImages(1, readyListener)
-
-        }
-         */
-
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -199,7 +121,7 @@ class FavouritesFragment : Fragment() {
 
             RecipeService(context!!).deleteRecipe(clickedRecipe, deleteFinishedListener)
 
-            Toast.makeText(context!!, "deleted", Toast.LENGTH_LONG).show()
+            Toast.makeText(context!!, getString(R.string.confirm_deleted_notification), Toast.LENGTH_LONG).show()
         })
         .setNegativeButton(activity!!.getString(R.string.cancel_button_text),
             DialogInterface.OnClickListener { dialog, id ->
@@ -207,7 +129,7 @@ class FavouritesFragment : Fragment() {
         })
 
         val alert = dialogBuilder.create()
-        alert.setTitle("Are you sure you want to delete the recipe?")
+        alert.setTitle(getString(R.string.confirm_delete_message))
         alert.show()
     }
 
@@ -221,6 +143,9 @@ class FavouritesFragment : Fragment() {
         val si = menu?.findItem(R.id.search) as MenuItem
         val sv = si.getActionView() as SearchView
         val ti = menu?.findItem(R.id.filter) as MenuItem
+        ti.actionView.setBackgroundResource(R.drawable.ic_filter_white)
+        sv.isIconifiedByDefault = false
+        sv.requestFocus()
 
         sv.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
@@ -253,95 +178,88 @@ class FavouritesFragment : Fragment() {
                 more.setOnClickListener {
 
                     val builder = AlertDialog.Builder(context!!)
-                    builder.setTitle("Choose filters")
-                    var filters = resources.getStringArray(R.array.s_item)
+                    val cv = layoutInflater.inflate(R.layout.dialog_filter, null) as View
 
-                    val checkedItems = booleanArrayOf(false, false, false, false, false, false)
-                    builder.setMultiChoiceItems(filters, checkedItems) { dialog, which, isChecked ->
-
-                    }
-
-
-                    builder.setPositiveButton("OK") { dialog, which ->
-                        var tmp : MutableList<Recipe> = mutableListOf()
-                        var list : ListView = lvFavorites
-
-                        val checked =
-                            (dialog as AlertDialog).listView
-                                .checkedItemPositions
-                        if ((!checked[0] and checked[1]) or (checked[0] and !checked[1])) {
-                            if(checked[0]) {
-                                for (item in lv) {
-                                    if (item.kind.equals("Meat")) {
-                                        tmp.add(item)
-                                    }
-                                }
-                            }
-                            else {
-                                for (item in lv) {
-                                    if (item.kind.equals("Side")) {
-                                        tmp.add(item)
-                                    }
-                                }
-                            }
-                            if (checked[2] and !checked[3]) tmp = filterByCookMinutes(tmp, true)
-                            if (!checked[2] and checked[3]) tmp = filterByCookMinutes(tmp, false)
-                            if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
-                            if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@FavouritesFragment)
-                        }
-
-                        else {
-                            var tmp : MutableList<Recipe> = lv as MutableList<Recipe>
-                            if (checked[2] and !checked[3]) tmp = filterByCookMinutes(tmp, true)
-                            if (!checked[2] and checked[3]) tmp  = filterByCookMinutes(tmp, false)
-                            if (checked[4] and !checked[5]) tmp = filterByPrepMinutes(tmp, true)
-                            if (!checked[4] and checked[5]) tmp = filterByPrepMinutes(tmp, false)
-                            list!!.adapter = RecipeAdapter(context!!, tmp, activity!!, this@FavouritesFragment)
-                        }
-                    }
-                    builder.setNegativeButton("Cancel", null)
+                    builder.setView(cv)
+                    builder.setTitle(getString(R.string.filter_title))
 
                     val dialog = builder.create()
+
+                    setupDropdownMenus(cv.findViewById(R.id.filter_dropdown_type), R.array.types, null)
+                    setupDropdownMenus(cv.findViewById(R.id.filter_dropdown_difficulty), R.array.skillLevel, null)
+                    cv.findViewById<TextView>(R.id.filter_dropdown_type).dropdown_input_description.text = getString(R.string.create_edit_recipes_type)
+                    cv.findViewById<TextView>(R.id.filter_dropdown_difficulty).dropdown_input_description.text = getString(R.string.create_edit_recipes_difficulty)
+                    cv.findViewById<TextView>(R.id.filter_prep_time).time_input_description.text = getString(R.string.filter_max_prep_time_short)
+                    cv.findViewById<TextView>(R.id.filter_cook_time).time_input_description.text = getString(R.string.filter_max_cook_time_short)
+                    cv.findViewById<TextView>(R.id.filter_prep_time).time_input_minutes.text = getString(R.string.minutes_text_label)
+                    cv.findViewById<TextView>(R.id.filter_cook_time).time_input_minutes.text = getString(R.string.minutes_text_label)
+
+                    cv.findViewById<Button>(R.id.filter_button_clear_filters).setOnClickListener {
+                        var list: ListView = lvFavorites
+                        list!!.adapter = RecipeAdapter(context!!, lv, activity!!, this@FavouritesFragment)
+                        dialog.dismiss()
+                    }
+
+                    cv.findViewById<Button>(R.id.filter_button_ok).setOnClickListener {
+                        var tmp_type: MutableList<Recipe> = mutableListOf()
+                        var tmp_diff: MutableList<Recipe> = mutableListOf()
+                        var tmp_prep: MutableList<Recipe> = mutableListOf()
+                        var tmp_cook: MutableList<Recipe> = mutableListOf()
+                        var list: ListView = lvFavorites
+
+                        val type = cv.findViewById<Spinner>(R.id.filter_dropdown_type).dropdown_input_inputfield.selectedItem.toString()
+                        val difficulty = cv.findViewById<Spinner>(R.id.filter_dropdown_difficulty).dropdown_input_inputfield.selectedItem.toString()
+                        val prepTime = cv.findViewById<TextView>(R.id.filter_prep_time).time_input_inputfield.text.toString()
+                        val cookTime = cv.findViewById<TextView>(R.id.filter_cook_time).time_input_inputfield.text.toString()
+
+
+                        for (item in lv) {
+                            if (item.kind == type) {
+                                tmp_type.add(item)
+                            }
+                        }
+                        for (item in tmp_type) {
+                            if (item.difficulty == difficulty) {
+                                tmp_diff.add(item)
+                            }
+                        }
+                        if (prepTime.isBlank() || (prepTime.toInt() < 0)) {
+                            tmp_prep = tmp_diff
+                        } else {
+                            for (item in tmp_diff) {
+                                if (item.prepMinutes <= prepTime.toInt()) {
+                                    tmp_prep.add(item)
+                                }
+                            }
+                        }
+                        if (cookTime.isBlank() || (cookTime.toInt() < 0)) {
+                            tmp_cook = tmp_prep
+                        } else {
+                            for (item in tmp_prep) {
+                                if (item.cookMinutes <= cookTime.toInt()) {
+                                    tmp_cook.add(item)
+                                }
+                            }
+                        }
+                        list!!.adapter = RecipeAdapter(context!!, tmp_cook, activity!!, this@FavouritesFragment)
+                        dialog.dismiss()
+                    }
+
                     dialog.show()
                 }
             })
         }).start()
     }
 
-    private fun filterByCookMinutes (list: MutableList<Recipe>, less: Boolean): MutableList<Recipe> {
-        var tmp : MutableList<Recipe> = mutableListOf()
-        if (less) {
-            for (item in list) {
-                if (item.cookMinutes < 30) {
-                    tmp.add(item)
-                }
-            }
+    private fun setupDropdownMenus(root: View, arrayList: Int, selectedItem: String?) {
+        val items = resources.getStringArray(arrayList)
+        val spinner: Spinner = root.findViewById(R.id.dropdown_input_inputfield)
+
+        if (selectedItem == null) {
+            val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_item, items)
+            spinner.adapter = adapter
+        } else {
+            spinner.setSelection(items.indexOf(selectedItem))
         }
-        else {
-            for (item in list) {
-                if (item.cookMinutes >= 30) {
-                    tmp.add(item)
-                }
-            }
-        }
-        return tmp
-    }
-    private fun filterByPrepMinutes (list: MutableList<Recipe>, less: Boolean)  : MutableList<Recipe> {
-        var tmp : MutableList<Recipe> = mutableListOf()
-        if (less) {
-            for (item in list) {
-                if (item.prepMinutes < 15) {
-                    tmp.add(item)
-                }
-            }
-        }
-        else {    for (item in list) {
-            if (item.prepMinutes >= 15) {
-                tmp.add(item)
-            }
-        }
-        }
-        return tmp
     }
 }

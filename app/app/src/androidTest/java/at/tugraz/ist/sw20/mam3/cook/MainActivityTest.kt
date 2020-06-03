@@ -58,7 +58,7 @@ class MainActivityTest {
             20, 10,false)
         recipeDao.insertRecipe(recipe)
 
-        recipe = Recipe(0, "Schnitzel", "...", "Meat","...",
+        recipe = Recipe(0, "Schnitzel", "...", "Meat","Beginner",
             15, 5,false)
         recipeDao.insertRecipe(recipe)
 
@@ -106,7 +106,6 @@ class MainActivityTest {
 
         onView(withId(R.id.filter)).perform(click())
         onView(withText("Choose filters")).check(matches(isDisplayed()))
-        onView(withText("Meat")).perform(click());
         onView(withText("OK")).perform(click());
 
         onData(anything()).inAdapterView(withId(R.id.list_recipes)).atPosition(0).

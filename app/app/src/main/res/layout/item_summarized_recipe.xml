@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="116dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@mipmap/sample_food_tacos_foreground"
+        android:src="@drawable/sample_food_placeholder_background"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         />
@@ -19,11 +19,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_fav_star_white"
+        android:translationZ="@dimen/in_front"
         android:background="#00ffffff"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/recipe_image"
         android:layout_marginEnd="@dimen/margin_floating_button"
-        android:layout_marginTop="@dimen/margin_floating_button"
+        android:layout_marginBottom="@dimen/margin_floating_button"
         />
 
     <TextView
@@ -48,6 +49,7 @@
         />
 
     <LinearLayout
+        android:id="@+id/item_horizontal_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -86,7 +88,6 @@
             android:textStyle="bold"
             android:textColor="@color/primaryTextColor"
             android:gravity="center"
-            android:text="#Meat"
             />
     </LinearLayout>
 
@@ -94,6 +95,8 @@
         layout="@layout/item_separator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/item_horizontal_view"
+        app:layout_constraintStart_toStartOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

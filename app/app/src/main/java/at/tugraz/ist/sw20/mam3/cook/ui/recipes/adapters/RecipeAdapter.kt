@@ -11,12 +11,11 @@ import androidx.fragment.app.FragmentActivity
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.RecipeDetailActivity
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
-import at.tugraz.ist.sw20.mam3.cook.model.service.DataReadyListener
 import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.favourites.FavouritesFragment
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_recipes.*
+import at.tugraz.ist.sw20.mam3.cook.ui.utils.TimeFormatter
 import kotlinx.android.synthetic.main.item_summarized_recipe.view.*
+import kotlin.math.floor
 
 class RecipeAdapter(private val context : Context, private val recipes : List<Recipe>, private val activity: FragmentActivity, private val fragment: Fragment) : BaseAdapter() {
     private val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -58,14 +57,17 @@ class RecipeAdapter(private val context : Context, private val recipes : List<Re
             favouritesBtn.setImageResource(R.drawable.ic_fav_star_filled)
         else
             favouritesBtn.setImageResource(R.drawable.ic_fav_star_white)
-        typeTextView.text = recipe.kind
-        prepTimeTextView.text = recipe.prepMinutes.toString()   // TODO: format correctly
-        cookTimeTextView.text = recipe.cookMinutes.toString()   // TODO: format correctly
+        typeTextView.text = context.getString(R.string.type_hashtag, recipe.kind)
+
+        prepTimeTextView.text = TimeFormatter().formatMinutesIntoTimeStampString(recipe.prepMinutes,
+            context!!)
+        cookTimeTextView.text = TimeFormatter().formatMinutesIntoTimeStampString(recipe.cookMinutes,
+            context!!)
 
         if (recipe.photos != null && recipe.photos?.any()!!) {
             titleImageView.setImageURI(RecipeService(context).loadImage(recipe.photos!![0]))
         } else {
-            titleImageView.setImageResource(R.mipmap.sample_food_tacos_foreground)
+            titleImageView.setImageResource(R.drawable.sample_food_placeholder_background)
         }
         prepTimeIcon.setImageResource(R.drawable.ic_whisk)
         cookTimeIcon.setImageResource(R.drawable.ic_cooking)
