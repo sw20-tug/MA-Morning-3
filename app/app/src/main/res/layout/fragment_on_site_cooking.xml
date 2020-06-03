@@ -24,7 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="@dimen/onsite_image_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
