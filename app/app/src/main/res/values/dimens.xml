@@ -18,4 +18,6 @@
     <dimen name="width_input_cancel_short">40dp</dimen>
     <dimen name="margin_text">5dp</dimen>
 
+    <dimen name="image_height">550dp</dimen>
+
 </resources>

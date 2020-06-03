@@ -11,6 +11,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:src="@mipmap/sample_food_tacos_foreground"
         android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
         />
 
     <ImageButton

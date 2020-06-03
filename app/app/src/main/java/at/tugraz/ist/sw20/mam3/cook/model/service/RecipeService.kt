@@ -27,6 +27,9 @@ class RecipeService(private val context: Context) {
         Thread(Runnable {
             db = CookDB.getCookDB(context)
             val allRecipes = db!!.recipeDao().getAllRecipies()
+            for (recipe in allRecipes) {
+                recipe.photos = db!!.recipeDao().getAllPhotosFromRecipe(recipe.recipeID)
+            }
             callback.onDataReady(allRecipes)
         }).start()
     }
@@ -36,6 +39,9 @@ class RecipeService(private val context: Context) {
         Thread(Runnable {
             db = CookDB.getCookDB(context)
             val allRecipes = db!!.recipeDao().getFavourites()
+            for (recipe in allRecipes) {
+                recipe.photos = db!!.recipeDao().getAllPhotosFromRecipe(recipe.recipeID)
+            }
             callback.onDataReady(allRecipes)
         }).start()
     }
@@ -85,6 +91,7 @@ class RecipeService(private val context: Context) {
             recipe.steps = db!!.recipeDao().getStepsByRecipeID(id)
             Log.i("STEPS DATABASE SERVICE", recipe.steps.toString())
             recipe.photos = db!!.recipeDao().getAllPhotosFromRecipe(recipe.recipeID)
+            Log.i("IMAGES DATABASE SERVICE", recipe.photos.toString())
             callback.onDataReady(recipe)
         }).start()
     }
