@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import at.tugraz.ist.sw20.mam3.cook.model.service.RecipeService
 import at.tugraz.ist.sw20.mam3.cook.ui.add_recipes.AddRecipesFragment
 
 
@@ -23,6 +24,9 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private fun customizeActionBar() {
         supportActionBar?.title = getString(R.string.title_add_recipes)
+        if (intent.getLongExtra(AddRecipesFragment.INTENT_EXTRA_RECIPE_ID, -1L) > 0) {
+            supportActionBar?.title = getString(R.string.title_edit_recipe)
+        }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -34,9 +38,19 @@ class AddRecipeActivity : AppCompatActivity() {
                 addRecipeFragment.saveRecipe()
             }
             android.R.id.home -> {
+                cleanup()
                 finish()
             }
         }
         return true
+    }
+
+    override fun onBackPressed() {
+        cleanup()
+        super.onBackPressed()
+    }
+
+    fun cleanup() {
+        RecipeService(this).cancelPendingDeletes()
     }
 }

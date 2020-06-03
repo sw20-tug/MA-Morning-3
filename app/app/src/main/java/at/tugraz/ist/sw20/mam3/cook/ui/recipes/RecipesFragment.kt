@@ -31,7 +31,6 @@ class RecipesFragment : Fragment() {
     private lateinit var clickedRecipe: Recipe
     private var listv: List<Recipe> = emptyList()
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

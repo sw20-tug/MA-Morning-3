@@ -5,4 +5,5 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class RecipePhoto(@PrimaryKey(autoGenerate = true) val photoID: Long,
-                       val recipeID: Long)
+                       val recipeID: Long,
+                       val toDelete: Boolean)

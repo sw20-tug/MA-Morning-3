@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,7 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.FileProvider
+import androidx.core.net.toFile
 import androidx.core.view.children
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
@@ -22,7 +24,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
-import androidx.transition.Visibility
 import at.tugraz.ist.sw20.mam3.cook.R
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Ingredient
 import at.tugraz.ist.sw20.mam3.cook.model.entities.Recipe
@@ -41,7 +42,6 @@ import kotlinx.android.synthetic.main.item_image_input.view.*
 import kotlinx.android.synthetic.main.item_ingredients_input.*
 import java.io.File
 
-
 class AddRecipesFragment : Fragment() {
 
     companion object {
@@ -54,11 +54,12 @@ class AddRecipesFragment : Fragment() {
 
     private var steps: MutableList<Step> = mutableListOf()
 
-    private var recipe: Recipe? = null
+    var recipe: Recipe? = null
 
     private lateinit var recipeService: RecipeService
 
     private lateinit var lvImages : RecyclerView
+    private lateinit var clickedPhoto: ImagePreviewAdapter.ViewHolder
 
     private val RESULT_LOAD_IMAGES = 1
     private val REQUEST_IMAGE_CAPTURE = 2
@@ -74,8 +75,8 @@ class AddRecipesFragment : Fragment() {
         recipeService= RecipeService(context!!)
 
         lvImages = root.findViewById<RecyclerView>(R.id.image_input_recycler_view)
-        lvImages.layoutManager = LinearLayoutManager(context)
-        lvImages.isNestedScrollingEnabled = false
+        lvImages.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        lvImages.isNestedScrollingEnabled = true
         lvImages.setHasFixedSize(true)
 
         setViewLabels()
@@ -93,20 +94,19 @@ class AddRecipesFragment : Fragment() {
             recipeService.getRecipeById(recipeID, object: DataReadyListener<Recipe> {
                 override fun onDataReady(data: Recipe?) {
                     recipe = data!!
+                    lvImages.adapter = ImagePreviewAdapter(context!!, recipe!!.photos?.toMutableList(), mutableListOf())
+                    Log.d("DEBUG recipe photo count", data.photos?.size.toString())
                     activity!!.runOnUiThread {
                         setRecipeValues()
                     }
                 }
             })
+        } else {
+            lvImages.adapter = ImagePreviewAdapter(context!!, null, mutableListOf())
         }
 
         return root
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        val menuInflater = activity!!.menuInflater
-//        menuInflater.inflate(R.menu.toolbar_edit_detail_recipe, menu)
-//    }
 
     private fun setViewLabels() {
         val textViewName: TextView = root.text_input_name.findViewById(R.id.text_input_description)
@@ -132,8 +132,6 @@ class AddRecipesFragment : Fragment() {
         val textViewInstr: TextView =
             root.text_input_instructions.findViewById(R.id.instruction_input_description)
         textViewInstr.setText(R.string.create_edit_recipes_instructions)
-        val textViewImage: TextView = root.text_input_images.findViewById(R.id.image_input_description)
-        textViewImage.setText(R.string.create_edit_recipes_fotos)
 
         val textViewPrepMin: TextView = root.text_input_preptime.findViewById(R.id.time_input_minutes)
         textViewPrepMin.setText(R.string.minutes_text_label)
@@ -272,25 +270,38 @@ class AddRecipesFragment : Fragment() {
             btnCancel.visibility = View.GONE
         }
     }
+
     fun setupImages() {
+
+        RecipeService(context!!).deleteTemporaryImages();
 
         val imageAddBtn = root.image_add_image_button
         .findViewById<ImageView>(R.id.image_add_image_button)
 
         imageAddBtn.setOnClickListener {
             Toast.makeText(context!!, "Clicked add image button", Toast.LENGTH_LONG).show()
-            val dialog = AlertDialog.Builder(context)
+            val dialogBuilder = AlertDialog.Builder(context)
             val cv = layoutInflater.inflate(R.layout.dialog_add_photo, null) as View
+            val dialog = dialogBuilder.create()
             dialog.setView(cv)
+
             cv.findViewById<Button>(R.id.dialog_take_picture_button).setOnClickListener {
                 Toast.makeText(context!!, "Open Camera" ,Toast.LENGTH_LONG).show()
                 val intent =  Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                val targetUri = RecipeService(context!!).storeImageTemporary(
+                                Bitmap.createBitmap(42,42, Bitmap.Config.ARGB_8888))
+                val uri = FileProvider.getUriForFile(context!!,
+                            context!!.packageName + ".provider", targetUri.toFile())
+
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                dialog.cancel()
                 startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
             }
             cv.findViewById<Button>(R.id.dialog_gallery_button).setOnClickListener {
                 Toast.makeText(context!!, "Open Gallery" ,Toast.LENGTH_LONG).show()
                 val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 intent.type = "image/*"
+                dialog.cancel()
                 startActivityForResult(intent, RESULT_LOAD_IMAGES)
             }
 
@@ -301,41 +312,39 @@ class AddRecipesFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        //  TODO: sample code taking pictures and loading from storage
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            val imageBitmap = data!!.extras!!.get("data") as Bitmap
-            val recipeService = RecipeService(context!!)
-            // TODO: handle edit recipe
-            recipeService.storeImageTemporary(imageBitmap)
-            // TODO: update gallery
-            val dataReadyListener = object : DataReadyListener<List<Uri>> {
-                override fun onDataReady(data: List<Uri>?) {
-                    activity!!.runOnUiThread {
-                        lvImages.adapter = ImagePreviewAdapter(context!!, null, data)
-                    }
-                    activity!!.finish();
-                }
+        if ((requestCode == REQUEST_IMAGE_CAPTURE || requestCode == RESULT_LOAD_IMAGES) && resultCode == RESULT_OK) {
+
+            if (requestCode == RESULT_LOAD_IMAGES) {
+                recipeService.storeImageTemporary(data!!.data!!)
             }
-            val allTempImages = recipeService.getAllTempPhotos(dataReadyListener)
+
+            val recipeService = RecipeService(context!!)
+            if (recipe == null) {
+                val dataReadyListener = object : DataReadyListener<List<Uri>> {
+                    override fun onDataReady(data: List<Uri>?) {
+                        activity!!.runOnUiThread {
+                            lvImages.adapter = ImagePreviewAdapter(context!!, null, data!!.toMutableList())
+                        }
+                    }
+                }
+                recipeService.getAllTempPhotos(dataReadyListener)
+            } else {
+                val dataReadyListener = object : DataReadyListener<List<RecipePhoto>> {
+                    override fun onDataReady(data: List<RecipePhoto>?) {
+                        val dataReadyInListener = object : DataReadyListener<List<Uri>> {
+                            override fun onDataReady(dataIn: List<Uri>?) {
+                                activity!!.runOnUiThread {
+                                    lvImages.adapter = ImagePreviewAdapter(context!!, data!!.toMutableList(), dataIn!!.toMutableList())
+                                }
+                            }
+                        }
+                        recipeService.getAllTempPhotos(dataReadyInListener)
+                    }
+                }
+                recipeService.getAllPhotosFromRecipe(recipe!!, dataReadyListener)
+            }
             Log.d("Photo", "Take Foto: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()?.size.toString())
 
-        }
-
-        if(requestCode == RESULT_LOAD_IMAGES && resultCode == RESULT_OK) {
-
-            val recipeService = RecipeService(context!!)
-
-            val tempImage = recipeService.storeImageTemporary(data!!.data!!)
-            val dataReadyListener = object : DataReadyListener<List<Uri>> {
-                override fun onDataReady(data: List<Uri>?) {
-                    activity!!.runOnUiThread {
-                        lvImages.adapter = ImagePreviewAdapter(context!!, null, data)
-                    }
-                    activity!!.finish();
-                }
-            }
-            val allTempImages = recipeService.getAllTempPhotos(dataReadyListener)
-            Log.d("Photo", "After add: " + File(context!!.filesDir, "recipes").resolve("tmp").listFiles()!!.size.toString())
         }
     }
 
@@ -432,7 +441,7 @@ class AddRecipesFragment : Fragment() {
                 activity!!.runOnUiThread {
                     Toast.makeText(context!!, "Saved recipe", Toast.LENGTH_SHORT).show() // TODO outsource string
                 }
-                activity!!.finish();
+                activity!!.finish()
             }
         })
 
