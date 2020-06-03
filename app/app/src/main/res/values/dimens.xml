@@ -18,6 +18,10 @@
     <dimen name="width_input_cancel_short">40dp</dimen>
     <dimen name="margin_text">5dp</dimen>
 
+    <dimen name="font_size_step_title">18sp</dimen>
     <dimen name="image_height">550dp</dimen>
+
+    <dimen name="onsite_image_margin">150dp</dimen>
+
 
 </resources>
